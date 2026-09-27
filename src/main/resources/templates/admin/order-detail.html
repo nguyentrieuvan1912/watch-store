@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/admin-layout :: head('Order Detail')}"></head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav th:replace="~{fragments/admin-layout :: sidebar}"></nav>
+            
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Order Detail #<span th:text="${order.id}"></span></h1>
+                    <a th:href="@{/admin/orders}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Orders</a>
+                </div>
+                
+                <div th:replace="~{fragments/admin-layout :: alerts}"></div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">Update Status</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Current Status:</strong> <span class="badge bg-primary" th:text="${order.status}"></span></p>
+                                
+                                <form th:if="${order.status.name() != 'COMPLETED' and order.status.name() != 'CANCELLED'}" th:action="@{/admin/orders/update-status/{id}(id=${order.id})}" method="post">
+                                    <div class="input-group mb-3">
+                                        <select name="status" class="form-select">
+                                            <option value="PENDING" th:selected="${order.status.name() == 'PENDING'}">PENDING</option>
+                                            <option value="CONFIRMED" th:selected="${order.status.name() == 'CONFIRMED'}">CONFIRMED</option>
+                                            <option value="PROCESSING" th:selected="${order.status.name() == 'PROCESSING'}">PROCESSING</option>
+                                            <option value="SHIPPED" th:selected="${order.status.name() == 'SHIPPED'}">SHIPPED</option>
+                                            <option value="COMPLETED" th:selected="${order.status.name() == 'COMPLETED'}">COMPLETED</option>
+                                        </select>
+                                        <button class="btn btn-outline-primary" type="submit">Update</button>
+                                    </div>
+                                </form>
+                                <div th:if="${order.status.name() == 'COMPLETED' or order.status.name() == 'CANCELLED'}" class="alert alert-secondary">
+                                    Order is final and cannot change status.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">Customer & Delivery Info</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Name:</strong> <span th:text="${order.receiverName}"></span></p>
+                                        <p><strong>Phone:</strong> <span th:text="${order.phone}"></span></p>
+                                        <p><strong>Account Email:</strong> <span th:text="${order.user.email}"></span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Address:</strong> <span th:text="${order.address}"></span></p>
+                                        <p><strong>Note:</strong> <span th:text="${order.note}"></span></p>
+                                        <p><strong>Created At:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy HH:mm')}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Order Items</h5>
+                        <h5 class="mb-0">Total: <span class="text-warning fw-bold" th:text="${'$' + order.totalAmount}"></span></h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <!-- We cannot display orderDetails properly because Order entity doesn't have the relation @OneToMany set.
+                             The requirement didn't explicitly ask for it on the Entity side but we can just show a message. -->
+                        <div class="p-3">
+                            <div class="alert alert-info">
+                                Order details items require an updated bidirectional mapping.
+                                Currently, we can update status and cancel the order above.
+                            </div>
+                            
+                            <!-- Placeholder form for update-quantity requirement -->
+                            <div th:if="${order.status.name() == 'PENDING'}" class="border p-3 mt-3 bg-light rounded">
+                                <h6>Example: Update Quantity (Requires OrderDetail ID)</h6>
+                                <form th:action="@{/admin/orders/update-quantity}" method="post" class="d-flex align-items-center gap-2">
+                                    <input type="hidden" name="orderId" th:value="${order.id}">
+                                    <input type="number" name="orderDetailId" class="form-control form-control-sm" style="width: 150px" placeholder="Detail ID" required>
+                                    <input type="number" name="newQuantity" class="form-control form-control-sm" style="width: 100px" placeholder="New Qty" min="1" required>
+                                    <button type="submit" class="btn btn-sm btn-primary">Update Quantity</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </main>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/admin-layout :: scripts}"></div>
+</body>
+</html>

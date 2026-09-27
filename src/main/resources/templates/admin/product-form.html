@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/admin-layout :: head('Product Form')}"></head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav th:replace="~{fragments/admin-layout :: sidebar}"></nav>
+            
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                    <h1 class="h2" th:text="${product.id != null ? 'Edit Product' : 'Add New Product'}">Form</h1>
+                    <a th:href="@{/admin/products}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to List</a>
+                </div>
+                
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <form th:action="${product.id != null ? '/admin/products/edit/' + product.id : '/admin/products/add'}" method="post" th:object="${product}">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Name *</label>
+                                    <input type="text" class="form-control" th:field="*{name}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Model (Unique) *</label>
+                                    <input type="text" class="form-control" th:field="*{model}" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Category *</label>
+                                    <select class="form-select" th:field="*{category.id}" required>
+                                        <option value="">Select Category</option>
+                                        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Brand *</label>
+                                    <select class="form-select" th:field="*{brand.id}" required>
+                                        <option value="">Select Brand</option>
+                                        <option th:each="b : ${brands}" th:value="${b.id}" th:text="${b.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Price *</label>
+                                    <input type="number" step="0.01" class="form-control" th:field="*{price}" required min="1">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Stock *</label>
+                                    <input type="number" class="form-control" th:field="*{stock}" required min="0">
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <label class="form-label">Image URL</label>
+                                    <input type="text" class="form-control" th:field="*{image}">
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Gender</label>
+                                    <input type="text" class="form-control" th:field="*{gender}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Movement</label>
+                                    <input type="text" class="form-control" th:field="*{movement}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Case Material</label>
+                                    <input type="text" class="form-control" th:field="*{caseMaterial}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Strap Material</label>
+                                    <input type="text" class="form-control" th:field="*{strapMaterial}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Water Resistance</label>
+                                    <input type="text" class="form-control" th:field="*{waterResistance}">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Warranty</label>
+                                    <input type="text" class="form-control" th:field="*{warranty}">
+                                </div>
+                                
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" rows="4" th:field="*{description}"></textarea>
+                                </div>
+                                
+                                <div class="col-12 mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="status" th:field="*{status}">
+                                        <label class="form-check-label" for="status">Active (Available for sale)</label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Product</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/admin-layout :: scripts}"></div>
+</body>
+</html>

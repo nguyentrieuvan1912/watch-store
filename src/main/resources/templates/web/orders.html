@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('My Orders')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <h2 class="mb-4">My Orders</h2>
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+        
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(orders)}" class="text-center py-4">
+                    <p class="text-muted">You have no order history.</p>
+                    <a th:href="@{/products}" class="btn btn-primary">Start Shopping</a>
+                </div>
+                
+                <div class="table-responsive" th:unless="${#lists.isEmpty(orders)}">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Payment</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${orders}">
+                                <td class="fw-bold">#<span th:text="${order.id}"></span></td>
+                                <td th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy HH:mm')}">Date</td>
+                                <td th:text="${'$' + order.totalAmount}">$0.00</td>
+                                <td>
+                                    <span class="badge" 
+                                        th:classappend="${order.status.name() == 'PENDING' ? 'bg-warning' : (order.status.name() == 'COMPLETED' ? 'bg-success' : (order.status.name() == 'CANCELLED' ? 'bg-danger' : 'bg-primary'))}"
+                                        th:text="${order.status}">Status</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary" th:text="${order.payment.method}">Method</span>
+                                    <span class="badge" th:classappend="${order.payment.status.name() == 'PAID' ? 'bg-success' : 'bg-secondary'}" th:text="${order.payment.status}">Status</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-sm btn-info text-white"><i class="bi bi-eye"></i> View</a>
+                                    
+                                    <form th:if="${order.status.name() == 'PENDING' or order.status.name() == 'CONFIRMED' or order.status.name() == 'PROCESSING'}" 
+                                          th:action="@{/orders/cancel/{id}(id=${order.id})}" method="post" class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-x-circle"></i> Cancel</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>

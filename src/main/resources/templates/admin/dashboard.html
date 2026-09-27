@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/admin-layout :: head('Dashboard')}"></head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav th:replace="~{fragments/admin-layout :: sidebar}"></nav>
+            
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <h2>Dashboard</h2>
+                <div th:replace="~{fragments/admin-layout :: alerts}"></div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card text-white bg-primary mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Orders</h5>
+                                <p class="card-text fs-3">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-success mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Revenue</h5>
+                                <p class="card-text fs-3">$--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-info mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Products</h5>
+                                <p class="card-text fs-3">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-white bg-warning mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Customers</h5>
+                                <p class="card-text fs-3">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/admin-layout :: scripts}"></div>
+</body>
+</html>

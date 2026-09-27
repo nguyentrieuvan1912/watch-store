@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Not Found')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="display-1 text-danger fw-bold">404</h1>
+                <h2 class="mb-4">Page or Resource Not Found</h2>
+                <p class="lead mb-4" th:text="${error != null ? error : 'The page you are looking for might have been removed or is temporarily unavailable.'}">Error message here.</p>
+                <a th:href="@{/}" class="btn btn-primary btn-lg"><i class="bi bi-house-door"></i> Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>

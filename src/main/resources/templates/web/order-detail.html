@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Order Detail')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Order Details #<span th:text="${order.id}"></span></h2>
+            <a th:href="@{/orders}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Orders</a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Order Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Date:</strong> <span th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy HH:mm')}"></span></p>
+                        <p><strong>Status:</strong> 
+                            <span class="badge fs-6" 
+                                th:classappend="${order.status.name() == 'PENDING' ? 'bg-warning' : (order.status.name() == 'COMPLETED' ? 'bg-success' : (order.status.name() == 'CANCELLED' ? 'bg-danger' : 'bg-primary'))}"
+                                th:text="${order.status}">Status</span>
+                        </p>
+                        <p><strong>Payment Method:</strong> <span th:text="${order.payment.method}"></span></p>
+                        <p><strong>Payment Status:</strong> <span th:text="${order.payment.status}"></span></p>
+                        <p><strong>Total Amount:</strong> <span class="text-danger fw-bold fs-5" th:text="${'$' + order.totalAmount}"></span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Shipping Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Receiver Name:</strong> <span th:text="${order.receiverName}"></span></p>
+                        <p><strong>Phone:</strong> <span th:text="${order.phone}"></span></p>
+                        <p><strong>Address:</strong> <span th:text="${order.address}"></span></p>
+                        <p><strong>Note:</strong> <span th:text="${order.note}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mt-2">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Order Items</h5>
+            </div>
+            <div class="card-body">
+                <!-- We need to show order details here. We'll query them in the controller, but wait, Order doesn't have orderDetails mapping! -->
+                <div class="alert alert-info">
+                    Note: Item details view requires Order entity to have a OneToMany relation with OrderDetails. Please check backend configuration.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>
