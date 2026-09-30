@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Home')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+        
+        <div class="p-5 mb-4 bg-light rounded-3 text-center">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">Welcome to Watch Store</h1>
+                <p class="col-md-8 mx-auto fs-4">Discover our exclusive collection of premium timepieces.</p>
+                <a th:href="@{/products}" class="btn btn-primary btn-lg">Shop Now</a>
+            </div>
+        </div>
+
+        <h2 class="mb-4">Featured Products</h2>
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            <div class="col" th:each="product : ${products}">
+                <div class="card h-100 shadow-sm">
+                    <img th:if="${product.image != null}" th:src="${product.image}" class="card-img-top" alt="Watch Image" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate" th:text="${product.name}">Watch Name</h5>
+                        <p class="card-text text-danger fw-bold" th:text="${'$' + product.price}">$0.00</p>
+                        <p class="card-text"><small class="text-muted" th:text="${product.brand.name}">Brand</small></p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 d-grid">
+                        <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline-dark">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Checkout')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <h2 class="mb-4">Checkout</h2>
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+        
+        <div class="row">
+            <div class="col-md-8 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Shipping Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/checkout}" method="post" th:object="${order}">
+                            <div class="mb-3">
+                                <label for="receiverName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="receiverName" th:field="*{receiverName}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="phone" th:field="*{phone}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Delivery Address <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="address" rows="3" th:field="*{address}" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="note" class="form-label">Order Note</label>
+                                <textarea class="form-control" id="note" rows="2" th:field="*{note}"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Payment Method</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
+                                    <label class="form-check-label" for="cod">
+                                        Cash on Delivery (COD)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-success btn-lg">Place Order</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Your Order</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between lh-sm" th:each="item : ${cartItems}">
+                            <div>
+                                <h6 class="my-0" th:text="${item.productName}">Product name</h6>
+                                <small class="text-muted">Qty: <span th:text="${item.quantity}"></span></small>
+                            </div>
+                            <span class="text-muted" th:text="${'$' + (item.price * item.quantity)}">$0.00</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between bg-light">
+                            <span class="fw-bold fs-5">Total (USD)</span>
+                            <strong class="text-danger fs-5" th:text="${'$' + #aggregates.sum(cartItems.![price * quantity])}">$0.00</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>

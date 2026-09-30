@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/admin-layout :: head('Products')}"></head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav th:replace="~{fragments/admin-layout :: sidebar}"></nav>
+            
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Products</h1>
+                    <a th:href="@{/admin/products/add}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-plus-lg"></i> Add New Product
+                    </a>
+                </div>
+                
+                <div th:replace="~{fragments/admin-layout :: alerts}"></div>
+                
+                <div class="table-responsive bg-white rounded shadow-sm">
+                    <table class="table table-striped table-hover m-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Model</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products}">
+                                <td th:text="${product.id}">1</td>
+                                <td>
+                                    <img th:if="${product.image != null}" th:src="${product.image}" alt="Product" style="height: 40px; width: 40px; object-fit: cover;" class="rounded">
+                                </td>
+                                <td th:text="${product.name}">Product Name</td>
+                                <td th:text="${product.model}">Model</td>
+                                <td th:text="${'$' + product.price}">$0.00</td>
+                                <td th:text="${product.stock}">0</td>
+                                <td>
+                                    <span class="badge bg-success" th:if="${product.status}">Active</span>
+                                    <span class="badge bg-danger" th:unless="${product.status}">Inactive</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <form th:action="@{/admin/products/delete/{id}(id=${product.id})}" method="post" class="d-inline" onsubmit="return confirm('Delete this product?');">
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/admin-layout :: scripts}"></div>
+</body>
+</html>

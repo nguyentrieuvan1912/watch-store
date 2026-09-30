@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Products')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div class="row">
+            <!-- Filter Sidebar -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Search & Filter</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/products}" method="get">
+                            <div class="mb-3">
+                                <label for="keyword" class="form-label">Keyword</label>
+                                <input type="text" class="form-control" id="keyword" name="keyword" th:value="${param.keyword}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="categoryId" class="form-label">Category</label>
+                                <select class="form-select" id="categoryId" name="categoryId">
+                                    <option value="">All Categories</option>
+                                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${param.categoryId != null and param.categoryId[0] == cat.id.toString()}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="brandId" class="form-label">Brand</label>
+                                <select class="form-select" id="brandId" name="brandId">
+                                    <option value="">All Brands</option>
+                                    <option th:each="brnd : ${brands}" th:value="${brnd.id}" th:text="${brnd.name}" th:selected="${param.brandId != null and param.brandId[0] == brnd.id.toString()}"></option>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                <a th:href="@{/products}" class="btn btn-outline-secondary">Clear</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="col-md-9">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div th:if="${#lists.isEmpty(products)}" class="col-12 text-center py-5">
+                        <h4 class="text-muted">No products found.</h4>
+                    </div>
+                    <div class="col" th:each="product : ${products}">
+                        <div class="card h-100 shadow-sm">
+                            <img th:if="${product.image != null}" th:src="${product.image}" class="card-img-top" alt="Watch Image" style="height: 250px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title text-truncate" th:text="${product.name}">Watch Name</h5>
+                                <p class="card-text text-danger fw-bold" th:text="${'$' + product.price}">$0.00</p>
+                                <p class="card-text"><small class="text-muted" th:text="${product.brand.name}">Brand</small></p>
+                            </div>
+                            <div class="card-footer bg-white border-top-0 d-grid">
+                                <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline-dark">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>

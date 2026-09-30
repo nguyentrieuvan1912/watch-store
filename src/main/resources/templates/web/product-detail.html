@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head(${product.name})}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <img th:if="${product.image != null}" th:src="${product.image}" class="img-fluid rounded shadow" alt="Product Image">
+                <div th:unless="${product.image != null}" class="bg-secondary text-white d-flex align-items-center justify-content-center rounded" style="height: 400px;">
+                    <span>No Image Available</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h2 th:text="${product.name}">Product Name</h2>
+                <h4 class="text-muted mb-3" th:text="${product.model}">Model Number</h4>
+                <h3 class="text-danger fw-bold mb-4" th:text="${'$' + product.price}">$0.00</h3>
+                
+                <div class="mb-4">
+                    <span th:if="${product.stock > 0}" class="badge bg-success fs-6"><i class="bi bi-check-circle"></i> In Stock (<span th:text="${product.stock}"></span>)</span>
+                    <span th:unless="${product.stock > 0}" class="badge bg-danger fs-6"><i class="bi bi-x-circle"></i> Out of Stock</span>
+                </div>
+                
+                <form th:action="@{/cart/add}" method="post" class="mb-5 d-flex gap-2 align-items-center" th:if="${product.stock > 0}">
+                    <input type="hidden" name="productId" th:value="${product.id}">
+                    <label for="quantity" class="form-label mb-0 fw-bold">Qty:</label>
+                    <input type="number" id="quantity" name="quantity" class="form-control" style="width: 80px;" value="1" min="1" th:max="${product.stock}">
+                    <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-cart-plus"></i> Add to Cart</button>
+                </form>
+                
+                <h5>Specifications</h5>
+                <table class="table table-striped border">
+                    <tbody>
+                        <tr><th>Brand</th><td th:text="${product.brand.name}"></td></tr>
+                        <tr><th>Category</th><td th:text="${product.category.name}"></td></tr>
+                        <tr><th>Gender</th><td th:text="${product.gender}"></td></tr>
+                        <tr><th>Movement</th><td th:text="${product.movement}"></td></tr>
+                        <tr><th>Case Material</th><td th:text="${product.caseMaterial}"></td></tr>
+                        <tr><th>Strap Material</th><td th:text="${product.strapMaterial}"></td></tr>
+                        <tr><th>Water Resistance</th><td th:text="${product.waterResistance}"></td></tr>
+                        <tr><th>Warranty</th><td th:text="${product.warranty}"></td></tr>
+                    </tbody>
+                </table>
+                
+                <div class="mt-4">
+                    <h5>Description</h5>
+                    <p th:text="${product.description}"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>
