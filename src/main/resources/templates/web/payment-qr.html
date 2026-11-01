@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Thanh toán đơn hàng qua VietQR')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Header Card -->
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
+                    <div class="bg-primary text-white p-4 text-center" style="background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);">
+                        <div class="d-inline-flex p-3 rounded-circle bg-white text-primary mb-3 shadow-sm">
+                            <i class="bi bi-qr-code-scan display-5"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">Thanh toán chuyển khoản VietQR</h3>
+                        <p class="mb-0 text-white-50">Mã đơn hàng: <span class="fw-bold text-white" th:text="'#' + ${order.id}">#1</span> | Tổng tiền: <span class="fw-bold text-warning" th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</span></p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <div class="row g-4 align-items-center">
+                            <!-- Left: VietQR Image -->
+                            <div class="col-md-5 text-center">
+                                <div class="p-3 bg-white border rounded-4 shadow-sm position-relative d-inline-block">
+                                    <img th:src="${vietQrUrl}" 
+                                         alt="Mã VietQR Chuyển khoản" 
+                                         class="img-fluid rounded-3" 
+                                         style="max-width: 250px; width: 100%; height: auto;"
+                                         onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent('BIDV-0777505730-WATCH' + ${order.id});">
+                                    <div class="mt-2 text-center">
+                                        <span class="badge bg-danger-subtle text-danger border border-danger rounded-pill px-3 py-2 small">
+                                            <span class="spinner-grow spinner-grow-sm me-1" role="status" aria-hidden="true" style="width: 8px; height: 8px;"></span>
+                                            Đang chờ quét mã...
+                                        </span>
+                                    </div>
+                                </div>
+                                <p class="text-muted small mt-2 mb-0">Mở ứng dụng Ngân hàng hoặc Ví điện tử để quét mã thanh toán tức thì.</p>
+                            </div>
+
+                            <!-- Right: Bank Info Table -->
+                            <div class="col-md-7">
+                                <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-bank me-2 text-primary"></i>Thông tin tài khoản nhận tiền</h5>
+                                
+                                <ul class="list-group list-group-flush border rounded-3 mb-4">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                                        <span class="text-muted">Ngân hàng:</span>
+                                        <span class="fw-bold text-dark" th:text="${bankName}">BIDV</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                                        <span class="text-muted">Chủ tài khoản:</span>
+                                        <span class="fw-bold text-dark text-uppercase" th:text="${accountName}">WATCH STORE</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                                        <span class="text-muted">Số tài khoản:</span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="fw-bold fs-6 text-primary" id="stkValue" th:text="${accountNo}">0777505730</span>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 rounded" onclick="copyText('stkValue', this)" title="Sao chép số tài khoản">
+                                                <i class="bi bi-clipboard"></i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                                        <span class="text-muted">Số tiền thanh toán:</span>
+                                        <span class="fw-bold fs-5 text-danger" th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-3 bg-light">
+                                        <span class="text-muted">Nội dung chuyển khoản:</span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="fw-bold text-dark badge bg-warning text-dark fs-6" id="transferContentValue" th:text="${transferContent}">WATCH1</span>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 rounded" onclick="copyText('transferContentValue', this)" title="Sao chép nội dung">
+                                                <i class="bi bi-clipboard"></i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                                <div class="alert alert-warning py-2 px-3 small border-0 bg-warning-subtle text-dark rounded-3 mb-0">
+                                    <i class="bi bi-info-circle-fill me-1 text-warning"></i>
+                                    Vui lòng nhập <strong>chính xác</strong> nội dung chuyển khoản để hệ thống tự động ghi nhận thanh toán nhanh chóng.
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Simulated Action Buttons (Rule #11) -->
+                        <div class="bg-light p-4 rounded-4 border">
+                            <h6 class="fw-bold text-secondary text-uppercase mb-3 small text-center">
+                                <i class="bi bi-gear-fill me-1"></i> Bảng điều khiển giả lập thanh toán (Simulated Payment Sandbox)
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-7">
+                                    <form th:action="@{/checkout/payment-qr/{id}/confirm(id=${order.id})}" method="post">
+                                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold py-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bi bi-check-circle-fill fs-5"></i>
+                                            <span>Xác nhận đã thanh toán thành công</span>
+                                        </button>
+                                    </form>
+                                    <small class="text-muted d-block text-center mt-1">Giả lập thanh toán thành công: Cập nhật Payment = PAID & Order = CONFIRMED.</small>
+                                </div>
+                                <div class="col-md-5">
+                                    <form th:action="@{/checkout/payment-qr/{id}/cancel(id=${order.id})}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn hủy giao dịch này? Đơn hàng sẽ bị hủy và sản phẩm được hoàn lại kho.');">
+                                        <button type="submit" class="btn btn-outline-danger btn-lg w-100 fw-semibold py-3 d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bi bi-x-circle fs-5"></i>
+                                            <span>Hủy giao dịch / Thất bại</span>
+                                        </button>
+                                    </form>
+                                    <small class="text-muted d-block text-center mt-1">Hủy đơn & hoàn lại tồn kho.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a th:href="@{/orders}" class="text-decoration-none text-secondary small">
+                                <i class="bi bi-arrow-left me-1"></i> Quay về danh sách đơn hàng
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+
+    <script>
+        function copyText(elementId, btn) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const text = el.innerText.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check2 text-success"></i>';
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                }, 2000);
+            }).catch(err => {
+                console.error('Không thể sao chép:', err);
+            });
+        }
+    </script>
+</body>
+</html>

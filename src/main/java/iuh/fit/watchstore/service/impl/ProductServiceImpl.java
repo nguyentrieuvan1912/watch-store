@@ -1,21 +1,23 @@
 package iuh.fit.watchstore.service.impl;
 
 import iuh.fit.watchstore.entity.Product;
-import iuh.fit.watchstore.exception.InvalidOperationException;
 import iuh.fit.watchstore.exception.ResourceNotFoundException;
 import iuh.fit.watchstore.repository.OrderDetailRepository;
 import iuh.fit.watchstore.repository.ProductRepository;
 import iuh.fit.watchstore.service.ProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final OrderDetailRepository orderDetailRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository, OrderDetailRepository orderDetailRepository) {
+        this.productRepository = productRepository;
+        this.orderDetailRepository = orderDetailRepository;
+    }
 
     @Override
     public List<Product> getAllProducts() {

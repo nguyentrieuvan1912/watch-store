@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('So sánh sản phẩm')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/products}">Sản phẩm</a></li>
+                <li class="breadcrumb-item active" aria-current="page">So sánh sản phẩm</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+            <div>
+                <h2 class="fw-bold mb-1"><i class="bi bi-arrow-left-right text-primary me-2"></i>So sánh thông số kỹ thuật</h2>
+                <p class="text-muted mb-0" th:if="${!#lists.isEmpty(products)}" 
+                   th:text="'Đang so sánh ' + ${#lists.size(products)} + '/3 sản phẩm được chọn.'">
+                   Đang so sánh 0/3 sản phẩm
+                </p>
+            </div>
+            <div class="d-flex gap-2" th:if="${!#lists.isEmpty(products)}">
+                <a th:if="${#lists.size(products) < 3}" th:href="@{/products}" class="btn btn-outline-primary">
+                    <i class="bi bi-plus-circle me-1"></i> Chọn thêm sản phẩm
+                </a>
+                <a th:href="@{/compare/clear}" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ danh sách so sánh?');">
+                    <i class="bi bi-trash me-1"></i> Xóa tất cả
+                </a>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(products)}" class="card border-0 shadow-sm text-center py-5">
+            <div class="card-body py-5">
+                <i class="bi bi-arrow-left-right text-muted display-3 mb-3"></i>
+                <h4 class="fw-bold text-secondary mb-2">Chưa có sản phẩm nào trong danh sách so sánh</h4>
+                <p class="text-muted mb-4">Bạn có thể chọn tối đa 3 sản phẩm để so sánh đối chiếu chi tiết thông số kỹ thuật.</p>
+                <a th:href="@{/products}" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-grid me-2"></i>Khám phá danh sách sản phẩm
+                </a>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div th:unless="${#lists.isEmpty(products)}" class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0 text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th style="width: 220px;" class="text-start ps-3 align-middle">Thông số kỹ thuật</th>
+                                <th th:each="product : ${products}" style="min-width: 250px;" class="position-relative p-3">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <a th:href="@{/compare/remove/{id}(id=${product.id})}" 
+                                           class="btn btn-sm btn-outline-light rounded-circle" 
+                                           title="Xóa khỏi so sánh">
+                                            <i class="bi bi-x-lg"></i>
+                                        </a>
+                                    </div>
+                                    <a th:href="@{/products/{id}(id=${product.id})}" class="text-white text-decoration-none">
+                                        <img th:if="${product.image != null}" th:src="${product.image}" 
+                                             class="rounded bg-white p-2 mb-2 shadow-sm" alt="Ảnh sản phẩm" 
+                                             style="height: 180px; width: 100%; object-fit: contain;">
+                                        <div th:unless="${product.image != null}" class="bg-secondary text-white rounded d-flex align-items-center justify-content-center mb-2" style="height: 180px;">
+                                            <span>Không có ảnh</span>
+                                        </div>
+                                        <h6 class="fw-bold text-truncate mb-1" th:text="${product.name}" th:title="${product.name}">Tên sản phẩm</h6>
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Giá bán -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Giá bán</th>
+                                <td th:each="product : ${products}" class="fw-bold text-danger fs-5">
+                                    <span th:text="${product.price != null ? #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</span>
+                                </td>
+                            </tr>
+                            <!-- Thương hiệu -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Thương hiệu</th>
+                                <td th:each="product : ${products}" class="fw-semibold text-primary" 
+                                    th:text="${product.brand != null ? product.brand.name : '-'}">
+                                </td>
+                            </tr>
+                            <!-- Danh mục -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Danh mục</th>
+                                <td th:each="product : ${products}" 
+                                    th:text="${product.category != null ? product.category.name : '-'}">
+                                </td>
+                            </tr>
+                            <!-- Mã Model -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Mã Model</th>
+                                <td th:each="product : ${products}" class="fw-mono" th:text="${product.model}"></td>
+                            </tr>
+                            <!-- Giới tính -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Giới tính</th>
+                                <td th:each="product : ${products}" th:text="${product.gender != null ? product.gender : '-'}"></td>
+                            </tr>
+                            <!-- Loại máy -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Loại máy (Movement)</th>
+                                <td th:each="product : ${products}" class="fw-semibold" th:text="${product.movement != null ? product.movement : '-'}"></td>
+                            </tr>
+                            <!-- Chất liệu vỏ -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Chất liệu vỏ</th>
+                                <td th:each="product : ${products}" th:text="${product.caseMaterial != null ? product.caseMaterial : '-'}"></td>
+                            </tr>
+                            <!-- Chất liệu dây -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Chất liệu dây</th>
+                                <td th:each="product : ${products}" th:text="${product.strapMaterial != null ? product.strapMaterial : '-'}"></td>
+                            </tr>
+                            <!-- Độ chống nước -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Độ chống nước</th>
+                                <td th:each="product : ${products}">
+                                    <span class="badge bg-info-subtle text-info-emphasis border border-info px-2 py-1" 
+                                          th:text="${product.waterResistance != null ? product.waterResistance : '-'}">-</span>
+                                </td>
+                            </tr>
+                            <!-- Bảo hành -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Chế độ bảo hành</th>
+                                <td th:each="product : ${products}" th:text="${product.warranty != null ? product.warranty : '12 tháng chính hãng'}"></td>
+                            </tr>
+                            <!-- Tình trạng hàng -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Tình trạng tồn kho</th>
+                                <td th:each="product : ${products}">
+                                    <span th:if="${product.stock > 0}" class="badge bg-success-subtle text-success border border-success px-2 py-1">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Còn hàng (<span th:text="${product.stock}"></span>)
+                                    </span>
+                                    <span th:unless="${product.stock > 0}" class="badge bg-danger-subtle text-danger border border-danger px-2 py-1">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Hết hàng
+                                    </span>
+                                </td>
+                            </tr>
+                            <!-- Thao tác mua hàng -->
+                            <tr>
+                                <th class="text-start ps-3 table-light">Thao tác</th>
+                                <td th:each="product : ${products}" class="p-3">
+                                    <div class="d-flex flex-column gap-2" th:if="${product.stock > 0}">
+                                        <form th:action="@{/cart/buy-now}" method="post">
+                                            <input type="hidden" name="productId" th:value="${product.id}">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-danger btn-sm w-100">
+                                                <i class="bi bi-lightning-fill me-1"></i> Mua ngay
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/cart/add}" method="post">
+                                            <input type="hidden" name="productId" th:value="${product.id}">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-outline-primary btn-sm w-100">
+                                                <i class="bi bi-cart-plus me-1"></i> Thêm giỏ hàng
+                                            </button>
+                                        </form>
+                                        <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline-dark btn-sm w-100">
+                                            <i class="bi bi-eye me-1"></i> Xem chi tiết
+                                        </a>
+                                    </div>
+                                    <div th:unless="${product.stock > 0}">
+                                        <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline-secondary btn-sm w-100">
+                                            <i class="bi bi-eye me-1"></i> Xem chi tiết
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>

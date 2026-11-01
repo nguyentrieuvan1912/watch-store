@@ -13,19 +13,27 @@ import iuh.fit.watchstore.repository.OrderRepository;
 import iuh.fit.watchstore.repository.ProductRepository;
 import iuh.fit.watchstore.service.NotificationService;
 import iuh.fit.watchstore.service.OrderService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductRepository productRepository;
     private final NotificationService notificationService;
+
+    public OrderServiceImpl(OrderRepository orderRepository,
+                            OrderDetailRepository orderDetailRepository,
+                            ProductRepository productRepository,
+                            NotificationService notificationService) {
+        this.orderRepository = orderRepository;
+        this.orderDetailRepository = orderDetailRepository;
+        this.productRepository = productRepository;
+        this.notificationService = notificationService;
+    }
 
     @Override
     @Transactional
@@ -36,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
 
         double totalAmount = 0;
         orderInfo.setStatus(OrderStatus.PENDING);
+        orderInfo.setTotalAmount(0.0);
         Order savedOrder = orderRepository.save(orderInfo);
 
         for (CartItem item : cartItems) {

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Hồ sơ cá nhân')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <h2 class="fw-bold mb-0"><i class="bi bi-person-bounding-box text-primary me-2"></i>Hồ sơ cá nhân</h2>
+        </div>
+
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+
+        <!-- Toast Notification for Profile Update -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+            <div id="profileSuccessToast" class="toast align-items-center text-bg-success border-0 shadow-lg rounded-3" role="alert" aria-live="assertive" aria-atomic="true" th:if="${success != null}">
+                <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill fs-5"></i>
+                        <span th:text="${success}">Cập nhật hồ sơ cá nhân thành công!</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left: Profile Summary Card -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 rounded-4 text-center p-4">
+                    <div class="position-relative d-inline-block mx-auto mb-3">
+                        <img th:src="${user.avatar != null and !#strings.isEmpty(user.avatar) ? user.avatar : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200'}" 
+                             id="avatarPreview"
+                             alt="Avatar" 
+                             class="rounded-circle border border-3 border-primary shadow-sm object-fit-cover" 
+                             style="width: 130px; height: 130px; object-fit: cover;"
+                             onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200';">
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1" th:text="${user.fullName}">Tên người dùng</h5>
+                    <p class="text-muted small mb-2" th:text="${user.email}">user@example.com</p>
+                    <div class="mb-3">
+                        <span class="badge bg-primary-subtle text-primary border border-primary px-3 py-1 rounded-pill" th:text="${user.role}">CUSTOMER</span>
+                    </div>
+
+                    <hr class="my-3">
+
+                    <div class="d-grid gap-2 text-start">
+                        <a th:href="@{/orders}" class="btn btn-outline-secondary btn-sm py-2 rounded-3 text-start">
+                            <i class="bi bi-bag-check me-2 text-primary"></i>Đơn hàng của tôi
+                        </a>
+                        <a th:href="@{/cart}" class="btn btn-outline-secondary btn-sm py-2 rounded-3 text-start">
+                            <i class="bi bi-cart3 me-2 text-danger"></i>Giỏ hàng hiện tại
+                        </a>
+                        <a th:href="@{/products}" class="btn btn-outline-secondary btn-sm py-2 rounded-3 text-start">
+                            <i class="bi bi-grid me-2 text-success"></i>Mua sắm đồng hồ
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Edit Profile Form -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2 text-warning"></i>Cập nhật thông tin</h5>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        <form th:action="@{/profile/update}" method="post">
+                            <!-- Email (Read-Only) -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-semibold">Địa chỉ Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control bg-light" id="email" th:value="${user.email}" readonly disabled>
+                                </div>
+                                <small class="text-muted">Email định danh tài khoản và không thể thay đổi.</small>
+                            </div>
+
+                            <!-- Full Name & Phone -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="fullName" class="form-label fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" class="form-control" id="fullName" name="fullName" th:value="${user.fullName}" required placeholder="Nhập họ và tên...">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                        <input type="tel" class="form-control" id="phone" name="phone" th:value="${user.phone}" pattern="[0-9]{10,11}" title="Vui lòng nhập 10-11 số" placeholder="Ví dụ: 0912345678">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Avatar URL -->
+                            <div class="mb-4">
+                                <label for="avatar" class="form-label fw-semibold">Đường dẫn ảnh đại diện (Avatar URL)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                    <input type="url" class="form-control" id="avatar" name="avatar" th:value="${user.avatar}" placeholder="https://example.com/photo.jpg" oninput="updateAvatarPreview(this.value)">
+                                </div>
+                                <small class="text-muted">Dán link ảnh từ Unsplash, Google Photos hoặc bất kỳ nguồn ảnh công khai nào.</small>
+                            </div>
+
+                            <!-- Hierarchical Address Fields -->
+                            <div class="p-3 bg-light rounded-3 border mb-4">
+                                <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-geo-alt me-1 text-danger"></i>Địa chỉ mặc định (Phân cấp hành chính)</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="provinceSelect" class="form-label small fw-semibold">Tỉnh / Thành phố</label>
+                                        <select class="form-select form-select-sm" id="provinceSelect" name="province">
+                                            <option value="">-- Chọn Tỉnh / TP --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="districtSelect" class="form-label small fw-semibold">Quận / Huyện</label>
+                                        <select class="form-select form-select-sm" id="districtSelect" name="district" disabled>
+                                            <option value="">-- Chọn Quận / Huyện --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="wardSelect" class="form-label small fw-semibold">Phường / Xã</label>
+                                        <select class="form-select form-select-sm" id="wardSelect" name="ward" disabled>
+                                            <option value="">-- Chọn Phường / Xã --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="streetAddress" class="form-label small fw-semibold">Địa chỉ chi tiết / Số nhà, tên đường</label>
+                                        <input type="text" class="form-control form-control-sm" id="streetAddress" name="streetAddress" th:value="${user.streetAddress != null ? user.streetAddress : user.address}" placeholder="Số nhà, ngõ/hẻm, tên đường, tên tòa nhà...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2">
+                                <a th:href="@{/}" class="btn btn-outline-secondary px-4 rounded-pill">Hủy bỏ</a>
+                                <button type="submit" class="btn btn-primary px-4 fw-bold rounded-pill shadow-sm d-flex align-items-center gap-2">
+                                    <i class="bi bi-check2-circle fs-5"></i>
+                                    <span>Lưu thay đổi</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+
+    <script th:inline="javascript">
+        /* Server pre-filled address values */
+        const savedProvince = /*[[${user.province}]]*/ '';
+        const savedDistrict = /*[[${user.district}]]*/ '';
+        const savedWard = /*[[${user.ward}]]*/ '';
+
+        function updateAvatarPreview(url) {
+            const preview = document.getElementById('avatarPreview');
+            if (!preview) return;
+            if (url && url.trim().length > 5) {
+                preview.src = url.trim();
+            } else {
+                preview.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200';
+            }
+        }
+
+        // Vietnam Administrative Dataset (Built-in offline fallback)
+        const vnLocations = {
+            "TP. Hồ Chí Minh": {
+                "Quận 1": ["Phường Bến Nghé", "Phường Bến Thành", "Phường Cầu Kho", "Phường Cầu Ông Lãnh", "Phường Cô Giang", "Phường Đa Kao", "Phường Nguyễn Cư Trinh", "Phường Nguyễn Thái Bình", "Phường Phạm Ngũ Lão", "Phường Tân Định"],
+                "Quận 3": ["Phường Võ Thị Sáu", "Phường 1", "Phường 2", "Phường 3", "Phường 4", "Phường 5", "Phường 9", "Phường 11", "Phường 14"],
+                "Quận 5": ["Phường 1", "Phường 2", "Phường 3", "Phường 4", "Phường 5", "Phường 6", "Phường 7", "Phường 8", "Phường 9", "Phường 10", "Phường 11", "Phường 12", "Phường 13", "Phường 14"],
+                "Quận 7": ["Phường Tân Thuận Đông", "Phường Tân Thuận Tây", "Phường Tân Kiểng", "Phường Tân Hưng", "Phường Bình Thuận", "Phường Tân Quy", "Phường Phú Thuận", "Phường Tân Phú", "Phường Tân Phong", "Phường Phú Mỹ"],
+                "Quận 10": ["Phường 1", "Phường 2", "Phường 4", "Phường 6", "Phường 8", "Phường 9", "Phường 10", "Phường 12", "Phường 13", "Phường 14", "Phường 15"],
+                "Quận Bình Thạnh": ["Phường 1", "Phường 2", "Phường 3", "Phường 5", "Phường 6", "Phường 7", "Phường 11", "Phường 12", "Phường 13", "Phường 14", "Phường 15", "Phường 17", "Phường 19", "Phường 21", "Phường 22", "Phường 24", "Phường 25", "Phường 26", "Phường 27", "Phường 28"],
+                "Quận Gò Vấp": ["Phường 1", "Phường 3", "Phường 5", "Phường 6", "Phường 7", "Phường 8", "Phường 9", "Phường 10", "Phường 11", "Phường 12", "Phường 14", "Phường 15", "Phường 16", "Phường 17"],
+                "Quận Tân Bình": ["Phường 1", "Phường 2", "Phường 3", "Phường 4", "Phường 5", "Phường 6", "Phường 7", "Phường 8", "Phường 9", "Phường 10", "Phường 11", "Phường 12", "Phường 13", "Phường 14", "Phường 15"],
+                "TP. Thủ Đức": ["Phường Thảo Điền", "Phường An Phú", "Phường Bình An", "Phường Bình Trưng Đông", "Phường Bình Trưng Tây", "Phường Cát Lái", "Phường Thạnh Mỹ Lợi", "Phường Linh Tây", "Phường Linh Trung", "Phường Hiệp Bình Chánh", "Phường Tam Bình"]
+            },
+            "Hà Nội": {
+                "Quận Hoàn Kiếm": ["Phường Hàng Bạc", "Phường Hàng Bài", "Phường Hàng Bông", "Phường Hàng Buồm", "Phường Hàng Đào", "Phường Hàng Gai", "Phường Tràng Tiền", "Phường Lý Thái Tổ", "Phường Phan Chu Trinh"],
+                "Quận Ba Đình": ["Phường Cống Vị", "Phường Điện Biên", "Phường Đội Cấn", "Phường Giảng Võ", "Phường Kim Mã", "Phường Liễu Giai", "Phường Ngọc Hà", "Phường Quán Thánh", "Phường Thành Công"],
+                "Quận Đống Đa": ["Phường Cát Linh", "Phường Hàng Bột", "Phường Khâm Thiên", "Phường Láng Hạ", "Phường Láng Thượng", "Phường Nam Đồng", "Phường Ô Chợ Dừa", "Phường Quốc Tử Giám", "Phường Văn Miếu"],
+                "Quận Cầu Giấy": ["Phường Dịch Vọng", "Phường Dịch Vọng Hậu", "Phường Mai Dịch", "Phường Nghĩa Đô", "Phường Nghĩa Tân", "Phường Quan Hoa", "Phường Trung Hòa", "Phường Yên Hòa"],
+                "Quận Hai Bà Trưng": ["Phường Bách Khoa", "Phường Bạch Đằng", "Phường Bạch Mai", "Phường Cầu Dền", "Phường Đống Mác", "Phường Đồng Nhân", "Phường Lê Đại Hành", "Phường Minh Khai", "Phường Trương Định"],
+                "Quận Tây Hồ": ["Phường Bưởi", "Phường Nhật Tân", "Phường Phú Thượng", "Phường Quảng An", "Phường Thụy Khuê", "Phường Tứ Liên", "Phường Xuân La", "Phường Yên Phụ"],
+                "Quận Nam Từ Liêm": ["Phường Cầu Diễn", "Phường Mỹ Đình 1", "Phường Mỹ Đình 2", "Phường Phú Đô", "Phường Mễ Trì", "Phường Trung Văn", "Phường Tây Mỗ", "Phường Đại Mỗ"],
+                "Quận Hà Đông": ["Phường Quang Trung", "Phường Nguyễn Trãi", "Phường Hà Cầu", "Phường Vạn Phúc", "Phường Yết Kiêu", "Phường Mộ Lao", "Phường Văn Quán", "Phường La Khê"]
+            },
+            "Đà Nẵng": {
+                "Quận Hải Châu": ["Phường Hải Châu 1", "Phường Hải Châu 2", "Phường Thạch Thang", "Phường Thanh Bình", "Phường Thuận Phước", "Phường Hòa Thuận Đông", "Phường Hòa Thuận Tây", "Phường Nam Dương", "Phường Phước Ninh", "Phường Bình Thuận"],
+                "Quận Thanh Khê": ["Phường Tam Thuận", "Phường Thanh Khê Tây", "Phường Thanh Khê Đông", "Phường Xuân Hà", "Phường Tân Chính", "Phường Chính Gián", "Phường Vĩnh Trung", "Phường Thạc Gián", "Phường An Khê", "Phường Hòa Khê"],
+                "Quận Sơn Trà": ["Phường An Hải Bắc", "Phường An Hải Đông", "Phường An Hải Tây", "Phường Mân Thái", "Phường Nại Hiên Đông", "Phường Phước Mỹ", "Phường Thọ Quang"],
+                "Quận Ngũ Hành Sơn": ["Phường Mỹ An", "Phường Khuê Mỹ", "Phường Hoà Hải", "Phường Hoà Quý"],
+                "Quận Cẩm Lệ": ["Phường Khuê Trung", "Phường Hòa Phát", "Phường Hòa An", "Phường Hòa Thọ Tây", "Phường Hòa Thọ Đông", "Phường Hòa Xuân"]
+            },
+            "Hải Phòng": {
+                "Quận Hồng Bàng": ["Phường Hoàng Văn Thụ", "Phường Minh Khai", "Phường Phan Bội Châu", "Phường Quán Toan", "Phường Sở Dầu", "Phường Thượng Lý", "Phường Trại Chuối"],
+                "Quận Ngô Quyền": ["Phường Cầu Đất", "Phường Cầu Tre", "Phường Đằng Giang", "Phường Đông Khê", "Phường Gia Viên", "Phường Lạc Viên", "Phường Lạch Tray", "Phường Lê Lợi", "Phường Máy Chai", "Phường Máy Tơ"],
+                "Quận Lê Chân": ["Phường An Biên", "Phường An Dương", "Phường Cát Dài", "Phường Đông Hải", "Phường Dư Hàng", "Phường Dư Hàng Kênh", "Phường Hàng Kênh", "Phường Hồ Nam", "Phường Lam Sơn", "Phường Niệm Nghĩa"]
+            },
+            "Cần Thơ": {
+                "Quận Ninh Kiều": ["Phường An Bình", "Phường An Cư", "Phường An Hòa", "Phường An Khánh", "Phường An Nghiệp", "Phường Hưng Lợi", "Phường Tân An", "Phường Thới Bình", "Phường Xuân Khánh"],
+                "Quận Bình Thủy": ["Phường An Thới", "Phường Bình Thủy", "Phường Bùi Hữu Nghĩa", "Phường Long Hòa", "Phường Long Tuyền", "Phường Thới An Đông", "Phường Trà An", "Phường Trà Nóc"],
+                "Quận Cái Răng": ["Phường Ba Láng", "Phường Hưng Phú", "Phường Hưng Thạnh", "Phường Lê Bình", "Phường Phú Thứ", "Phường Tân Phú"]
+            },
+            "Bình Dương": {
+                "TP. Thủ Dầu Một": ["Phường Chánh Mỹ", "Phường Chánh Nghĩa", "Phường Định Hòa", "Phường Hiệp An", "Phường Hiệp Thành", "Phường Hòa Phú", "Phường Phú Cường", "Phường Phú Hòa", "Phường Phú Lợi", "Phường Phú Mỹ", "Phường Phú Tân", "Phường Phú Thọ", "Phường Tân An", "Phường Tương Bình Hiệp"],
+                "TP. Thuận An": ["Phường An Phú", "Phường An Thạnh", "Phường Bình Chuẩn", "Phường Bình Hòa", "Phường Bình Nhâm", "Phường Hưng Định", "Phường Lái Thiêu", "Phường Thuận Giao", "Phường Vĩnh Phú"],
+                "TP. Dĩ An": ["Phường An Bình", "Phường Bình An", "Phường Bình Thắng", "Phường Dĩ An", "Phường Đông Hòa", "Phường Tân Bình", "Phường Tân Đông Hiệp"]
+            },
+            "Đồng Nai": {
+                "TP. Biên Hòa": ["Phường An Bình", "Phường An Hòa", "Phường Bình Đa", "Phường Bửu Hòa", "Phường Bửu Long", "Phường Hiệp Hòa", "Phường Hóa An", "Phường Hòa Bình", "Phường Hố Nai", "Phường Long Bình", "Phường Long Bình Tân", "Phường Quyết Thắng", "Phường Tam Hiệp", "Phường Tam Hòa", "Phường Tân Biên", "Phường Tân Hạnh", "Phường Tân Hiệp", "Phường Tân Hòa", "Phường Tân Mai", "Phường Tân Phong", "Phường Tân Tiến", "Phường Tân Vạn", "Phường Thanh Bình", "Phường Thống Nhất", "Phường Trảng Dài"],
+                "Huyện Long Thành": ["Thị trấn Long Thành", "Xã An Phước", "Xã Bàu Cạn", "Xã Bình An", "Xã Bình Sơn", "Xã Cẩm Đường", "Xã Lộc An", "Xã Long An", "Xã Long Đức", "Xã Phước Bình", "Xã Phước Thái", "Xã Tam An", "Xã Tân Hiệp"]
+            },
+            "Khánh Hòa": {
+                "TP. Nha Trang": ["Phường Lộc Thọ", "Phường Ngọc Hiệp", "Phường Phước Hải", "Phường Phước Hòa", "Phường Phước Tân", "Phường Phước Tiến", "Phường Phương Sài", "Phường Phương Sơn", "Phường Tân Lập", "Phường Vạn Thắng", "Phường Vạn Thạnh", "Phường Vĩnh Hải", "Phường Vĩnh Hiệp", "Phường Vĩnh Hòa", "Phường Vĩnh Nguyên", "Phường Vĩnh Phước", "Phường Vĩnh Thọ", "Phường Vĩnh Trung", "Phường Vĩnh Trường", "Phường Xương Huân"]
+            },
+            "Bà Rịa - Vũng Tàu": {
+                "TP. Vũng Tàu": ["Phường 1", "Phường 2", "Phường 3", "Phường 4", "Phường 5", "Phường 7", "Phường 8", "Phường 9", "Phường 10", "Phường 11", "Phường 12", "Phường Thắng Nhất", "Phường Thắng Nhì", "Phường Thắng Tam", "Phường Nguyễn An Ninh", "Phường Rạch Dừa", "Xã Long Sơn"],
+                "TP. Bà Rịa": ["Phường Kim Dinh", "Phường Long Hương", "Phường Long Tâm", "Phường Long Toàn", "Phường Phước Hưng", "Phường Phước Hiệp", "Phường Phước Nguyên", "Phường Phước Trung"]
+            }
+        };
+
+        const provinceEl = document.getElementById('provinceSelect');
+        const districtEl = document.getElementById('districtSelect');
+        const wardEl = document.getElementById('wardSelect');
+
+        function populateProvinces() {
+            provinceEl.innerHTML = '<option value="">-- Chọn Tỉnh / TP --</option>';
+            Object.keys(vnLocations).forEach(prov => {
+                const opt = document.createElement('option');
+                opt.value = prov;
+                opt.textContent = prov;
+                if (savedProvince && savedProvince.trim().toLowerCase() === prov.toLowerCase()) {
+                    opt.selected = true;
+                }
+                provinceEl.appendChild(opt);
+            });
+
+            if (provinceEl.value) {
+                populateDistricts(provinceEl.value);
+            }
+        }
+
+        function populateDistricts(selectedProv) {
+            districtEl.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
+            wardEl.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
+            wardEl.disabled = true;
+
+            if (!selectedProv || !vnLocations[selectedProv]) {
+                districtEl.disabled = true;
+                return;
+            }
+
+            districtEl.disabled = false;
+            const districts = vnLocations[selectedProv];
+            Object.keys(districts).forEach(dist => {
+                const opt = document.createElement('option');
+                opt.value = dist;
+                opt.textContent = dist;
+                if (savedDistrict && savedDistrict.trim().toLowerCase() === dist.toLowerCase()) {
+                    opt.selected = true;
+                }
+                districtEl.appendChild(opt);
+            });
+
+            if (districtEl.value) {
+                populateWards(selectedProv, districtEl.value);
+            }
+        }
+
+        function populateWards(selectedProv, selectedDist) {
+            wardEl.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
+            if (!selectedProv || !selectedDist || !vnLocations[selectedProv] || !vnLocations[selectedProv][selectedDist]) {
+                wardEl.disabled = true;
+                return;
+            }
+
+            wardEl.disabled = false;
+            const wards = vnLocations[selectedProv][selectedDist];
+            wards.forEach(w => {
+                const opt = document.createElement('option');
+                opt.value = w;
+                opt.textContent = w;
+                if (savedWard && savedWard.trim().toLowerCase() === w.toLowerCase()) {
+                    opt.selected = true;
+                }
+                wardEl.appendChild(opt);
+            });
+        }
+
+        provinceEl.addEventListener('change', function() {
+            populateDistricts(this.value);
+        });
+
+        districtEl.addEventListener('change', function() {
+            populateWards(provinceEl.value, this.value);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            populateProvinces();
+            const toastEl = document.getElementById('profileSuccessToast');
+            if (toastEl) {
+                const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+                toast.show();
+            }
+        });
+    </script>
+</body>
+</html>

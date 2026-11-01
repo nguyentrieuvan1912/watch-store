@@ -8,7 +8,6 @@ import iuh.fit.watchstore.exception.ResourceNotFoundException;
 import iuh.fit.watchstore.repository.ProductRepository;
 import iuh.fit.watchstore.service.CartService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,10 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
     private static final String CART_SESSION_KEY = "CART_SESSION";
     private final ProductRepository productRepository;
+
+    public CartServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -61,6 +63,7 @@ public class CartServiceImpl implements CartService {
 
         if (existingItemOpt.isPresent()) {
             existingItemOpt.get().setQuantity(totalRequestedQuantity);
+            existingItemOpt.get().setStock(product.getStock());
         } else {
             CartItem newItem = CartItem.builder()
                     .productId(product.getId())
@@ -68,6 +71,7 @@ public class CartServiceImpl implements CartService {
                     .price(product.getPrice())
                     .quantity(quantity)
                     .image(product.getImage())
+                    .stock(product.getStock())
                     .build();
             cart.add(newItem);
         }

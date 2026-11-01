@@ -6,16 +6,19 @@ import iuh.fit.watchstore.exception.ResourceNotFoundException;
 import iuh.fit.watchstore.repository.CategoryRepository;
 import iuh.fit.watchstore.repository.ProductRepository;
 import iuh.fit.watchstore.service.CategoryService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ProductRepository productRepository) {
+        this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+    }
 
     @Override
     public List<Category> getAllCategories() {

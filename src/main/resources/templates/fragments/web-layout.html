@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,49 +8,98 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .product-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+        .card-link {
+            cursor: pointer;
+            color: inherit;
+        }
+        .card-link:hover .card-title {
+            color: #0d6efd;
+        }
+        /* Filter chips styling */
+        .filter-chip {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 0.88rem;
+            white-space: nowrap;
+        }
+        .filter-chip:hover {
+            transform: translateY(-1px);
+        }
+        /* Floating compare bar styling */
+        #compareCollapsedBadge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+        }
+        .compare-slot {
+            transition: all 0.2s ease;
+        }
+        .compare-slot.empty-slot:hover {
+            border-color: #0d6efd !important;
+            background-color: #eff6ff !important;
+        }
+    </style>
 </head>
 <body>
 
 <header th:fragment="navbar">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm border-bottom py-2">
         <div class="container">
-            <a class="navbar-brand" th:href="@{/}"><i class="bi bi-watch"></i> Watch Store</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand fw-bold text-dark fs-4" th:href="@{/}"><i class="bi bi-watch text-primary"></i> Watch Store</a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}">Home</a>
+                        <a class="nav-link text-dark fw-semibold" th:href="@{/}"><i class="bi bi-house-door me-1 text-primary"></i> Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/products}">Products</a>
+                        <a class="nav-link text-dark fw-semibold" th:href="@{/products}"><i class="bi bi-grid me-1 text-primary"></i> Sản phẩm</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-semibold" th:href="@{/compare}">
+                            <i class="bi bi-arrow-left-right me-1 text-primary"></i> So sánh
+                            <span id="navbarCompareBadge" class="badge bg-danger rounded-pill" 
+                                  th:classappend="${session.COMPARE_PRODUCT_IDS == null or #lists.isEmpty(session.COMPARE_PRODUCT_IDS)} ? 'd-none' : ''"
+                                  th:text="${session.COMPARE_PRODUCT_IDS != null ? #lists.size(session.COMPARE_PRODUCT_IDS) : 0}">0</span>
+                        </a>
                     </li>
                 </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/cart}">
-                            <i class="bi bi-cart3"></i> Cart
-                            <span class="badge bg-danger rounded-pill" th:if="${session.CART_SESSION != null}" th:text="${#lists.size(session.CART_SESSION)}">0</span>
+                <ul class="navbar-nav align-items-lg-center">
+                    <li class="nav-item me-2">
+                        <a class="nav-link text-dark fw-semibold" th:href="@{/cart}">
+                            <i class="bi bi-cart3 text-primary fs-5 align-middle"></i> Giỏ hàng
+                            <span id="navbarCartBadge" class="badge bg-danger rounded-pill" 
+                                  th:classappend="${session.CART_SESSION == null or #lists.isEmpty(session.CART_SESSION)} ? 'd-none' : ''" 
+                                  th:text="${session.CART_SESSION != null ? #aggregates.sum(session.CART_SESSION.![quantity]) : 0}">0</span>
                         </a>
                     </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link" th:href="@{/login}">Login</a>
+                        <a class="nav-link text-dark fw-semibold" th:href="@{/login}"><i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link" th:href="@{/register}">Register</a>
+                        <a class="btn btn-primary btn-sm rounded-pill px-3 ms-lg-2 fw-semibold" th:href="@{/register}"><i class="bi bi-person-plus me-1"></i> Đăng ký</a>
                     </li>
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i> <span sec:authentication="name">User</span>
+                        <a class="nav-link dropdown-toggle text-dark fw-semibold d-flex align-items-center gap-1" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle fs-5 text-primary"></i> <span sec:authentication="name">Tài khoản</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" th:href="@{/admin/dashboard}">Admin Dashboard</a></li>
-                            <li sec:authorize="hasRole('CUSTOMER')"><a class="dropdown-item" th:href="@{/orders}">My Orders</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
+                            <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item py-2" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2 me-2 text-danger"></i> Trang quản trị</a></li>
+                            <li><a class="dropdown-item py-2" th:href="@{/profile}"><i class="bi bi-person-gear me-2 text-primary"></i> Hồ sơ cá nhân</a></li>
+                            <li><a class="dropdown-item py-2" th:href="@{/orders}"><i class="bi bi-bag-check me-2 text-success"></i> Đơn hàng của tôi</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form th:action="@{/logout}" method="post">
-                                    <button type="submit" class="dropdown-item">Logout</button>
+                                    <button type="submit" class="dropdown-item text-danger py-2"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</button>
                                 </form>
                             </li>
                         </ul>
@@ -62,22 +111,356 @@
 </header>
 
 <div th:fragment="alerts" class="container mt-3">
-    <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
-        <span th:text="${success}"></span>
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
-        <span th:text="${error}"></span>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 </div>
 
-<footer th:fragment="footer" class="bg-dark text-white text-center py-4 mt-5">
+<footer th:fragment="footer" class="bg-dark text-white text-center py-4 mt-5 border-top position-relative">
     <div class="container">
-        <p class="mb-0">&copy; 2026 Watch Store. All rights reserved.</p>
+        <p class="mb-1">&copy; 2026 Watch Store. Tất cả các quyền được bảo lưu.</p>
+        <small class="text-white-50">Hệ thống phân phối và bán lẻ đồng hồ chính hãng cao cấp.</small>
     </div>
+
+    <!-- Floating Compare Bar (CellphoneS Standard) -->
+    <div id="floatingCompareContainer" class="d-none">
+        <!-- 1. Collapsed Badge (Góc dưới bên trái) -->
+        <div id="compareCollapsedBadge" class="position-fixed shadow-lg d-flex align-items-center gap-2 px-3 py-2 bg-white rounded-pill border"
+             style="bottom: 24px; left: 24px; z-index: 1050; cursor: pointer;"
+             onclick="expandCompareBar()"
+             title="Bấm để mở rộng thanh so sánh">
+            <span class="badge bg-danger rounded-circle p-1 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
+                <i class="bi bi-arrow-left-right text-white" style="font-size: 12px;"></i>
+            </span>
+            <span class="fw-bold text-dark fs-6">So sánh (<span id="compareCollapsedCount">0</span>)</span>
+            <i class="bi bi-chevron-up text-secondary ms-1"></i>
+        </div>
+
+        <!-- 2. Expanded Floating Bar (Thanh card nổi đáy màn hình) -->
+        <div id="compareExpandedBar" class="position-fixed shadow-lg bg-white border rounded-4 p-3 d-none"
+             style="bottom: 16px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1020px; z-index: 1055; box-shadow: 0 12px 35px rgba(0,0,0,0.2) !important;">
+            <div class="row align-items-center g-3">
+                <!-- Left: 3 Product Comparison Slots -->
+                <div class="col-12 col-lg-8">
+                    <div class="d-flex align-items-center gap-2 gap-sm-3" id="compareSlotsContainer">
+                        <!-- Slots will be rendered here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Right: Actions & Status -->
+                <div class="col-12 col-lg-4 text-lg-end d-flex flex-wrap align-items-center justify-content-between justify-content-lg-end gap-2">
+                    <div class="text-start text-lg-end me-lg-2">
+                        <span class="d-block fw-bold text-dark fs-6" id="compareStatusText">Đã chọn 0 sản phẩm</span>
+                        <a href="javascript:void(0)" onclick="clearAllCompare()" class="text-danger small text-decoration-none">
+                            <i class="bi bi-trash3 me-1"></i>Xóa tất cả
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="collapseCompareBar()">
+                            <i class="bi bi-chevron-down me-1"></i>Thu gọn
+                        </button>
+                        <a th:href="@{/compare}" class="btn btn-danger btn-sm rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-1" id="btnGoToCompare">
+                            <span>So sánh ngay</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+        <!-- Add-To-Cart Success Toast (Bootstrap Green) -->
+        <div id="cartLiveToast" class="toast align-items-center text-white bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <i class="bi bi-cart-check-fill text-white fs-5"></i>
+                    <span id="cartToastMessage" class="fw-semibold">Đã thêm sản phẩm vào giỏ hàng!</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+
+        <div id="compareLiveToast" class="toast align-items-center text-white bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2" id="compareToastMessage">
+                    <i class="bi bi-info-circle-fill text-warning fs-5"></i>
+                    <span>Thông báo</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Global Cart & Compare Utilities -->
+    <script>
+        function showCartToast(message, isSuccess = true) {
+            const toastEl = document.getElementById('cartLiveToast');
+            const messageEl = document.getElementById('cartToastMessage');
+            if (!toastEl || !messageEl) {
+                showCompareToast(message, isSuccess);
+                return;
+            }
+            messageEl.textContent = message;
+            if (isSuccess) {
+                toastEl.className = "toast align-items-center text-white bg-success border-0 shadow-lg";
+            } else {
+                toastEl.className = "toast align-items-center text-white bg-danger border-0 shadow-lg";
+            }
+            const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+            toast.show();
+        }
+
+        function updateNavbarCartBadge(count) {
+            const badge = document.getElementById('navbarCartBadge');
+            if (badge) {
+                badge.textContent = count;
+                if (count > 0) {
+                    badge.classList.remove('d-none');
+                } else {
+                    badge.classList.add('d-none');
+                }
+            }
+        }
+
+        function addToCartAjax(productId, quantity = 1, event = null) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            const formData = new FormData();
+            formData.append('productId', productId);
+            formData.append('quantity', quantity);
+
+            fetch('/cart/api/add', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showCartToast(data.message || 'Đã thêm sản phẩm vào giỏ hàng!', true);
+                    updateNavbarCartBadge(data.totalCartItems != null ? data.totalCartItems : data.cartCount);
+                } else {
+                    showCartToast(data.message || 'Không thể thêm sản phẩm!', false);
+                }
+            })
+            .catch(err => {
+                console.error('Lỗi thêm giỏ hàng:', err);
+                showCartToast('Có lỗi xảy ra khi thêm vào giỏ hàng.', false);
+            });
+        }
+        // State
+        let compareProducts = [];
+
+        function showCompareToast(message, isSuccess = true) {
+            const toastEl = document.getElementById('compareLiveToast');
+            const messageEl = document.getElementById('compareToastMessage');
+            if (!toastEl || !messageEl) return;
+            
+            const icon = isSuccess 
+                ? '<i class="bi bi-check-circle-fill text-success fs-5"></i>' 
+                : '<i class="bi bi-exclamation-circle-fill text-warning fs-5"></i>';
+            messageEl.innerHTML = `${icon} <span>${message}</span>`;
+            
+            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+            toast.show();
+        }
+
+        function renderCompareBar(products) {
+            compareProducts = products || [];
+            const count = compareProducts.length;
+            const container = document.getElementById('compareSlotsContainer');
+            const floatingContainer = document.getElementById('floatingCompareContainer');
+
+            if (!container || !floatingContainer) return;
+
+            if (count === 0) {
+                floatingContainer.classList.add('d-none');
+                updateNavbarBadge(0);
+                updateCardButtons([]);
+                return;
+            }
+
+            floatingContainer.classList.remove('d-none');
+            updateNavbarBadge(count);
+
+            // Render slots
+            container.innerHTML = '';
+            const maxSlots = 3;
+            for (let i = 0; i < maxSlots; i++) {
+                if (i < count) {
+                    const p = compareProducts[i];
+                    const slotHtml = `
+                        <div class="compare-slot position-relative bg-light rounded-3 p-2 border d-flex align-items-center gap-2 flex-grow-1" style="min-width: 0; max-width: 33%;">
+                            <button type="button" class="btn btn-sm btn-dark position-absolute top-0 end-0 p-0 rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 20px; height: 20px; transform: translate(30%, -30%); font-size: 11px; z-index: 5;"
+                                    onclick="removeCompareProduct(${p.id})" title="Gỡ sản phẩm">
+                                <i class="bi bi-x"></i>
+                            </button>
+                            <img src="${p.image || ''}" alt="${p.name}" class="rounded bg-white p-1 border" style="width: 44px; height: 44px; object-fit: contain; flex-shrink: 0;" onerror="this.src='https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=100'">
+                            <div class="overflow-hidden" style="min-width: 0;">
+                                <div class="fw-semibold text-truncate small text-dark" title="${p.name}">${p.name}</div>
+                                <div class="text-danger fw-bold" style="font-size: 12px;">${p.formattedPrice || ''}</div>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', slotHtml);
+                } else {
+                    const emptyHtml = `
+                        <div class="compare-slot empty-slot rounded-3 p-2 d-flex align-items-center justify-content-center gap-1 flex-grow-1"
+                             style="border: 2px dashed #cbd5e1; background-color: #f8fafc; height: 60px; cursor: pointer; min-width: 0; max-width: 33%;"
+                             onclick="scrollToProductCatalog()" title="Bấm để chọn thêm đồng hồ">
+                            <i class="bi bi-plus-circle text-primary fs-6"></i>
+                            <span class="text-muted fw-semibold d-none d-sm-inline" style="font-size: 12px;">Chọn sản phẩm</span>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', emptyHtml);
+                }
+            }
+
+            // Update texts
+            const statusText = document.getElementById('compareStatusText');
+            if (statusText) statusText.innerText = `Đã chọn ${count}/3 sản phẩm`;
+
+            const collapsedCount = document.getElementById('compareCollapsedCount');
+            if (collapsedCount) collapsedCount.innerText = count;
+
+            // Check collapsed state preference
+            const isCollapsed = sessionStorage.getItem('compare_bar_collapsed') === 'true';
+            if (isCollapsed) {
+                collapseCompareBar();
+            } else {
+                expandCompareBar();
+            }
+
+            updateCardButtons(compareProducts.map(p => p.id));
+        }
+
+        function updateNavbarBadge(count) {
+            const navBadge = document.getElementById('navbarCompareBadge');
+            if (navBadge) {
+                navBadge.innerText = count;
+                if (count > 0) {
+                    navBadge.classList.remove('d-none');
+                } else {
+                    navBadge.classList.add('d-none');
+                }
+            }
+        }
+
+        function updateCardButtons(activeIds) {
+            document.querySelectorAll('[data-compare-id]').forEach(btn => {
+                const id = parseInt(btn.getAttribute('data-compare-id'));
+                if (activeIds.includes(id)) {
+                    btn.classList.remove('btn-outline-secondary');
+                    btn.classList.add('btn-primary');
+                    btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i><span>Đang so sánh</span>';
+                } else {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-outline-secondary');
+                    btn.innerHTML = '<i class="bi bi-arrow-left-right me-1"></i><span>So sánh</span>';
+                }
+            });
+        }
+
+        function expandCompareBar() {
+            const badge = document.getElementById('compareCollapsedBadge');
+            const bar = document.getElementById('compareExpandedBar');
+            if (badge) badge.classList.add('d-none');
+            if (bar) bar.classList.remove('d-none');
+            sessionStorage.setItem('compare_bar_collapsed', 'false');
+        }
+
+        function collapseCompareBar() {
+            const badge = document.getElementById('compareCollapsedBadge');
+            const bar = document.getElementById('compareExpandedBar');
+            if (bar) bar.classList.add('d-none');
+            if (badge) badge.classList.remove('d-none');
+            sessionStorage.setItem('compare_bar_collapsed', 'true');
+        }
+
+        function scrollToProductCatalog() {
+            if (window.location.pathname.indexOf('/products') === -1) {
+                window.location.href = '/products';
+            } else {
+                const target = document.getElementById('productCatalogGrid') || document.querySelector('main');
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+
+        function toggleCompareProduct(productId, btnElement) {
+            // Check if already in list
+            const alreadyIn = compareProducts.some(p => p.id === productId);
+            if (alreadyIn) {
+                removeCompareProduct(productId);
+                return;
+            }
+
+            fetch('/compare/api/add/' + productId, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        sessionStorage.setItem('compare_bar_collapsed', 'false');
+                        renderCompareBar(data.products);
+                        showCompareToast(data.message || 'Đã thêm vào so sánh!', true);
+                    } else {
+                        showCompareToast(data.message || 'Không thể thêm sản phẩm!', false);
+                    }
+                })
+                .catch(err => {
+                    console.error('Error adding to compare:', err);
+                    showCompareToast('Có lỗi xảy ra khi thêm so sánh.', false);
+                });
+        }
+
+        function removeCompareProduct(productId) {
+            fetch('/compare/api/remove/' + productId, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        renderCompareBar(data.products);
+                        showCompareToast('Đã xóa sản phẩm khỏi so sánh.', true);
+                    }
+                })
+                .catch(err => console.error('Error removing from compare:', err));
+        }
+
+        function clearAllCompare() {
+            if (!confirm('Bạn có chắc chắn muốn xóa toàn bộ danh sách so sánh?')) return;
+            fetch('/compare/api/clear', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    renderCompareBar([]);
+                    showCompareToast('Đã xóa toàn bộ danh sách so sánh.', true);
+                })
+                .catch(err => console.error('Error clearing compare:', err));
+        }
+
+        // Initialize state on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/compare/api/list')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.products) {
+                        renderCompareBar(data.products);
+                    }
+                })
+                .catch(err => console.error('Error loading compare state:', err));
+        });
+    </script>
 </footer>
 
 </body>

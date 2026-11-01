@@ -1,62 +1,184 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/web-layout :: head('Products')}"></head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Danh sách sản phẩm')}"></head>
 <body>
     <header th:replace="~{fragments/web-layout :: navbar}"></header>
 
     <main class="container my-5">
-        <div class="row">
-            <!-- Filter Sidebar -->
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0">Search & Filter</h5>
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+
+        <!-- Filter Card: Chips / Tag Pills (CellphoneS & TGDĐ Standard) -->
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body p-4">
+                <!-- Search row -->
+                <form th:action="@{/products}" method="get" class="mb-4">
+                    <input type="hidden" name="categoryId" th:value="${selectedCategoryId}" th:if="${selectedCategoryId != null}">
+                    <input type="hidden" name="brandId" th:value="${selectedBrandId}" th:if="${selectedBrandId != null}">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-9 col-lg-10">
+                            <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border">
+                                <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
+                                <input type="text" class="form-control border-0 ps-2" id="keyword" name="keyword" th:value="${keyword}" placeholder="Tìm kiếm theo tên đồng hồ, mã model (ví dụ: Casio, G-Shock, Automatic...)...">
+                                <button th:if="${keyword != null and !#strings.isEmpty(keyword)}" 
+                                        type="button" 
+                                        class="btn bg-white border-0 text-muted"
+                                        onclick="window.location.href='/products' + (location.search.replace(/keyword=[^&]*&?/, '').replace(/[?&]$/, ''))" 
+                                        title="Xóa từ khóa">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-2 d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-semibold">
+                                <i class="bi bi-search me-1"></i> Tìm kiếm
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <form th:action="@{/products}" method="get">
-                            <div class="mb-3">
-                                <label for="keyword" class="form-label">Keyword</label>
-                                <input type="text" class="form-control" id="keyword" name="keyword" th:value="${param.keyword}">
-                            </div>
-                            <div class="mb-3">
-                                <label for="categoryId" class="form-label">Category</label>
-                                <select class="form-select" id="categoryId" name="categoryId">
-                                    <option value="">All Categories</option>
-                                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${param.categoryId != null and param.categoryId[0] == cat.id.toString()}"></option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="brandId" class="form-label">Brand</label>
-                                <select class="form-select" id="brandId" name="brandId">
-                                    <option value="">All Brands</option>
-                                    <option th:each="brnd : ${brands}" th:value="${brnd.id}" th:text="${brnd.name}" th:selected="${param.brandId != null and param.brandId[0] == brnd.id.toString()}"></option>
-                                </select>
-                            </div>
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Apply Filters</button>
-                                <a th:href="@{/products}" class="btn btn-outline-secondary">Clear</a>
-                            </div>
-                        </form>
+                </form>
+
+                <!-- Category Filter Chips -->
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                    <div class="fw-bold text-dark d-flex align-items-center me-2" style="min-width: 110px;">
+                        <i class="bi bi-tag-fill text-danger me-1"></i> Danh mục:
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <!-- Chip Tất cả -->
+                        <a th:href="@{/products(brandId=${selectedBrandId}, keyword=${keyword})}" 
+                           class="btn btn-sm rounded-pill filter-chip"
+                           th:classappend="${selectedCategoryId == null ? 'btn-danger text-white fw-bold shadow-sm' : 'btn-outline-secondary'}">
+                            Tất cả
+                        </a>
+                        <!-- Chips Danh mục -->
+                        <a th:each="cat : ${categories}" 
+                           th:href="@{/products(categoryId=${cat.id}, brandId=${selectedBrandId}, keyword=${keyword})}"
+                           class="btn btn-sm rounded-pill filter-chip"
+                           th:classappend="${selectedCategoryId == cat.id ? 'btn-danger text-white fw-bold shadow-sm' : 'btn-outline-secondary'}"
+                           th:text="${cat.name}">
+                            Đồng hồ nam
+                        </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- Product Grid -->
-            <div class="col-md-9">
-                <div class="row row-cols-1 row-cols-md-3 g-4">
-                    <div th:if="${#lists.isEmpty(products)}" class="col-12 text-center py-5">
-                        <h4 class="text-muted">No products found.</h4>
+                <!-- Brand Filter Chips -->
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <div class="fw-bold text-dark d-flex align-items-center me-2" style="min-width: 110px;">
+                        <i class="bi bi-award-fill text-warning me-1"></i> Thương hiệu:
                     </div>
-                    <div class="col" th:each="product : ${products}">
-                        <div class="card h-100 shadow-sm">
-                            <img th:if="${product.image != null}" th:src="${product.image}" class="card-img-top" alt="Watch Image" style="height: 250px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="card-title text-truncate" th:text="${product.name}">Watch Name</h5>
-                                <p class="card-text text-danger fw-bold" th:text="${'$' + product.price}">$0.00</p>
-                                <p class="card-text"><small class="text-muted" th:text="${product.brand.name}">Brand</small></p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <!-- Chip Tất cả -->
+                        <a th:href="@{/products(categoryId=${selectedCategoryId}, keyword=${keyword})}" 
+                           class="btn btn-sm rounded-pill filter-chip"
+                           th:classappend="${selectedBrandId == null ? 'btn-dark text-white fw-bold shadow-sm' : 'btn-outline-secondary'}">
+                            Tất cả
+                        </a>
+                        <!-- Chips Thương hiệu -->
+                        <a th:each="brnd : ${brands}" 
+                           th:href="@{/products(categoryId=${selectedCategoryId}, brandId=${brnd.id}, keyword=${keyword})}"
+                           class="btn btn-sm rounded-pill filter-chip"
+                           th:classappend="${selectedBrandId == brnd.id ? 'btn-dark text-white fw-bold shadow-sm' : 'btn-outline-secondary'}"
+                           th:text="${brnd.name}">
+                            Casio
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Active Filters Row & Clear Button -->
+                <div th:if="${selectedCategoryId != null or selectedBrandId != null or (keyword != null and !#strings.isEmpty(keyword))}" 
+                     class="mt-3 pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-2">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <span class="small text-muted fw-semibold">Đang lọc theo:</span>
+                        
+                        <!-- Active Category Chip -->
+                        <span th:if="${selectedCategoryId != null}" class="badge bg-danger-subtle text-danger border border-danger rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1">
+                            <span th:each="cat : ${categories}" th:if="${cat.id == selectedCategoryId}" th:text="'Danh mục: ' + ${cat.name}">Danh mục</span>
+                            <a th:href="@{/products(brandId=${selectedBrandId}, keyword=${keyword})}" class="text-danger text-decoration-none ms-1"><i class="bi bi-x-circle-fill"></i></a>
+                        </span>
+
+                        <!-- Active Brand Chip -->
+                        <span th:if="${selectedBrandId != null}" class="badge bg-dark-subtle text-dark border border-dark rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1">
+                            <span th:each="brnd : ${brands}" th:if="${brnd.id == selectedBrandId}" th:text="'Thương hiệu: ' + ${brnd.name}">Thương hiệu</span>
+                            <a th:href="@{/products(categoryId=${selectedCategoryId}, keyword=${keyword})}" class="text-dark text-decoration-none ms-1"><i class="bi bi-x-circle-fill"></i></a>
+                        </span>
+
+                        <!-- Active Keyword Chip -->
+                        <span th:if="${keyword != null and !#strings.isEmpty(keyword)}" class="badge bg-primary-subtle text-primary border border-primary rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1">
+                            <span th:text="'Từ khóa: &quot;' + ${keyword} + '&quot;'">Từ khóa</span>
+                            <a th:href="@{/products(categoryId=${selectedCategoryId}, brandId=${selectedBrandId})}" class="text-primary text-decoration-none ms-1"><i class="bi bi-x-circle-fill"></i></a>
+                        </span>
+                    </div>
+
+                    <!-- Clear Filters Link -->
+                    <a th:href="@{/products}" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-semibold">
+                        <i class="bi bi-trash3 me-1"></i> Xóa tất cả bộ lọc
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Grid Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4" id="productCatalogGrid">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="bi bi-watch text-primary me-2"></i>Bộ sưu tập đồng hồ</h4>
+                <p class="text-muted mb-0 small" th:text="'Hiển thị ' + ${#lists.size(products)} + ' sản phẩm phù hợp'">Hiển thị 0 sản phẩm</p>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+            <div th:if="${#lists.isEmpty(products)}" class="col-12 text-center py-5">
+                <div class="py-5 bg-light rounded-4">
+                    <i class="bi bi-inbox text-muted display-3 mb-3"></i>
+                    <h5 class="text-muted fw-bold">Không tìm thấy sản phẩm nào phù hợp</h5>
+                    <p class="text-muted small">Hãy thử chọn lại danh mục hoặc xóa bộ lọc để tìm thêm sản phẩm khác.</p>
+                    <a th:href="@{/products}" class="btn btn-primary rounded-pill px-4 mt-2">
+                        <i class="bi bi-arrow-repeat me-1"></i> Xem tất cả đồng hồ
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col" th:each="product : ${products}">
+                <div class="card h-100 shadow-sm product-card border-0 rounded-4 overflow-hidden position-relative">
+                    <!-- Clickable Card Body & Image to Detail -->
+                    <a th:href="@{/products/{id}(id=${product.id})}" class="card-link text-decoration-none" style="cursor: pointer;">
+                        <div class="position-relative overflow-hidden bg-light text-center p-3">
+                            <img th:if="${product.image != null}" th:src="${product.image}" class="card-img-top" alt="Ảnh sản phẩm" style="height: 220px; object-fit: contain;">
+                            <div th:unless="${product.image != null}" class="bg-secondary text-white d-flex align-items-center justify-content-center rounded" style="height: 220px;">
+                                <span>Không có ảnh</span>
                             </div>
-                            <div class="card-footer bg-white border-top-0 d-grid">
-                                <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline-dark">View Details</a>
+                            <!-- Floating Eye-catching Badges -->
+                            <span class="position-absolute top-0 start-0 badge bg-danger text-white m-2 px-2.5 py-1.5 rounded-pill shadow-sm fw-bold"
+                                  th:text="${product.id % 2 == 0 ? 'SALE 15%' : 'HOT'}">HOT</span>
+                            <span th:if="${product.stock <= 0}" class="position-absolute top-0 end-0 badge bg-dark m-2 rounded-pill px-2 py-1">Hết hàng</span>
+                            <span th:if="${product.stock > 0}" class="position-absolute top-0 end-0 badge bg-success-subtle text-success border border-success m-2 rounded-pill px-2 py-1" style="font-size: 11px;">Chính hãng</span>
+                        </div>
+                        <div class="card-body pb-2">
+                            <p class="card-text mb-1"><small class="text-muted text-uppercase fw-bold" style="font-size: 11px;" th:text="${product.brand != null ? product.brand.name : 'Chính hãng'}">Thương hiệu</small></p>
+                            <h6 class="card-title text-truncate fw-bold mb-2 text-dark" th:text="${product.name}" th:title="${product.name}">Tên sản phẩm</h6>
+                            <p class="card-text text-danger fw-bold fs-5 mb-0" th:text="${product.price != null ? #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</p>
+                        </div>
+                    </a>
+                    
+                    <div class="card-footer bg-white border-top-0 pt-0 pb-3">
+                        <div class="row g-2 mt-1">
+                            <div class="col-7">
+                                <button type="button" 
+                                        class="btn btn-sm btn-outline-primary w-100 rounded-pill d-flex align-items-center justify-content-center gap-1"
+                                        th:onclick="'addToCartAjax(' + ${product.id} + ', 1, event);'"
+                                        th:disabled="${product.stock <= 0}"
+                                        title="Thêm vào giỏ hàng">
+                                    <i class="bi bi-cart-plus"></i>
+                                    <span>Thêm giỏ</span>
+                                </button>
+                            </div>
+                            <div class="col-5">
+                                <button type="button" 
+                                        class="btn btn-sm btn-outline-secondary w-100 rounded-pill d-flex align-items-center justify-content-center gap-1"
+                                        th:attr="data-compare-id=${product.id}"
+                                        th:onclick="'toggleCompareProduct(' + ${product.id} + ', this);'"
+                                        title="So sánh">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                    <span>So sánh</span>
+                                </button>
                             </div>
                         </div>
                     </div>
