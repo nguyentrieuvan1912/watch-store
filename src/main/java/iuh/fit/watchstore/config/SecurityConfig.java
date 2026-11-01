@@ -1,7 +1,6 @@
 package iuh.fit.watchstore.config;
 
 import iuh.fit.watchstore.security.CustomAuthenticationSuccessHandler;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +14,15 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final CustomAuthenticationSuccessHandler successHandler;
+
+    public SecurityConfig(UserDetailsService userDetailsService, CustomAuthenticationSuccessHandler successHandler) {
+        this.userDetailsService = userDetailsService;
+        this.successHandler = successHandler;
+    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -41,10 +44,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/compare/api/**", "/cart/api/**"))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/checkout/**", "/customer/**", "/orders/**").hasRole("CUSTOMER")
-                .requestMatchers("/", "/products/**", "/cart/**", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/checkout/**", "/customer/**", "/orders/**", "/profile/**").hasRole("CUSTOMER")
+                .requestMatchers("/", "/products/**", "/cart/**", "/compare/**", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form

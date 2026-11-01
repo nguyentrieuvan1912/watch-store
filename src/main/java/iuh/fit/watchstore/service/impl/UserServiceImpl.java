@@ -7,17 +7,23 @@ import iuh.fit.watchstore.repository.OrderRepository;
 import iuh.fit.watchstore.repository.UserRepository;
 import iuh.fit.watchstore.service.NotificationService;
 import iuh.fit.watchstore.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final NotificationService notificationService;
+
+    public UserServiceImpl(UserRepository userRepository, 
+                           OrderRepository orderRepository, 
+                           NotificationService notificationService) {
+        this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.notificationService = notificationService;
+    }
 
     @Override
     public List<User> getAllUsers() {

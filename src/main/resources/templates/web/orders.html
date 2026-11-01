@@ -1,53 +1,65 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/web-layout :: head('My Orders')}"></head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Đơn hàng của tôi')}"></head>
 <body>
     <header th:replace="~{fragments/web-layout :: navbar}"></header>
 
     <main class="container my-5">
-        <h2 class="mb-4">My Orders</h2>
+        <h2 class="fw-bold mb-4"><i class="bi bi-bag-check text-primary me-2"></i>Lịch sử đơn hàng</h2>
         <div th:replace="~{fragments/web-layout :: alerts}"></div>
         
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div th:if="${#lists.isEmpty(orders)}" class="text-center py-4">
-                    <p class="text-muted">You have no order history.</p>
-                    <a th:href="@{/products}" class="btn btn-primary">Start Shopping</a>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div th:if="${#lists.isEmpty(orders)}" class="text-center py-5">
+                    <i class="bi bi-inbox text-muted display-3 mb-3"></i>
+                    <h5 class="text-secondary fw-semibold">Bạn chưa có đơn hàng nào</h5>
+                    <p class="text-muted">Hãy bắt đầu mua sắm ngay hôm nay.</p>
+                    <a th:href="@{/products}" class="btn btn-primary mt-2">Khám phá sản phẩm</a>
                 </div>
                 
                 <div class="table-responsive" th:unless="${#lists.isEmpty(orders)}">
-                    <table class="table table-hover">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-dark">
                             <tr>
-                                <th>Order ID</th>
-                                <th>Date</th>
-                                <th>Total Amount</th>
-                                <th>Status</th>
-                                <th>Payment</th>
-                                <th>Actions</th>
+                                <th class="ps-3">Mã đơn</th>
+                                <th>Thời gian đặt</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái đơn hàng</th>
+                                <th>Thanh toán</th>
+                                <th class="text-center">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="order : ${orders}">
-                                <td class="fw-bold">#<span th:text="${order.id}"></span></td>
-                                <td th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy HH:mm')}">Date</td>
-                                <td th:text="${'$' + order.totalAmount}">$0.00</td>
+                                <td class="fw-bold ps-3">#<span th:text="${order.id}"></span></td>
+                                <td th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy HH:mm')}">Thời gian</td>
+                                <td class="fw-bold text-danger" th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</td>
                                 <td>
                                     <span class="badge" 
-                                        th:classappend="${order.status.name() == 'PENDING' ? 'bg-warning' : (order.status.name() == 'COMPLETED' ? 'bg-success' : (order.status.name() == 'CANCELLED' ? 'bg-danger' : 'bg-primary'))}"
-                                        th:text="${order.status}">Status</span>
+                                        th:classappend="${order.status.name() == 'PENDING' ? 'bg-warning text-dark' : (order.status.name() == 'COMPLETED' ? 'bg-success' : (order.status.name() == 'CANCELLED' ? 'bg-danger' : 'bg-primary'))}"
+                                        th:text="${order.status.name() == 'PENDING' ? 'Chờ xác nhận' : (order.status.name() == 'CONFIRMED' ? 'Đã xác nhận' : (order.status.name() == 'PROCESSING' ? 'Đang xử lý' : (order.status.name() == 'COMPLETED' ? 'Hoàn thành' : (order.status.name() == 'CANCELLED' ? 'Đã hủy' : order.status))))}">
+                                        Trạng thái
+                                    </span>
                                 </td>
                                 <td>
-                                    <span class="badge bg-secondary" th:text="${order.payment.method}">Method</span>
-                                    <span class="badge" th:classappend="${order.payment.status.name() == 'PAID' ? 'bg-success' : 'bg-secondary'}" th:text="${order.payment.status}">Status</span>
+                                    <span class="badge bg-secondary me-1" th:text="${order.payment.method}">COD</span>
+                                    <span class="badge" 
+                                          th:classappend="${order.payment.status.name() == 'PAID' ? 'bg-success' : 'bg-warning text-dark'}" 
+                                          th:text="${order.payment.status.name() == 'PAID' ? 'Đã thanh toán' : (order.payment.status.name() == 'UNPAID' ? 'Chưa thanh toán' : order.payment.status)}">
+                                          Trạng thái
+                                    </span>
                                 </td>
-                                <td>
-                                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-sm btn-info text-white"><i class="bi bi-eye"></i> View</a>
+                                <td class="text-center">
+                                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="bi bi-eye"></i> Xem
+                                    </a>
                                     
                                     <form th:if="${order.status.name() == 'PENDING' or order.status.name() == 'CONFIRMED' or order.status.name() == 'PROCESSING'}" 
                                           th:action="@{/orders/cancel/{id}(id=${order.id})}" method="post" class="d-inline"
-                                          onsubmit="return confirm('Are you sure you want to cancel this order?');">
-                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-x-circle"></i> Cancel</button>
+                                          onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-x-circle"></i> Hủy đơn
+                                        </button>
                                     </form>
                                 </td>
                             </tr>

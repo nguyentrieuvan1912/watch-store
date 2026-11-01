@@ -1,32 +1,162 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/web-layout :: head('Home')}"></head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Trang chủ')}"></head>
 <body>
     <header th:replace="~{fragments/web-layout :: navbar}"></header>
 
     <main class="container my-5">
         <div th:replace="~{fragments/web-layout :: alerts}"></div>
         
-        <div class="p-5 mb-4 bg-light rounded-3 text-center">
-            <div class="container-fluid py-5">
-                <h1 class="display-5 fw-bold">Welcome to Watch Store</h1>
-                <p class="col-md-8 mx-auto fs-4">Discover our exclusive collection of premium timepieces.</p>
-                <a th:href="@{/products}" class="btn btn-primary btn-lg">Shop Now</a>
+        <!-- Hero Carousel Banner -->
+        <div id="heroCarousel" class="carousel slide mb-5 rounded-4 overflow-hidden shadow-lg" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
+            <div class="carousel-inner">
+                <!-- Slide 1 -->
+                <div class="carousel-item active" data-bs-interval="5000">
+                    <div class="position-relative" style="height: 440px;">
+                        <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1600&q=80" 
+                             class="d-block w-100 h-100" style="object-fit: cover;" alt="Đồng hồ cao cấp">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" 
+                             style="background: linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.55) 60%, rgba(15,23,42,0.2) 100%);">
+                            <div class="container text-white px-md-5">
+                                <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-3 shadow-sm">
+                                    <i class="bi bi-stars me-1"></i> Bộ Sưu Tập 2026
+                                </span>
+                                <h1 class="display-4 fw-extrabold mb-3">Kiệt Tác Đồng Hồ Cơ Tinh Xảo</h1>
+                                <p class="fs-5 text-light opacity-90 col-md-8 mb-4">
+                                    Hội tụ những mẫu đồng hồ cơ tự động chính hãng từ Thụy Sĩ và Nhật Bản. Đẳng cấp vượt thời gian, khẳng định vị thế quý ông.
+                                </p>
+                                <div class="d-flex flex-wrap gap-3">
+                                    <a th:href="@{/products}" class="btn btn-warning btn-lg px-4 py-2 fw-bold text-dark rounded-pill shadow">
+                                        <i class="bi bi-compass me-2"></i>Khám phá ngay
+                                    </a>
+                                    <a th:href="@{/compare}" class="btn btn-outline-light btn-lg px-4 py-2 rounded-pill">
+                                        <i class="bi bi-arrow-left-right me-2"></i>So sánh đồng hồ
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="carousel-item" data-bs-interval="5000">
+                    <div class="position-relative" style="height: 440px;">
+                        <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1600&q=80" 
+                             class="d-block w-100 h-100" style="object-fit: cover;" alt="Phong cách thể thao">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" 
+                             style="background: linear-gradient(90deg, rgba(10,15,30,0.85) 0%, rgba(10,15,30,0.55) 60%, rgba(10,15,30,0.2) 100%);">
+                            <div class="container text-white px-md-5">
+                                <span class="badge bg-danger text-white px-3 py-2 text-uppercase fw-bold mb-3 shadow-sm">
+                                    <i class="bi bi-lightning-charge-fill me-1"></i> Bền Bỉ Vô Song
+                                </span>
+                                <h1 class="display-4 fw-extrabold mb-3">Casio G-Shock & Seiko Sports</h1>
+                                <p class="fs-5 text-light opacity-90 col-md-8 mb-4">
+                                    Chống nước 200m, chống sốc tuyệt đỉnh, phong cách thể thao mạnh mẽ bứt phá giới hạn.
+                                </p>
+                                <div>
+                                    <a th:href="@{/products}" class="btn btn-danger btn-lg px-4 py-2 fw-bold rounded-pill shadow">
+                                        <i class="bi bi-compass me-2"></i>Khám phá ngay
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="carousel-item" data-bs-interval="5000">
+                    <div class="position-relative" style="height: 440px;">
+                        <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1600&q=80" 
+                             class="d-block w-100 h-100" style="object-fit: cover;" alt="Ưu đãi đồng hồ">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" 
+                             style="background: linear-gradient(90deg, rgba(20,20,25,0.85) 0%, rgba(20,20,25,0.55) 60%, rgba(20,20,25,0.2) 100%);">
+                            <div class="container text-white px-md-5">
+                                <span class="badge bg-success text-white px-3 py-2 text-uppercase fw-bold mb-3 shadow-sm">
+                                    <i class="bi bi-shield-check me-1"></i> Cam Kết Chính Hãng 100%
+                                </span>
+                                <h1 class="display-4 fw-extrabold mb-3">Tissot & Orient Bambino</h1>
+                                <p class="fs-5 text-light opacity-90 col-md-8 mb-4">
+                                    Bảo hành quốc tế 5 năm, miễn phí thay pin trọn đời và giao hàng tận nơi siêu tốc.
+                                </p>
+                                <div>
+                                    <a th:href="@{/products}" class="btn btn-primary btn-lg px-4 py-2 fw-bold rounded-pill shadow">
+                                        <i class="bi bi-compass me-2"></i>Khám phá ngay
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-content="prev"></span>
+                <span class="visually-hidden">Trước</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-content="next"></span>
+                <span class="visually-hidden">Sau</span>
+            </button>
         </div>
 
-        <h2 class="mb-4">Featured Products</h2>
+        <!-- Featured Products -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Sản phẩm nổi bật</h2>
+                <p class="text-muted mb-0">Các mẫu đồng hồ được yêu thích nhất hiện nay</p>
+            </div>
+            <a th:href="@{/products}" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+        </div>
+
         <div class="row row-cols-1 row-cols-md-4 g-4">
             <div class="col" th:each="product : ${products}">
-                <div class="card h-100 shadow-sm">
-                    <img th:if="${product.image != null}" th:src="${product.image}" class="card-img-top" alt="Watch Image" style="height: 250px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title text-truncate" th:text="${product.name}">Watch Name</h5>
-                        <p class="card-text text-danger fw-bold" th:text="${'$' + product.price}">$0.00</p>
-                        <p class="card-text"><small class="text-muted" th:text="${product.brand.name}">Brand</small></p>
-                    </div>
-                    <div class="card-footer bg-white border-top-0 d-grid">
-                        <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline-dark">View Details</a>
+                <div class="card h-100 shadow-sm product-card border-0 rounded-4 overflow-hidden position-relative">
+                    <!-- Clickable Card Body & Image to Detail -->
+                    <a th:href="@{/products/{id}(id=${product.id})}" class="card-link text-decoration-none" style="cursor: pointer;">
+                        <div class="position-relative overflow-hidden bg-light text-center p-3">
+                            <img th:if="${product.image != null}" th:src="${product.image}" class="card-img-top" alt="Ảnh sản phẩm" style="height: 250px; object-fit: contain;">
+                            <div th:unless="${product.image != null}" class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 250px;">
+                                <span>Không có ảnh</span>
+                            </div>
+                            <!-- Floating Eye-catching Badges -->
+                            <span class="position-absolute top-0 start-0 badge bg-danger text-white m-2 px-2.5 py-1.5 rounded-pill shadow-sm fw-bold"
+                                  th:text="${product.id % 2 == 0 ? 'SALE 15%' : 'HOT'}">HOT</span>
+                            <span th:if="${product.stock <= 0}" class="position-absolute top-0 end-0 badge bg-dark m-2 rounded-pill px-2 py-1">Hết hàng</span>
+                            <span th:if="${product.stock > 0}" class="position-absolute top-0 end-0 badge bg-success-subtle text-success border border-success m-2 rounded-pill px-2 py-1" style="font-size: 11px;">Chính hãng</span>
+                        </div>
+                        <div class="card-body pb-2">
+                            <p class="card-text mb-1"><small class="text-muted text-uppercase fw-semibold" th:text="${product.brand != null ? product.brand.name : 'Chính hãng'}">Thương hiệu</small></p>
+                            <h5 class="card-title text-truncate fw-bold mb-2 text-dark" th:text="${product.name}" th:title="${product.name}">Tên sản phẩm</h5>
+                            <p class="card-text text-danger fw-bold fs-5 mb-0" th:text="${product.price != null ? #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</p>
+                        </div>
+                    </a>
+                    <div class="card-footer bg-white border-top-0 pt-0 pb-3">
+                        <div class="row g-2 mt-1">
+                            <div class="col-7">
+                                <button type="button" 
+                                        class="btn btn-sm btn-outline-primary w-100 rounded-pill d-flex align-items-center justify-content-center gap-1"
+                                        th:onclick="'addToCartAjax(' + ${product.id} + ', 1, event);'"
+                                        th:disabled="${product.stock <= 0}"
+                                        title="Thêm vào giỏ hàng">
+                                    <i class="bi bi-cart-plus"></i>
+                                    <span>Thêm giỏ</span>
+                                </button>
+                            </div>
+                            <div class="col-5">
+                                <button type="button" 
+                                        class="btn btn-sm btn-outline-secondary w-100 rounded-pill d-flex align-items-center justify-content-center gap-1"
+                                        th:attr="data-compare-id=${product.id}"
+                                        th:onclick="'toggleCompareProduct(' + ${product.id} + ', this);'"
+                                        title="So sánh">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                    <span>So sánh</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

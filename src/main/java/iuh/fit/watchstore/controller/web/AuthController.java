@@ -3,7 +3,6 @@ package iuh.fit.watchstore.controller.web;
 import iuh.fit.watchstore.entity.User;
 import iuh.fit.watchstore.entity.enums.Role;
 import iuh.fit.watchstore.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,11 +11,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-@RequiredArgsConstructor
 public class AuthController {
     
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/login")
     public String loginPage() {

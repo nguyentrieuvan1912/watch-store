@@ -6,16 +6,19 @@ import iuh.fit.watchstore.exception.ResourceNotFoundException;
 import iuh.fit.watchstore.repository.BrandRepository;
 import iuh.fit.watchstore.repository.ProductRepository;
 import iuh.fit.watchstore.service.BrandService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final ProductRepository productRepository;
+
+    public BrandServiceImpl(BrandRepository brandRepository, ProductRepository productRepository) {
+        this.brandRepository = brandRepository;
+        this.productRepository = productRepository;
+    }
 
     @Override
     public List<Brand> getAllBrands() {
