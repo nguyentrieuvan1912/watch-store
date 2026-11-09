@@ -15,7 +15,12 @@ import iuh.fit.watchstore.security.CustomUserDetails;
 import iuh.fit.watchstore.service.CartService;
 import iuh.fit.watchstore.service.OrderService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +29,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/checkout")
@@ -67,8 +76,28 @@ public class CheckoutController {
         return filtered.isEmpty() ? allItems : filtered;
     }
 
+    private User resolveUser(Object principal) {
+        if (principal instanceof CustomUserDetails customUserDetails) {
+            return customUserDetails.getUser();
+        }
+        if (principal instanceof OAuth2User oauth2User) {
+            String email = oauth2User.getAttribute("email");
+            if (email != null && !email.trim().isEmpty()) {
+                return userRepository.findByEmail(email.trim()).orElse(null);
+            }
+        }
+        if (principal instanceof UserDetails userDetails) {
+            return userRepository.findByEmail(userDetails.getUsername()).orElse(null);
+        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            return userRepository.findByEmail(auth.getName()).orElse(null);
+        }
+        return null;
+    }
+
     @GetMapping
-    public String checkoutPage(HttpSession session, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public String checkoutPage(HttpSession session, Model model, @AuthenticationPrincipal Object principal) {
         List<CartItem> checkoutItems = getCheckoutItems(session);
         if (checkoutItems.isEmpty()) {
             return "redirect:/cart";
@@ -80,8 +109,9 @@ public class CheckoutController {
         String userWard = "";
         String userStreetAddress = "";
 
-        if (userDetails != null) {
-            User user = userRepository.findById(userDetails.getUser().getId()).orElse(userDetails.getUser());
+        User user = resolveUser(principal);
+        if (user != null) {
+            user = userRepository.findById(user.getId()).orElse(user);
             order.setReceiverName(user.getFullName());
             order.setPhone(user.getPhone());
             userProvince = user.getProvince() != null ? user.getProvince() : "";
@@ -118,12 +148,18 @@ public class CheckoutController {
                                   @RequestParam(value = "saveDefaultAddress", defaultValue = "false") boolean saveDefaultAddress,
                                   @RequestParam(value = "paymentMethod", defaultValue = "COD") String paymentMethodStr,
                                   HttpSession session,
-                                  @AuthenticationPrincipal CustomUserDetails userDetails,
+                                  @AuthenticationPrincipal Object principal,
                                   RedirectAttributes redirectAttributes) {
         List<CartItem> checkoutItems = getCheckoutItems(session);
         if (checkoutItems.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Giỏ hàng không có sản phẩm nào để thanh toán!");
             return "redirect:/cart";
+        }
+
+        User currentUser = resolveUser(principal);
+        if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập để tiến hành thanh toán!");
+            return "redirect:/login";
         }
 
         try {
@@ -149,25 +185,23 @@ public class CheckoutController {
             order.setAddress(snapshotAddress);
 
             // Save default address into User Entity if requested
-            if (saveDefaultAddress && userDetails != null) {
-                User currentUser = userRepository.findById(userDetails.getUser().getId()).orElse(null);
-                if (currentUser != null) {
-                    currentUser.setProvince(province != null ? province.trim() : null);
-                    currentUser.setDistrict(district != null ? district.trim() : null);
-                    currentUser.setWard(ward != null ? ward.trim() : null);
-                    currentUser.setStreetAddress(streetAddress != null ? streetAddress.trim() : null);
-                    currentUser.setAddress(snapshotAddress);
-                    if (order.getReceiverName() != null && !order.getReceiverName().trim().isEmpty()) {
-                        currentUser.setFullName(order.getReceiverName().trim());
-                    }
-                    if (order.getPhone() != null && !order.getPhone().trim().isEmpty()) {
-                        currentUser.setPhone(order.getPhone().trim());
-                    }
-                    userRepository.save(currentUser);
+            if (saveDefaultAddress) {
+                User userToUpdate = userRepository.findById(currentUser.getId()).orElse(currentUser);
+                userToUpdate.setProvince(province != null ? province.trim() : null);
+                userToUpdate.setDistrict(district != null ? district.trim() : null);
+                userToUpdate.setWard(ward != null ? ward.trim() : null);
+                userToUpdate.setStreetAddress(streetAddress != null ? streetAddress.trim() : null);
+                userToUpdate.setAddress(snapshotAddress);
+                if (order.getReceiverName() != null && !order.getReceiverName().trim().isEmpty()) {
+                    userToUpdate.setFullName(order.getReceiverName().trim());
                 }
+                if (order.getPhone() != null && !order.getPhone().trim().isEmpty()) {
+                    userToUpdate.setPhone(order.getPhone().trim());
+                }
+                userRepository.save(userToUpdate);
             }
 
-            order.setUser(userDetails.getUser());
+            order.setUser(currentUser);
 
             PaymentMethod paymentMethod = "ONLINE".equalsIgnoreCase(paymentMethodStr) 
                     ? PaymentMethod.ONLINE 
@@ -205,11 +239,12 @@ public class CheckoutController {
     @GetMapping("/payment-qr/{orderId}")
     public String showPaymentQr(@PathVariable Long orderId,
                                 Model model,
-                                @AuthenticationPrincipal CustomUserDetails userDetails) {
+                                @AuthenticationPrincipal Object principal) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng: " + orderId));
 
-        if (userDetails != null && !order.getUser().getId().equals(userDetails.getUser().getId())) {
+        User user = resolveUser(principal);
+        if (user != null && !order.getUser().getId().equals(user.getId())) {
             return "redirect:/orders";
         }
 
@@ -233,12 +268,13 @@ public class CheckoutController {
 
     @PostMapping("/payment-qr/{orderId}/confirm")
     public String confirmPayment(@PathVariable Long orderId,
-                                 @AuthenticationPrincipal CustomUserDetails userDetails,
+                                 @AuthenticationPrincipal Object principal,
                                  RedirectAttributes redirectAttributes) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng: " + orderId));
 
-        if (userDetails != null && !order.getUser().getId().equals(userDetails.getUser().getId())) {
+        User user = resolveUser(principal);
+        if (user != null && !order.getUser().getId().equals(user.getId())) {
             return "redirect:/orders";
         }
 
@@ -256,12 +292,13 @@ public class CheckoutController {
 
     @PostMapping("/payment-qr/{orderId}/cancel")
     public String cancelPayment(@PathVariable Long orderId,
-                                @AuthenticationPrincipal CustomUserDetails userDetails,
+                                @AuthenticationPrincipal Object principal,
                                 RedirectAttributes redirectAttributes) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng: " + orderId));
 
-        if (userDetails != null && !order.getUser().getId().equals(userDetails.getUser().getId())) {
+        User user = resolveUser(principal);
+        if (user != null && !order.getUser().getId().equals(user.getId())) {
             return "redirect:/orders";
         }
 
@@ -274,5 +311,57 @@ public class CheckoutController {
             redirectAttributes.addFlashAttribute("error", "Đã hủy giao dịch thanh toán. Đơn hàng #" + orderId + " đã bị hủy và tồn kho đã được hoàn lại.");
         }
         return "redirect:/orders";
+    }
+
+    @GetMapping("/api/payment-status/{orderId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getPaymentStatus(@PathVariable Long orderId) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<Order> orderOpt = orderRepository.findById(orderId);
+        if (orderOpt.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Không tìm thấy đơn hàng #" + orderId);
+            return ResponseEntity.status(404).body(response);
+        }
+
+        Order order = orderOpt.get();
+        String paymentStatus = order.getPayment() != null ? order.getPayment().getStatus().name() : "PENDING";
+        String orderStatus = order.getStatus() != null ? order.getStatus().name() : "PENDING";
+
+        response.put("success", true);
+        response.put("orderId", orderId);
+        response.put("status", paymentStatus);
+        response.put("paymentStatus", paymentStatus);
+        response.put("orderStatus", orderStatus);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/api/mock-webhook/{orderId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> mockWebhookPayment(@PathVariable Long orderId) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<Order> orderOpt = orderRepository.findById(orderId);
+        if (orderOpt.isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Không tìm thấy đơn hàng #" + orderId);
+            return ResponseEntity.status(404).body(response);
+        }
+
+        Order order = orderOpt.get();
+        if (order.getPayment() != null) {
+            order.getPayment().setStatus(PaymentStatus.PAID);
+            order.getPayment().setTransactionId("WEBHOOK-" + System.currentTimeMillis());
+            paymentRepository.save(order.getPayment());
+        }
+        order.setStatus(OrderStatus.CONFIRMED);
+        orderRepository.save(order);
+
+        response.put("success", true);
+        response.put("message", "Webhook ngân hàng giả lập thành công! Đơn hàng #" + orderId + " đã chuyển sang PAID và CONFIRMED.");
+        response.put("orderId", orderId);
+        response.put("status", PaymentStatus.PAID.name());
+        response.put("paymentStatus", PaymentStatus.PAID.name());
+        response.put("orderStatus", OrderStatus.CONFIRMED.name());
+        return ResponseEntity.ok(response);
     }
 }

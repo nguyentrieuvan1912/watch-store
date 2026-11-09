@@ -1,41 +1,108 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/web-layout :: head('Trang chủ')}"></head>
+<head th:replace="~{fragments/web-layout :: head('Trang chủ - Đẳng cấp đồng hồ chính hãng')}"></head>
 <body>
     <header th:replace="~{fragments/web-layout :: navbar}"></header>
 
-    <main class="container my-5">
+    <main class="container my-4">
         <div th:replace="~{fragments/web-layout :: alerts}"></div>
-        
-        <!-- Hero Carousel Banner -->
-        <div id="heroCarousel" class="carousel slide mb-5 rounded-4 overflow-hidden shadow-lg" data-bs-ride="carousel">
+
+        <!-- 1. HERO CAROUSEL BANNER WITH GLASSMORPHISM STATS -->
+        <div id="heroCarousel" class="carousel slide mb-4 rounded-4 overflow-hidden shadow-lg border" style="border-color: #e2e8f0 !important;" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
             <div class="carousel-inner">
-                <!-- Slide 1 -->
-                <div class="carousel-item active" data-bs-interval="5000">
-                    <div class="position-relative" style="height: 440px;">
+                <!-- Slide 1: Luxury Collection 2026 -->
+                <div class="carousel-item active" data-bs-interval="5500">
+                    <div class="position-relative" style="min-height: 490px;">
                         <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1600&q=80" 
-                             class="d-block w-100 h-100" style="object-fit: cover;" alt="Đồng hồ cao cấp">
-                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" 
-                             style="background: linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.55) 60%, rgba(15,23,42,0.2) 100%);">
-                            <div class="container text-white px-md-5">
-                                <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-3 shadow-sm">
-                                    <i class="bi bi-stars me-1"></i> Bộ Sưu Tập 2026
+                             class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover;" alt="Bộ sưu tập đồng hồ 2026">
+                        <div class="position-relative w-100 h-100 d-flex align-items-center py-5" 
+                             style="min-height: 490px; background: linear-gradient(95deg, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.72) 55%, rgba(15,23,42,0.25) 100%);">
+                            <div class="container text-white px-4 px-md-5">
+                                <div class="row align-items-center g-4">
+                                    <div class="col-lg-7">
+                                        <span class="badge px-3 py-2 text-uppercase fw-bold mb-3 rounded-pill shadow-sm" style="background: rgba(217,119,6,0.22); border: 1px solid #fbbf24; color: #fbbf24; letter-spacing: 1px;">
+                                            <i class="bi bi-stars me-1"></i> BỘ SƯU TẬP 2026
+                                        </span>
+                                        <h1 class="display-4 fw-extrabold mb-3" style="letter-spacing: -1px; line-height: 1.15;">
+                                            Tuyệt Tác Cơ Khí <br><span style="color: #fbbf24;">Đẳng Cấp Thượng Lưu</span>
+                                        </h1>
+                                        <p class="fs-6 text-light opacity-90 mb-4" style="max-width: 540px; line-height: 1.65;">
+                                            Hội tụ tinh hoa chế tác từ Thụy Sĩ &amp; Nhật Bản. Mỗi cỗ máy thời gian là một biểu tượng khẳng định phong thái và bản lĩnh người dẫn đầu.
+                                        </p>
+                                        <div class="d-flex flex-wrap gap-3">
+                                            <a th:href="@{/products}" class="btn ws-btn-gold btn-lg px-4 py-2.5 rounded-pill shadow">
+                                                <i class="bi bi-compass me-2"></i>Khám phá ngay
+                                            </a>
+                                            <a th:href="@{/size-guide}" class="btn btn-outline-light btn-lg px-4 py-2.5 rounded-pill fw-semibold">
+                                                <i class="bi bi-rulers me-2"></i>Tư vấn chọn size
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- Glassmorphism Floating Card -->
+                                    <div class="col-lg-5 d-none d-lg-block">
+                                        <div class="p-4 rounded-4 text-white ms-auto" 
+                                             style="max-width: 340px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.22); box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+                                            <div class="d-flex align-items-center gap-3 pb-3 mb-3" style="border-bottom: 1px solid rgba(255,255,255,0.15);">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background: rgba(251,191,36,0.2); color: #fbbf24;">
+                                                    <i class="bi bi-patch-check-fill fs-4"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-6">100% Chính Hãng</div>
+                                                    <small class="text-white-50">Đền gấp 10 lần nếu phát hiện giả</small>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-3 pb-3 mb-3" style="border-bottom: 1px solid rgba(255,255,255,0.15);">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background: rgba(56,189,248,0.2); color: #38bdf8;">
+                                                    <i class="bi bi-shield-lock-fill fs-4"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-6">Bảo Hành 5 Năm</div>
+                                                    <small class="text-white-50">Tiêu chuẩn quốc tế &amp; thay pin miễn phí</small>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; background: rgba(74,222,128,0.2); color: #4ade80;">
+                                                    <i class="bi bi-truck fs-4"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-6">Freeship Toàn Quốc</div>
+                                                    <small class="text-white-50">Giao nhanh 2H nội thành, đồng kiểm</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Sport & Diver Collection -->
+                <div class="carousel-item" data-bs-interval="5500">
+                    <div class="position-relative" style="min-height: 490px;">
+                        <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1600&q=80" 
+                             class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover;" alt="Phong cách thể thao">
+                        <div class="position-relative w-100 h-100 d-flex align-items-center py-5" 
+                             style="min-height: 490px; background: linear-gradient(95deg, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.7) 55%, rgba(15,23,42,0.25) 100%);">
+                            <div class="container text-white px-4 px-md-5">
+                                <span class="badge bg-danger text-white px-3 py-2 text-uppercase fw-bold mb-3 rounded-pill shadow-sm">
+                                    <i class="bi bi-lightning-charge-fill me-1"></i> BỘ SƯU TẬP 2026 - SPORT EDITION
                                 </span>
-                                <h1 class="display-4 fw-extrabold mb-3">Kiệt Tác Đồng Hồ Cơ Tinh Xảo</h1>
-                                <p class="fs-5 text-light opacity-90 col-md-8 mb-4">
-                                    Hội tụ những mẫu đồng hồ cơ tự động chính hãng từ Thụy Sĩ và Nhật Bản. Đẳng cấp vượt thời gian, khẳng định vị thế quý ông.
+                                <h1 class="display-4 fw-extrabold mb-3" style="letter-spacing: -1px;">Casio G-Shock &amp; Seiko Diver</h1>
+                                <p class="fs-6 text-light opacity-90 col-md-7 mb-4" style="line-height: 1.65;">
+                                    Kháng nước tiêu chuẩn lặn 200M, mặt kính Sapphire chống trầy xước và khả năng chống va đập vượt trội cho người yêu vận động.
                                 </p>
                                 <div class="d-flex flex-wrap gap-3">
-                                    <a th:href="@{/products}" class="btn btn-warning btn-lg px-4 py-2 fw-bold text-dark rounded-pill shadow">
+                                    <a th:href="@{/products}" class="btn ws-btn-gold btn-lg px-4 py-2.5 rounded-pill shadow">
                                         <i class="bi bi-compass me-2"></i>Khám phá ngay
                                     </a>
-                                    <a th:href="@{/compare}" class="btn btn-outline-light btn-lg px-4 py-2 rounded-pill">
-                                        <i class="bi bi-arrow-left-right me-2"></i>So sánh đồng hồ
+                                    <a th:href="@{/size-guide}" class="btn btn-outline-light btn-lg px-4 py-2.5 rounded-pill fw-semibold">
+                                        <i class="bi bi-rulers me-2"></i>Tư vấn chọn size
                                     </a>
                                 </div>
                             </div>
@@ -43,49 +110,27 @@
                     </div>
                 </div>
 
-                <!-- Slide 2 -->
-                <div class="carousel-item" data-bs-interval="5000">
-                    <div class="position-relative" style="height: 440px;">
-                        <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1600&q=80" 
-                             class="d-block w-100 h-100" style="object-fit: cover;" alt="Phong cách thể thao">
-                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" 
-                             style="background: linear-gradient(90deg, rgba(10,15,30,0.85) 0%, rgba(10,15,30,0.55) 60%, rgba(10,15,30,0.2) 100%);">
-                            <div class="container text-white px-md-5">
-                                <span class="badge bg-danger text-white px-3 py-2 text-uppercase fw-bold mb-3 shadow-sm">
-                                    <i class="bi bi-lightning-charge-fill me-1"></i> Bền Bỉ Vô Song
-                                </span>
-                                <h1 class="display-4 fw-extrabold mb-3">Casio G-Shock & Seiko Sports</h1>
-                                <p class="fs-5 text-light opacity-90 col-md-8 mb-4">
-                                    Chống nước 200m, chống sốc tuyệt đỉnh, phong cách thể thao mạnh mẽ bứt phá giới hạn.
-                                </p>
-                                <div>
-                                    <a th:href="@{/products}" class="btn btn-danger btn-lg px-4 py-2 fw-bold rounded-pill shadow">
-                                        <i class="bi bi-compass me-2"></i>Khám phá ngay
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="carousel-item" data-bs-interval="5000">
-                    <div class="position-relative" style="height: 440px;">
+                <!-- Slide 3: Swiss & Dress Watch -->
+                <div class="carousel-item" data-bs-interval="5500">
+                    <div class="position-relative" style="min-height: 490px;">
                         <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1600&q=80" 
-                             class="d-block w-100 h-100" style="object-fit: cover;" alt="Ưu đãi đồng hồ">
-                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" 
-                             style="background: linear-gradient(90deg, rgba(20,20,25,0.85) 0%, rgba(20,20,25,0.55) 60%, rgba(20,20,25,0.2) 100%);">
-                            <div class="container text-white px-md-5">
-                                <span class="badge bg-success text-white px-3 py-2 text-uppercase fw-bold mb-3 shadow-sm">
-                                    <i class="bi bi-shield-check me-1"></i> Cam Kết Chính Hãng 100%
+                             class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover;" alt="Tissot & Orient Bambino">
+                        <div class="position-relative w-100 h-100 d-flex align-items-center py-5" 
+                             style="min-height: 490px; background: linear-gradient(95deg, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.7) 55%, rgba(15,23,42,0.25) 100%);">
+                            <div class="container text-white px-4 px-md-5">
+                                <span class="badge bg-success text-white px-3 py-2 text-uppercase fw-bold mb-3 rounded-pill shadow-sm">
+                                    <i class="bi bi-gem me-1"></i> BỘ SƯU TẬP 2026 - SWISS LUXURY
                                 </span>
-                                <h1 class="display-4 fw-extrabold mb-3">Tissot & Orient Bambino</h1>
-                                <p class="fs-5 text-light opacity-90 col-md-8 mb-4">
-                                    Bảo hành quốc tế 5 năm, miễn phí thay pin trọn đời và giao hàng tận nơi siêu tốc.
+                                <h1 class="display-4 fw-extrabold mb-3" style="letter-spacing: -1px;">Tissot PRX &amp; Orient Bambino</h1>
+                                <p class="fs-6 text-light opacity-90 col-md-7 mb-4" style="line-height: 1.65;">
+                                    Thiết kế thanh lịch vượt thời gian, mặt kính cong quyến rũ cùng bộ máy cơ trữ cót lên đến 80 giờ.
                                 </p>
-                                <div>
-                                    <a th:href="@{/products}" class="btn btn-primary btn-lg px-4 py-2 fw-bold rounded-pill shadow">
+                                <div class="d-flex flex-wrap gap-3">
+                                    <a th:href="@{/products}" class="btn ws-btn-gold btn-lg px-4 py-2.5 rounded-pill shadow">
                                         <i class="bi bi-compass me-2"></i>Khám phá ngay
+                                    </a>
+                                    <a th:href="@{/size-guide}" class="btn btn-outline-light btn-lg px-4 py-2.5 rounded-pill fw-semibold">
+                                        <i class="bi bi-rulers me-2"></i>Tư vấn chọn size
                                     </a>
                                 </div>
                             </div>
@@ -93,65 +138,208 @@
                     </div>
                 </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-content="prev"></span>
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" style="width: 5%;">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Trước</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-content="next"></span>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" style="width: 5%;">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Sau</span>
             </button>
         </div>
 
-        <!-- Featured Products -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold mb-1">Sản phẩm nổi bật</h2>
-                <p class="text-muted mb-0">Các mẫu đồng hồ được yêu thích nhất hiện nay</p>
+        <!-- 2. DẢI CAM KẾT DỊCH VỤ (4 TRUST BADGES) -->
+        <div class="row g-3 mb-5">
+            <div class="col-6 col-lg-3">
+                <div class="ws-trust-card p-3 p-md-4 h-100 d-flex align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; background-color: #fffbeb; color: #d97706;">
+                        <i class="bi bi-truck fs-3"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1" style="font-size: 0.92rem; color: #0f172a;">Miễn phí vận chuyển</h6>
+                        <p class="text-muted mb-0" style="font-size: 0.78rem;">Giao nhanh toàn quốc, kiểm hàng trước khi thanh toán</p>
+                    </div>
+                </div>
             </div>
-            <a th:href="@{/products}" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+            <div class="col-6 col-lg-3">
+                <div class="ws-trust-card p-3 p-md-4 h-100 d-flex align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; background-color: #fef2f2; color: #be123c;">
+                        <i class="bi bi-arrow-repeat fs-3"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1" style="font-size: 0.92rem; color: #0f172a;">Đổi trả trong 30 ngày</h6>
+                        <p class="text-muted mb-0" style="font-size: 0.78rem;">1 đổi 1 miễn phí nếu có lỗi từ nhà sản xuất</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="ws-trust-card p-3 p-md-4 h-100 d-flex align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; background-color: #f0fdf4; color: #15803d;">
+                        <i class="bi bi-shield-check fs-3"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1" style="font-size: 0.92rem; color: #0f172a;">Chính hãng 100%</h6>
+                        <p class="text-muted mb-0" style="font-size: 0.78rem;">Cam kết đền gấp 10 lần nếu phát hiện hàng giả</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="ws-trust-card p-3 p-md-4 h-100 d-flex align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px; background-color: #f1f5f9; color: #0f172a;">
+                        <i class="bi bi-tools fs-3"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1" style="font-size: 0.92rem; color: #0f172a;">Bảo dưỡng trọn đời</h6>
+                        <p class="text-muted mb-0" style="font-size: 0.78rem;">Miễn phí thay pin &amp; ưu đãi lau dầu máy cơ trọn đời</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-            <div class="col" th:each="product : ${products}">
-                <div class="card h-100 shadow-sm product-card border-0 rounded-4 overflow-hidden position-relative">
-                    <!-- Clickable Card Body & Image to Detail -->
-                    <a th:href="@{/products/{id}(id=${product.id})}" class="card-link text-decoration-none" style="cursor: pointer;">
-                        <div class="position-relative overflow-hidden bg-light text-center p-3">
-                            <img th:if="${product.image != null}" th:src="${product.image}" class="card-img-top" alt="Ảnh sản phẩm" style="height: 250px; object-fit: contain;">
-                            <div th:unless="${product.image != null}" class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 250px;">
-                                <span>Không có ảnh</span>
-                            </div>
-                            <!-- Floating Eye-catching Badges -->
-                            <span class="position-absolute top-0 start-0 badge bg-danger text-white m-2 px-2.5 py-1.5 rounded-pill shadow-sm fw-bold"
-                                  th:text="${product.id % 2 == 0 ? 'SALE 15%' : 'HOT'}">HOT</span>
-                            <span th:if="${product.stock <= 0}" class="position-absolute top-0 end-0 badge bg-dark m-2 rounded-pill px-2 py-1">Hết hàng</span>
-                            <span th:if="${product.stock > 0}" class="position-absolute top-0 end-0 badge bg-success-subtle text-success border border-success m-2 rounded-pill px-2 py-1" style="font-size: 11px;">Chính hãng</span>
+        <!-- 3. THƯƠNG HIỆU NỔI BẬT (BRAND STRIP) -->
+        <div class="mb-5">
+            <div class="d-flex justify-content-between align-items-end mb-3">
+                <div>
+                    <span class="text-uppercase fw-bold small" style="color: #d97706; letter-spacing: 1px;">ĐỐI TÁC ỦY QUYỀN</span>
+                    <h4 class="fw-extrabold mb-0" style="color: #0f172a;">Thương Hiệu Đồng Hồ Danh Tiếng</h4>
+                </div>
+                <a th:href="@{/products}" class="text-decoration-none fw-semibold small" style="color: #b45309;">
+                    Tất cả thương hiệu <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-3">
+                <div class="col" th:each="brnd : ${brands}">
+                    <a th:href="@{/products(brandId=${brnd.id})}" class="ws-brand-pill d-flex flex-column align-items-center justify-content-center text-center h-100">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center mb-2" style="width: 44px; height: 44px; background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                            <i class="bi bi-watch fs-5" style="color: #d97706;"></i>
                         </div>
-                        <div class="card-body pb-2">
-                            <p class="card-text mb-1"><small class="text-muted text-uppercase fw-semibold" th:text="${product.brand != null ? product.brand.name : 'Chính hãng'}">Thương hiệu</small></p>
-                            <h5 class="card-title text-truncate fw-bold mb-2 text-dark" th:text="${product.name}" th:title="${product.name}">Tên sản phẩm</h5>
-                            <p class="card-text text-danger fw-bold fs-5 mb-0" th:text="${product.price != null ? #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</p>
+                        <span class="fw-extrabold text-uppercase" style="font-size: 1rem; letter-spacing: 1.2px;" th:text="${brnd.name}">CASIO</span>
+                        <small class="text-muted mt-1" style="font-size: 0.73rem;">Đại lý chính thức</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. FLASH SALE / BỘ SƯU TẬP HOT BAR -->
+        <div class="rounded-4 p-3 p-md-4 mb-4 text-white shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3"
+             style="background: linear-gradient(90deg, #0f172a 0%, #1e293b 65%, #78350f 100%); border-left: 6px solid #f59e0b;">
+            <div class="d-flex align-items-center gap-3">
+                <span class="d-inline-flex align-items-center justify-content-center rounded-3 bg-warning text-dark p-2 shadow-sm" style="width: 46px; height: 46px;">
+                    <i class="bi bi-lightning-charge-fill fs-3"></i>
+                </span>
+                <div>
+                    <div class="d-flex align-items-center gap-2">
+                        <h3 class="fw-extrabold mb-0 fs-4 text-white">FLASH SALE &amp; BỘ SƯU TẬP HOT</h3>
+                        <span class="badge bg-danger rounded-pill px-2 py-1" style="font-size: 0.7rem;">GIẢM TỚI 15%</span>
+                    </div>
+                    <p class="mb-0 text-white-50 small">Săn ngay các cỗ máy thời gian bán chạy nhất với mức giá ưu đãi đặc biệt trong ngày</p>
+                </div>
+            </div>
+
+            <!-- Live Countdown Timer -->
+            <div class="d-flex align-items-center gap-2">
+                <span class="small text-warning fw-semibold me-1 d-none d-sm-inline"><i class="bi bi-clock-history me-1"></i>Kết thúc sau:</span>
+                <div class="d-flex align-items-center gap-1 text-center">
+                    <div class="rounded-3 px-2.5 py-1.5 fw-extrabold" style="background: rgba(255,255,255,0.12); min-width: 42px; border: 1px solid rgba(255,255,255,0.2);">
+                        <span id="fsHours" class="fs-6 text-warning">04</span>
+                        <div style="font-size: 9px;" class="text-white-50 text-uppercase">Giờ</div>
+                    </div>
+                    <span class="fw-bold text-warning">:</span>
+                    <div class="rounded-3 px-2.5 py-1.5 fw-extrabold" style="background: rgba(255,255,255,0.12); min-width: 42px; border: 1px solid rgba(255,255,255,0.2);">
+                        <span id="fsMinutes" class="fs-6 text-warning">45</span>
+                        <div style="font-size: 9px;" class="text-white-50 text-uppercase">Phút</div>
+                    </div>
+                    <span class="fw-bold text-warning">:</span>
+                    <div class="rounded-3 px-2.5 py-1.5 fw-extrabold" style="background: rgba(255,255,255,0.12); min-width: 42px; border: 1px solid rgba(255,255,255,0.2);">
+                        <span id="fsSeconds" class="fs-6 text-warning">59</span>
+                        <div style="font-size: 9px;" class="text-white-50 text-uppercase">Giây</div>
+                    </div>
+                </div>
+                <a th:href="@{/products}" class="btn btn-sm ws-btn-gold rounded-pill px-3 py-2 ms-2 d-none d-md-inline-flex align-items-center gap-1">
+                    <span>Xem tất cả</span> <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 5. PRODUCT CARDS GRID (SYNCHRONIZED LUXURY COMPONENT) -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+            <div class="col" th:each="product : ${products}">
+                <div class="card h-100 product-card position-relative d-flex flex-column">
+                    <!-- Clickable Image & Content Area -->
+                    <a th:href="@{/products/{id}(id=${product.id})}" class="card-link text-decoration-none flex-grow-1 d-flex flex-column">
+                        <!-- 1:1 Pearl Gray Image Box -->
+                        <div class="ws-product-img-box">
+                            <img th:if="${product.image != null}" th:src="${product.image}" alt="Ảnh sản phẩm" loading="lazy">
+                            <div th:unless="${product.image != null}" class="text-secondary d-flex flex-column align-items-center justify-content-center">
+                                <i class="bi bi-watch fs-1 mb-1"></i>
+                                <span class="small">Chưa có ảnh</span>
+                            </div>
+
+                            <!-- Left Badge: GIẢM 15% Wine Red -->
+                            <span class="position-absolute top-0 start-0 m-2.5 ws-badge-sale" style="margin: 12px;">
+                                <i class="bi bi-tag-fill me-1"></i>GIẢM 15%
+                            </span>
+
+                            <!-- Right Badge: Chính hãng / Hết hàng -->
+                            <span th:if="${product.stock <= 0}" class="position-absolute top-0 end-0 badge bg-dark rounded-2 px-2 py-1" style="margin: 12px;">Hết hàng</span>
+                            <span th:if="${product.stock > 0}" class="position-absolute top-0 end-0 ws-badge-auth" style="margin: 12px;">
+                                <i class="bi bi-patch-check-fill me-1"></i>Chính hãng
+                            </span>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="card-body p-3 d-flex flex-column flex-grow-1">
+                            <!-- Brand & Gender -->
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <span class="text-uppercase fw-extrabold" style="font-size: 0.72rem; color: #d97706; letter-spacing: 0.6px;"
+                                      th:text="${product.brand != null ? product.brand.name : 'LUXURY WATCH'}">THƯƠNG HIỆU</span>
+                                <span class="text-muted" style="font-size: 0.72rem;" th:text="${product.gender != null ? product.gender : 'Unisex'}">Nam</span>
+                            </div>
+
+                            <!-- Product Title -->
+                            <h6 class="card-title fw-bold mb-2 text-truncate" style="color: #0f172a; font-size: 0.96rem;"
+                                th:text="${product.name}" th:title="${product.name}">Tên sản phẩm</h6>
+
+                            <!-- Compact Tech Specs Pills (Diameter, Movement, Water Resistance) -->
+                            <div class="d-flex flex-wrap gap-1 mb-3">
+                                <span class="ws-spec-tag">
+                                    <i class="bi bi-circle me-1 text-secondary" style="font-size: 9px;"></i><span th:text="${product.gender == 'Nữ' ? '34mm' : '40mm'}">40mm</span>
+                                </span>
+                                <span class="ws-spec-tag" th:text="${product.movement != null and !#strings.isEmpty(product.movement) ? (#strings.length(product.movement) > 14 ? #strings.substring(product.movement, 0, 14) : product.movement) : 'Automatic'}">Automatic</span>
+                                <span class="ws-spec-tag" th:text="${product.waterResistance != null and !#strings.isEmpty(product.waterResistance) ? (#strings.length(product.waterResistance) > 10 ? #strings.substring(product.waterResistance, 0, 10) : product.waterResistance) : '50M'}">50M</span>
+                            </div>
+
+                            <!-- Pricing Block (Current Price + Strikethrough Original Price + Discount Pill) -->
+                            <div class="mt-auto pt-2" style="border-top: 1px dashed #e2e8f0;">
+                                <div class="d-flex align-items-baseline gap-2 flex-wrap">
+                                    <span class="ws-price-current" th:text="${product.price != null ? #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' ₫' : '0 ₫'}">0 ₫</span>
+                                    <span class="ws-price-old" th:if="${product.price != null}"
+                                          th:text="${#numbers.formatDecimal(product.price * 1.18, 0, 'COMMA', 0, 'POINT') + ' ₫'}">0 ₫</span>
+                                </div>
+                            </div>
                         </div>
                     </a>
-                    <div class="card-footer bg-white border-top-0 pt-0 pb-3">
-                        <div class="row g-2 mt-1">
-                            <div class="col-7">
-                                <button type="button" 
-                                        class="btn btn-sm btn-outline-primary w-100 rounded-pill d-flex align-items-center justify-content-center gap-1"
+
+                    <!-- Card Footer Actions -->
+                    <div class="card-footer bg-white border-top-0 px-3 pb-3 pt-0">
+                        <div class="row g-2">
+                            <div class="col-8">
+                                <button type="button"
+                                        class="btn btn-sm ws-btn-cart w-100 rounded-pill py-2 d-flex align-items-center justify-content-center gap-1"
                                         th:onclick="'addToCartAjax(' + ${product.id} + ', 1, event);'"
                                         th:disabled="${product.stock <= 0}"
                                         title="Thêm vào giỏ hàng">
-                                    <i class="bi bi-cart-plus"></i>
-                                    <span>Thêm giỏ</span>
+                                    <i class="bi bi-cart-plus-fill"></i>
+                                    <span th:text="${product.stock > 0 ? 'Thêm vào giỏ' : 'Tạm hết hàng'}">Thêm vào giỏ</span>
                                 </button>
                             </div>
-                            <div class="col-5">
-                                <button type="button" 
-                                        class="btn btn-sm btn-outline-secondary w-100 rounded-pill d-flex align-items-center justify-content-center gap-1"
+                            <div class="col-4">
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-secondary w-100 rounded-pill py-2 d-flex align-items-center justify-content-center gap-1"
+                                        style="font-size: 0.78rem; font-weight: 600;"
                                         th:attr="data-compare-id=${product.id}"
                                         th:onclick="'toggleCompareProduct(' + ${product.id} + ', this);'"
-                                        title="So sánh">
+                                        title="So sánh đồng hồ">
                                     <i class="bi bi-arrow-left-right"></i>
                                     <span>So sánh</span>
                                 </button>
@@ -162,6 +350,28 @@
             </div>
         </div>
     </main>
+
+    <!-- Flash Sale Countdown Script -->
+    <script>
+        (function initFlashSaleTimer() {
+            let totalSeconds = 4 * 3600 + 45 * 60 + 59;
+            const hEl = document.getElementById('fsHours');
+            const mEl = document.getElementById('fsMinutes');
+            const sEl = document.getElementById('fsSeconds');
+            if (!hEl || !mEl || !sEl) return;
+
+            setInterval(function() {
+                if (totalSeconds <= 0) totalSeconds = 5 * 3600;
+                totalSeconds--;
+                const h = Math.floor(totalSeconds / 3600);
+                const m = Math.floor((totalSeconds % 3600) / 60);
+                const s = totalSeconds % 60;
+                hEl.textContent = String(h).padStart(2, '0');
+                mEl.textContent = String(m).padStart(2, '0');
+                sEl.textContent = String(s).padStart(2, '0');
+            }, 1000);
+        })();
+    </script>
 
     <footer th:replace="~{fragments/web-layout :: footer}"></footer>
 </body>

@@ -1,6 +1,7 @@
 package iuh.fit.watchstore.config;
 
 import iuh.fit.watchstore.security.CustomAuthenticationSuccessHandler;
+import iuh.fit.watchstore.security.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,10 +19,14 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-    public SecurityConfig(UserDetailsService userDetailsService, CustomAuthenticationSuccessHandler successHandler) {
+    public SecurityConfig(UserDetailsService userDetailsService, 
+                          CustomAuthenticationSuccessHandler successHandler,
+                          CustomOAuth2UserService customOAuth2UserService) {
         this.userDetailsService = userDetailsService;
         this.successHandler = successHandler;
+        this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Bean
@@ -44,11 +49,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/compare/api/**", "/cart/api/**"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/compare/api/**", "/cart/api/**", "/api/chat/**", "/checkout/api/**"))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/checkout/**", "/customer/**", "/orders/**", "/profile/**").hasRole("CUSTOMER")
-                .requestMatchers("/", "/products/**", "/cart/**", "/compare/**", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/checkout/api/**", "/tracking/**").permitAll()
+                .requestMatchers("/profile/**", "/orders/**", "/checkout/**", "/customer/**").authenticated()
+                .requestMatchers("/", "/products/**", "/about", "/contact", "/size-guide", "/cart/**", "/compare/**", "/api/chat/**", "/login", "/register", "/css/**", "/js/**", "/images/**", "/uploads/**", "/oauth2/**", "/login/oauth2/**").permitAll()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form
@@ -56,6 +62,14 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login")
                 .successHandler(successHandler)
                 .permitAll()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .successHandler(successHandler)
+                .userInfoEndpoint(userInfo -> userInfo
+                    .userService(customOAuth2UserService)
+                    .oidcUserService(customOAuth2UserService::loadOidcUser)
+                )
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
