@@ -170,6 +170,115 @@
                         </a>
 
                     </div>
+                    <!-- Thông tin khách hàng -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0 fw-bold">Thông tin khách hàng</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <strong>Họ và tên:</strong>
+                                    <span th:text="${selectedUser.fullName}"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <strong>Email:</strong>
+                                    <span th:text="${selectedUser.email}"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <strong>Số điện thoại:</strong>
+                                    <span th:text="${selectedUser.phone != null ? selectedUser.phone : 'Chưa cập nhật'}"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <strong>Địa chỉ:</strong>
+                                    <span th:text="${selectedUser.address != null ? selectedUser.address : 'Chưa cập nhật'}"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <strong>Ngày đăng ký:</strong>
+                                    <span th:if="${selectedUser.createdAt != null}"
+                                          th:text="${#temporals.format(selectedUser.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                    </span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <strong>Tổng số đơn hàng:</strong>
+                                    <span class="badge bg-info text-dark"
+                                          th:text="${orderCounts[selectedUser.id]}">
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                       <!-- Bảng đơn hàng -->
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 fw-bold">Các đơn hàng đã đặt</h5>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+
+                                <table class="table table-hover align-middle mb-0">
+
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Mã đơn hàng</th>
+                                            <th>Người nhận</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Ngày đặt</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Trạng thái</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        <tr th:each="order : ${orders}">
+
+                                            <td th:text="${'#' + order.id}"></td>
+
+                                            <td th:text="${order.receiverName}"></td>
+
+                                            <td th:text="${order.phone}"></td>
+
+                                            <td>
+                                                <span th:if="${order.createdAt != null}"
+                                                      th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                                </span>
+                                            </td>
+
+                                            <td class="fw-bold"
+                                                th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                            </td>
+
+                                            <td>
+                                                <span class="badge bg-secondary"
+                                                      th:text="${order.status}">
+                                                </span>
+                                            </td>
+
+                                        </tr>
+
+                                        <tr th:if="${#lists.isEmpty(orders)}">
+                                            <td colspan="6"
+                                                class="text-center py-4 text-muted">
+                                                Khách hàng chưa có đơn hàng nào.
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
         </div>
 
     </div>
