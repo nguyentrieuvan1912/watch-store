@@ -17,9 +17,9 @@ public class UserServiceImpl implements UserService {
     private final OrderRepository orderRepository;
     private final NotificationService notificationService;
 
-    public UserServiceImpl(UserRepository userRepository, 
-                           OrderRepository orderRepository, 
-                           NotificationService notificationService) {
+    public UserServiceImpl(UserRepository userRepository,
+            OrderRepository orderRepository,
+            NotificationService notificationService) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
         this.notificationService = notificationService;
@@ -62,5 +62,12 @@ public class UserServiceImpl implements UserService {
             throw new InvalidOperationException("Cannot delete User because they have an order history");
         }
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public User updateUserStatus(Long id, Boolean status) {
+        User user = getUserById(id);
+        user.setStatus(status);
+        return userRepository.save(user);
     }
 }
