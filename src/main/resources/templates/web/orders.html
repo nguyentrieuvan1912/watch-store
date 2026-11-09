@@ -50,15 +50,15 @@
                                     </span>
                                 </td>
                                 <td class="text-center">
-                                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary me-1">
-                                        <i class="bi bi-eye"></i> Xem
+                                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-sm btn-primary rounded-pill px-3 fw-semibold shadow-xs me-1">
+                                        <i class="bi bi-truck me-1"></i> Xem chi tiết &amp; Tiến độ
                                     </a>
                                     
                                     <form th:if="${order.status.name() == 'PENDING' or order.status.name() == 'CONFIRMED' or order.status.name() == 'PROCESSING'}" 
                                           th:action="@{/orders/cancel/{id}(id=${order.id})}" method="post" class="d-inline"
                                           onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-x-circle"></i> Hủy đơn
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-2.5">
+                                            <i class="bi bi-x-circle"></i> Hủy
                                         </button>
                                     </form>
                                 </td>

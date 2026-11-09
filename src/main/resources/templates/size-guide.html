@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Hướng dẫn chọn size đồng hồ')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-light p-3 rounded-pill shadow-sm">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Hướng dẫn chọn size</li>
+            </ol>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="row align-items-center mb-5 pb-3">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="pe-lg-4">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold mb-3">
+                        <i class="bi bi-rulers me-1"></i> Cẩm nang chọn đồng hồ
+                    </span>
+                    <h1 class="display-5 fw-bold text-dark mb-3">Hướng dẫn chọn Size Đồng Hồ chuẩn xác</h1>
+                    <p class="lead text-secondary mb-4">
+                        Một chiếc đồng hồ vừa vặn không chỉ mang lại cảm giác thoải mái khi đeo suốt ngày dài mà còn tôn vinh đẳng cấp, phong cách lịch lãm của bạn.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#size-chart" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-semibold">
+                            <i class="bi bi-table me-2"></i>Xem bảng size chuẩn
+                        </a>
+                        <a th:href="@{/products}" class="btn btn-outline-secondary btn-lg rounded-pill px-4 fw-semibold">
+                            <i class="bi bi-watch me-2"></i>Khám phá bộ sưu tập
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d" 
+                         alt="Hướng dẫn đo size đồng hồ" 
+                         class="img-fluid rounded-4 shadow-lg w-100" 
+                         style="max-height: 420px; object-fit: cover;">
+                    <div class="position-absolute bottom-0 start-0 m-4 p-3 bg-white bg-opacity-95 rounded-3 shadow border d-flex align-items-center gap-3">
+                        <div class="badge bg-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            <i class="bi bi-check2-all fs-4 text-white"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark mb-0">Đo nhanh trong 1 phút</div>
+                            <small class="text-muted">Áp dụng công thức vàng tỷ lệ vàng</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3 Steps Measurement Section -->
+        <div class="mb-5">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold text-dark">3 Bước đo chu vi cổ tay tại nhà</h3>
+                <p class="text-muted">Đơn giản, chính xác chỉ với một dải giấy hoặc thước dây mềm</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-center">
+                        <div class="bg-primary-subtle text-primary rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <span class="fs-3 fw-bold">1</span>
+                        </div>
+                        <h5 class="fw-bold mb-2">Quấn dải đo</h5>
+                        <p class="text-muted small mb-0">
+                            Dùng một sợi chỉ, dải giấy hoặc thước dây quấn quanh vị trí cổ tay nơi bạn thường đeo đồng hồ nhất.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-center">
+                        <div class="bg-primary-subtle text-primary rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <span class="fs-3 fw-bold">2</span>
+                        </div>
+                        <h5 class="fw-bold mb-2">Đánh dấu & Đo chiều dài</h5>
+                        <p class="text-muted small mb-0">
+                            Đánh dấu điểm giao nhau rồi trải thẳng dải giấy lên thước kẻ để đọc kết quả chu vi cổ tay (tính bằng cm).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-center">
+                        <div class="bg-primary-subtle text-primary rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <span class="fs-3 fw-bold">3</span>
+                        </div>
+                        <h5 class="fw-bold mb-2">Áp dụng công thức vàng</h5>
+                        <p class="text-muted small mb-0">
+                            <strong>Size tối ưu:</strong> Chu vi (mm) / 4.5<br>
+                            <strong>Size tối đa:</strong> Chu vi (mm) / 4.0
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Size Chart Section -->
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-5" id="size-chart">
+            <div class="card-header bg-dark text-white py-3 px-4 d-flex align-items-center justify-content-between">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-table me-2 text-warning"></i>Bảng tra cứu kích thước mặt đồng hồ (Case Size)</h5>
+                <span class="badge bg-primary px-3 py-1 rounded-pill">Tiêu chuẩn quốc tế</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="py-3 px-4 text-start">Độ lớn cổ tay</th>
+                                <th class="py-3">Chu vi cổ tay (cm)</th>
+                                <th class="py-3">Size mặt đề xuất (mm)</th>
+                                <th class="py-3">Phù hợp đối tượng</th>
+                                <th class="py-3 px-4 text-end">Gợi ý phong cách</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-3 px-4 text-start fw-semibold">
+                                    <span class="badge bg-secondary-subtle text-secondary me-2">Nhỏ</span> Cổ tay nhỏ
+                                </td>
+                                <td>Dưới 15.0 cm</td>
+                                <td><span class="badge bg-info-subtle text-info border border-info px-3 py-1 fs-6">34mm - 38mm</span></td>
+                                <td>Nữ giới hoặc Nam tay thanh mảnh</td>
+                                <td class="py-3 px-4 text-end text-muted small">Dress Watch mỏng nhẹ, dây da thanh lịch</td>
+                            </tr>
+                            <tr class="table-primary bg-opacity-25">
+                                <td class="py-3 px-4 text-start fw-semibold text-primary">
+                                    <span class="badge bg-primary me-2">Vàng</span> Cổ tay trung bình
+                                </td>
+                                <td class="fw-bold">15.0 cm - 17.0 cm</td>
+                                <td><span class="badge bg-primary px-3 py-1 fs-6 shadow-sm">39mm - 41mm</span></td>
+                                <td class="fw-semibold">Đa số nam giới Việt Nam</td>
+                                <td class="py-3 px-4 text-end text-primary small fw-semibold">Cực kỳ dễ đeo, phù hợp mọi dòng đồng hồ</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 text-start fw-semibold">
+                                    <span class="badge bg-success-subtle text-success me-2">Khá to</span> Cổ tay lớn
+                                </td>
+                                <td>17.0 cm - 19.0 cm</td>
+                                <td><span class="badge bg-success-subtle text-success border border-success px-3 py-1 fs-6">42mm - 44mm</span></td>
+                                <td>Nam giới thể thao, cổ tay nở nang</td>
+                                <td class="py-3 px-4 text-end text-muted small">Chronograph, Diver thể thao, dây kim loại</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 text-start fw-semibold">
+                                    <span class="badge bg-danger-subtle text-danger me-2">Rất to</span> Cổ tay ngoại cỡ
+                                </td>
+                                <td>Trên 19.0 cm</td>
+                                <td><span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1 fs-6">Trên 44mm</span></td>
+                                <td>Nam giới vạm vỡ, thích hầm hố</td>
+                                <td class="py-3 px-4 text-end text-muted small">Pilot, G-Shock hầm hố, đồng hồ dã ngoại</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-light p-3 px-4 text-muted small d-flex align-items-center gap-2">
+                <i class="bi bi-info-circle text-primary fs-5 flex-shrink-0"></i>
+                <span><strong>Mẹo bỏ túi:</strong> Nếu cổ tay của bạn nằm ở mức ranh giới (ví dụ 17cm), hãy ưu tiên chọn mặt kính 40mm - 41mm nếu thích vẻ đẹp cổ điển gọn gàng, hoặc 42mm nếu thích sự trẻ trung, cá tính.</span>
+            </div>
+        </div>
+
+        <!-- 3 Essential Factors Checklist -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="badge bg-warning-subtle text-warning p-3 rounded-circle">
+                            <i class="bi bi-arrows-expand fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-0">Chiều dài Lug-to-Lug</h5>
+                    </div>
+                    <p class="text-secondary small mb-0">
+                        Lug-to-lug là khoảng cách giữa hai đầu vấu gắn dây. Hãy chắc chắn vấu đồng hồ không thò ra ngoài mép cổ tay bạn để đảm bảo độ ôm khít tự nhiên.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="badge bg-info-subtle text-info p-3 rounded-circle">
+                            <i class="bi bi-layers fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-0">Độ dày mặt đồng hồ</h5>
+                    </div>
+                    <p class="text-secondary small mb-0">
+                        Độ dày lý tưởng là từ 8mm - 12mm. Đồng hồ cơ công sở (Dress Watch) nên mỏng dưới 11mm để vừa vặn khi cài măng sét áo sơ mi.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="badge bg-success-subtle text-success p-3 rounded-circle">
+                            <i class="bi bi-slash-circle fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-0">Chất liệu dây đeo</h5>
+                    </div>
+                    <p class="text-secondary small mb-0">
+                        Dây kim loại thường tạo cảm giác mặt đồng hồ to và dày hơn. Nếu cổ tay hơi nhỏ, chọn dây da hoặc dây cao su sẽ giúp đồng hồ trông vừa vặn hơn.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Callout Banner -->
+        <div class="bg-primary text-white rounded-4 p-5 text-center shadow-lg position-relative overflow-hidden">
+            <div class="position-relative z-1">
+                <h3 class="fw-bold mb-3">Bạn đã biết kích thước cổ tay của mình?</h3>
+                <p class="lead mb-4 opacity-75">Khám phá ngay hàng trăm mẫu đồng hồ chính hãng với kích cỡ chuẩn xác tại Watch Store</p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a th:href="@{/products}" class="btn btn-light btn-lg rounded-pill px-4 fw-bold text-primary shadow">
+                        <i class="bi bi-grid me-2"></i>Xem tất cả sản phẩm
+                    </a>
+                    <a th:href="@{/contact}" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-semibold">
+                        <i class="bi bi-chat-dots me-2"></i>Cần tư vấn trực tiếp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>
+

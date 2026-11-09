@@ -52,6 +52,10 @@ public class User {
     private String ward;
     private String streetAddress;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean status = true;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;

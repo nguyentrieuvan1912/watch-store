@@ -4,70 +4,233 @@
 <body>
     <header th:replace="~{fragments/web-layout :: navbar}"></header>
 
-    <main class="container my-5">
+    <style>
+        .ws-detail-gallery {
+            background: #f1f5f9;
+            border-radius: 24px;
+            border: 1px solid var(--ws-border);
+            position: relative;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem;
+            overflow: hidden;
+        }
+        .ws-detail-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            mix-blend-mode: multiply;
+        }
+        .ws-detail-gallery:hover img {
+            transform: scale(1.06);
+        }
+        .ws-price-box {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef2f2 100%);
+            border: 1px solid #fde68a;
+            border-radius: 18px;
+            padding: 1.25rem 1.5rem;
+        }
+        .ws-policy-mini {
+            background: #ffffff;
+            border: 1px solid var(--ws-border);
+            border-radius: 14px;
+            padding: 0.85rem 1rem;
+            transition: var(--ws-transition);
+        }
+        .ws-policy-mini:hover {
+            border-color: var(--ws-accent-gold);
+            background: #fffbeb;
+        }
+        .ws-spec-table {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--ws-border);
+        }
+        .ws-spec-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 0.85rem 1.2rem;
+            width: 38%;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .ws-spec-table td {
+            color: var(--ws-primary-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.85rem 1.2rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
+        }
+        .ws-qty-stepper {
+            display: inline-flex;
+            align-items: center;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 999px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+        .ws-qty-stepper button {
+            border: none;
+            background: transparent;
+            width: 38px;
+            height: 40px;
+            font-weight: 700;
+            color: var(--ws-primary-dark);
+            transition: var(--ws-transition);
+        }
+        .ws-qty-stepper button:hover {
+            background: #f1f5f9;
+            color: var(--ws-accent-gold);
+        }
+        .ws-qty-stepper input {
+            border: none;
+            width: 50px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--ws-primary-dark);
+            outline: none;
+        }
+        .ws-qty-stepper input::-webkit-outer-spin-button,
+        .ws-qty-stepper input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+
+    <main class="container my-4 pb-5">
         <div th:replace="~{fragments/web-layout :: alerts}"></div>
         
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
-                <li class="breadcrumb-item"><a th:href="@{/products}">Sản phẩm</a></li>
-                <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}">Tên sản phẩm</li>
+            <ol class="breadcrumb mb-0 small fw-medium">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none text-muted"><i class="bi bi-house-door me-1"></i>Trang chủ</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/products}" class="text-decoration-none text-muted">Đồng hồ chính hãng</a></li>
+                <li class="breadcrumb-item" th:if="${product.brand != null}">
+                    <a th:href="@{/products(brandId=${product.brand.id})}" class="text-decoration-none text-muted" th:text="${product.brand.name}">Thương hiệu</a>
+                </li>
+                <li class="breadcrumb-item active text-dark fw-semibold text-truncate" style="max-width: 280px;" aria-current="page" th:text="${product.name}">Tên sản phẩm</li>
             </ol>
         </nav>
 
-        <div class="row g-5">
-            <!-- Product Image -->
-            <div class="col-md-6 mb-4">
-                <div class="card border-0 shadow-sm overflow-hidden p-2">
-                    <img th:if="${product.image != null}" th:src="${product.image}" class="img-fluid rounded" alt="Ảnh sản phẩm" style="width: 100%; max-height: 500px; object-fit: contain;">
-                    <div th:unless="${product.image != null}" class="bg-secondary text-white d-flex align-items-center justify-content-center rounded" style="height: 400px;">
-                        <span>Không có hình ảnh</span>
-                    </div>
+        <!-- Product Main Info Row -->
+        <div class="row g-4 g-lg-5 mb-5">
+            <!-- Left: Product Gallery -->
+            <div class="col-lg-5">
+                <div class="ws-detail-gallery product-image-wrapper position-relative shadow-sm">
+                    <span class="position-absolute top-0 start-0 m-3 ws-badge-sale" style="z-index: 2;"><i class="bi bi-tag-fill me-1"></i>GIẢM 15%</span>
+                    <span class="position-absolute top-0 end-0 m-3 ws-badge-auth" style="z-index: 2;"><i class="bi bi-patch-check-fill text-warning me-1"></i>100% Chính hãng</span>
+
+                    <img th:if="${product.image != null and !product.image.isEmpty()}" 
+                         th:src="${product.image}" 
+                         th:alt="${product.name}"
+                         onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=700&auto=format&fit=crop&q=80';">
+                    <img th:unless="${product.image != null and !product.image.isEmpty()}" 
+                         src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=700&auto=format&fit=crop&q=80" 
+                         th:alt="${product.name}">
+                </div>
+
+                <!-- Quick Spec Pills under gallery -->
+                <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+                    <span class="ws-spec-tag px-3 py-2">
+                        <i class="bi bi-aspect-ratio text-warning"></i>
+                        <span th:text="${product.gender == 'Nữ' ? 'Size 34mm' : 'Size 40mm'}">Size 40mm</span>
+                    </span>
+                    <span class="ws-spec-tag px-3 py-2" th:if="${product.movement != null}">
+                        <i class="bi bi-gear-wide-connected text-warning"></i>
+                        <span th:text="${product.movement}">Automatic</span>
+                    </span>
+                    <span class="ws-spec-tag px-3 py-2" th:if="${product.waterResistance != null}">
+                        <i class="bi bi-droplet-half text-info"></i>
+                        <span th:text="${product.waterResistance}">50M</span>
+                    </span>
+                    <span class="ws-spec-tag px-3 py-2">
+                        <i class="bi bi-shield-check text-success"></i>
+                        <span th:text="${product.warranty != null ? product.warranty : 'Bảo hành 5 năm'}">Bảo hành 5 năm</span>
+                    </span>
                 </div>
             </div>
 
-            <!-- Product Details -->
-            <div class="col-md-6">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge bg-dark" th:text="${product.brand != null ? product.brand.name : 'Chính hãng'}">Thương hiệu</span>
-                    <span class="badge bg-secondary" th:text="${product.category != null ? product.category.name : 'Đồng hồ'}">Danh mục</span>
+            <!-- Right: Product Details & Purchase Box -->
+            <div class="col-lg-7">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <a th:if="${product.brand != null}" th:href="@{/products(brandId=${product.brand.id})}" 
+                       class="badge rounded-pill text-decoration-none px-3 py-2 fw-bold" 
+                       style="background: #0f172a; color: #f59e0b; letter-spacing: 0.6px;"
+                       th:text="${product.brand.name}">THƯƠNG HIỆU</a>
+                    <span class="badge rounded-pill bg-light text-secondary border px-3 py-2 fw-semibold" 
+                          th:text="${product.category != null ? product.category.name : 'Đồng hồ cao cấp'}">Danh mục</span>
+                    <span th:if="${product.stock > 0}" class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i>Còn hàng (<span th:text="${product.stock}"></span> chiếc)
+                    </span>
+                    <span th:unless="${product.stock > 0}" class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fw-semibold">
+                        <i class="bi bi-x-circle-fill me-1"></i>Tạm hết hàng
+                    </span>
                 </div>
 
-                <h2 class="fw-bold mb-1" th:text="${product.name}">Tên sản phẩm</h2>
-                <p class="text-muted mb-3">Mã model: <span class="fw-semibold" th:text="${product.model}">Mã sản phẩm</span></p>
-                
-                <div class="mb-3">
-                    <h3 class="text-danger fw-bold display-6 mb-0" th:text="${product.price != null ? #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</h3>
-                </div>
-                
-                <div class="mb-4">
-                    <span th:if="${product.stock > 0}" class="badge bg-success-subtle text-success border border-success px-3 py-2 fs-6 rounded-pill">
-                        <i class="bi bi-check-circle-fill me-1"></i> Còn hàng (<span th:text="${product.stock}"></span> sản phẩm có sẵn)
+                <h1 class="fw-bold mb-2" style="color: var(--ws-primary-dark); font-size: 1.85rem; line-height: 1.3;" th:text="${product.name}">Tên sản phẩm</h1>
+
+                <div class="d-flex flex-wrap align-items-center gap-3 text-muted small mb-3">
+                    <span>Mã Model: <strong class="text-dark" th:text="${product.model != null ? product.model : 'WS-' + product.id}">Mã SP</strong></span>
+                    <span>•</span>
+                    <span class="text-warning">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <strong class="text-dark ms-1">5.0</strong> <span class="text-muted">(Chứng nhận đại lý ủy quyền)</span>
                     </span>
-                    <span th:unless="${product.stock > 0}" class="badge bg-danger-subtle text-danger border border-danger px-3 py-2 fs-6 rounded-pill">
-                        <i class="bi bi-x-circle-fill me-1"></i> Tạm hết hàng
-                    </span>
                 </div>
-                
+
+                <!-- Luxury Price Block -->
+                <div class="ws-price-box mb-4">
+                    <div class="d-flex flex-wrap align-items-baseline gap-3">
+                        <span class="fw-extrabold" style="font-size: 2rem; font-weight: 800; color: #be123c;"
+                              th:text="${product.price != null ? #numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' ₫' : '0 ₫'}">0 ₫</span>
+                        <span class="ws-price-old fs-5"
+                              th:if="${product.price != null}"
+                              th:text="${#numbers.formatDecimal(product.price * 1.18, 0, 'COMMA', 0, 'POINT') + ' ₫'}">0 ₫</span>
+                        <span class="badge rounded-pill bg-danger text-white px-3 py-1 fw-bold"
+                              th:if="${product.price != null}"
+                              th:text="'Tiết kiệm ' + ${#numbers.formatDecimal(product.price * 0.18, 0, 'COMMA', 0, 'POINT')} + ' ₫'">Tiết kiệm</span>
+                    </div>
+                    <div class="small text-secondary mt-2 d-flex flex-wrap gap-3">
+                        <span><i class="bi bi-credit-card-2-front text-warning me-1"></i>Hỗ trợ thanh toán VietQR 24/7</span>
+                        <span><i class="bi bi-truck text-success me-1"></i>Miễn phí giao hàng toàn quốc</span>
+                    </div>
+                </div>
+
                 <!-- Action Form (Add to Cart & Buy Now) -->
-                <form th:action="@{/cart/add}" method="post" class="mb-5" th:if="${product.stock > 0}">
+                <form th:action="@{/cart/add}" method="post" class="mb-4" th:if="${product.stock > 0}">
                     <input type="hidden" name="productId" th:value="${product.id}">
                     <div class="d-flex align-items-center gap-3 mb-4">
-                        <label for="quantity" class="form-label mb-0 fw-bold">Số lượng:</label>
-                        <div class="input-group" style="width: 140px;">
-                            <input type="number" id="quantity" name="quantity" class="form-control text-center" value="1" min="1" th:max="${product.stock}">
+                        <label for="quantity" class="form-label mb-0 fw-bold text-dark">Số lượng:</label>
+                        <div class="ws-qty-stepper">
+                            <button type="button" onclick="stepDetailQty(-1)"><i class="bi bi-dash"></i></button>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" th:max="${product.stock}">
+                            <button type="button" onclick="stepDetailQty(1)"><i class="bi bi-plus"></i></button>
                         </div>
+                        <span class="text-muted small">Có sẵn <strong th:text="${product.stock}"></strong> sản phẩm tại showroom</span>
                     </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button type="button" class="btn btn-outline-primary btn-lg flex-grow-1" th:onclick="'addToCartFromDetail(' + ${product.id} + ')'">
-                            <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng
+
+                    <div class="d-flex flex-wrap gap-3">
+                        <button type="button" class="btn ws-btn-cart btn-lg rounded-pill px-4 flex-grow-1 fw-bold"
+                                style="font-size: 0.98rem; padding-top: 0.8rem; padding-bottom: 0.8rem;"
+                                th:onclick="'addToCartFromDetail(' + ${product.id} + ')'">
+                            <i class="bi bi-bag-plus-fill me-2"></i>Thêm vào giỏ hàng
                         </button>
-                        <button type="submit" th:formaction="@{/cart/buy-now}" class="btn btn-danger btn-lg flex-grow-1">
-                            <i class="bi bi-lightning-fill me-1"></i> Mua ngay
+                        <button type="submit" th:formaction="@{/cart/buy-now}"
+                                class="btn ws-btn-gold btn-lg rounded-pill px-4 flex-grow-1 fw-bold"
+                                style="font-size: 0.98rem; padding-top: 0.8rem; padding-bottom: 0.8rem;">
+                            <i class="bi bi-lightning-charge-fill me-1"></i>Mua ngay (Giao nhanh 2H)
                         </button>
                         <button type="button" 
-                                class="btn btn-outline-secondary btn-lg" 
+                                class="btn btn-outline-secondary btn-lg rounded-pill px-3" 
                                 th:attr="data-compare-id=${product.id}"
                                 th:onclick="'toggleCompareProduct(' + ${product.id} + ', this);'"
                                 title="Thêm vào danh sách so sánh (tối đa 3)">
@@ -77,6 +240,15 @@
                 </form>
 
                 <script>
+                    function stepDetailQty(delta) {
+                        const qtyInput = document.getElementById('quantity');
+                        if (!qtyInput) return;
+                        const max = parseInt(qtyInput.getAttribute('max')) || 99;
+                        let val = (parseInt(qtyInput.value) || 1) + delta;
+                        if (val < 1) val = 1;
+                        if (val > max) val = max;
+                        qtyInput.value = val;
+                    }
                     function addToCartFromDetail(productId) {
                         const qtyInput = document.getElementById('quantity');
                         const qty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
@@ -86,37 +258,225 @@
 
                 <div th:unless="${product.stock > 0}" class="mb-4">
                     <button type="button" 
-                            class="btn btn-outline-secondary" 
+                            class="btn btn-outline-secondary rounded-pill px-4 py-2" 
                             th:attr="data-compare-id=${product.id}"
                             th:onclick="'toggleCompareProduct(' + ${product.id} + ', this);'"
                             title="Thêm vào danh sách so sánh (tối đa 3)">
-                        <i class="bi bi-arrow-left-right me-1"></i> So sánh
+                        <i class="bi bi-arrow-left-right me-1"></i> Thêm vào so sánh
                     </button>
                 </div>
-                
-                <!-- Technical Specifications -->
-                <h5 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-card-checklist me-2"></i>Thông số kỹ thuật</h5>
-                <table class="table table-striped table-hover border">
-                    <tbody>
-                        <tr><th style="width: 40%;">Thương hiệu</th><td th:text="${product.brand != null ? product.brand.name : '-'}"></td></tr>
-                        <tr><th>Danh mục</th><td th:text="${product.category != null ? product.category.name : '-'}"></td></tr>
-                        <tr><th>Mã Model</th><td th:text="${product.model}"></td></tr>
-                        <tr><th>Giới tính</th><td th:text="${product.gender != null ? product.gender : '-'}"></td></tr>
-                        <tr><th>Loại máy</th><td th:text="${product.movement != null ? product.movement : '-'}"></td></tr>
-                        <tr><th>Chất liệu vỏ</th><td th:text="${product.caseMaterial != null ? product.caseMaterial : '-'}"></td></tr>
-                        <tr><th>Chất liệu dây</th><td th:text="${product.strapMaterial != null ? product.strapMaterial : '-'}"></td></tr>
-                        <tr><th>Độ chống nước</th><td th:text="${product.waterResistance != null ? product.waterResistance : '-'}"></td></tr>
-                        <tr><th>Bảo hành</th><td th:text="${product.warranty != null ? product.warranty : '12 tháng chính hãng'}"></td></tr>
-                    </tbody>
-                </table>
-                
-                <!-- Description -->
-                <div class="mt-4">
-                    <h5 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-info-circle me-2"></i>Mô tả sản phẩm</h5>
-                    <p class="text-secondary lh-base" th:text="${product.description != null and !product.description.isEmpty() ? product.description : 'Đồng hồ chính hãng được phân phối tại Watch Store với đầy đủ phụ kiện và bảo hành chính hãng.'}"></p>
+
+                <!-- 4 Luxury Guarantee Badges -->
+                <div class="row g-2 mt-2">
+                    <div class="col-sm-6">
+                        <div class="ws-policy-mini d-flex align-items-center gap-3">
+                            <i class="bi bi-shield-fill-check fs-4 text-warning"></i>
+                            <div>
+                                <div class="fw-bold small text-dark">Cam kết 100% Chính hãng</div>
+                                <div class="text-muted" style="font-size: 0.78rem;">Đền gấp 10 lần nếu phát hiện hàng giả</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="ws-policy-mini d-flex align-items-center gap-3">
+                            <i class="bi bi-award-fill fs-4 text-warning"></i>
+                            <div>
+                                <div class="fw-bold small text-dark">Bảo hành toàn diện 5 năm</div>
+                                <div class="text-muted" style="font-size: 0.78rem;">Thay pin miễn phí trọn đời máy Quartz</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="ws-policy-mini d-flex align-items-center gap-3">
+                            <i class="bi bi-arrow-repeat fs-4 text-warning"></i>
+                            <div>
+                                <div class="fw-bold small text-dark">Đổi trả dễ dàng 30 ngày</div>
+                                <div class="text-muted" style="font-size: 0.78rem;">1 đổi 1 nếu có lỗi từ nhà sản xuất</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="ws-policy-mini d-flex align-items-center gap-3">
+                            <i class="bi bi-box-seam-fill fs-4 text-warning"></i>
+                            <div>
+                                <div class="fw-bold small text-dark">Fullbox Quốc Tế</div>
+                                <div class="text-muted" style="font-size: 0.78rem;">Hộp sổ, thẻ bảo hành & túi sang trọng</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Specifications & Description Section -->
+        <div class="row g-4 mb-5">
+            <!-- Left: Description -->
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100" style="border: 1px solid var(--ws-border) !important;">
+                    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <i class="bi bi-journal-richtext fs-5 text-warning"></i>
+                        <h5 class="fw-bold mb-0">Đánh giá & Mô tả chi tiết</h5>
+                    </div>
+                    <p class="text-secondary lh-lg mb-3" style="font-size: 0.96rem;"
+                       th:text="${product.description != null and !product.description.isEmpty() ? product.description : 'Tuyệt tác thời gian chính hãng được tuyển chọn khắt khe tại Watch Store. Sản phẩm sở hữu thiết kế tinh xảo, vật liệu chế tác cao cấp cùng bộ máy bền bỉ đạt chuẩn quốc tế, đi kèm đầy đủ hộp sổ và thẻ bảo hành chính hãng 5 năm.'}">
+                    </p>
+                    <div class="p-3 rounded-3 bg-light border small text-secondary mt-auto">
+                        <div class="fw-bold text-dark mb-1"><i class="bi bi-robot text-warning me-1"></i>Mẹo từ Trợ lý AI Watch Store:</div>
+                        Bạn đang phân vân mẫu <strong th:text="${product.name}"></strong> có vừa cổ tay của mình không? Hãy bấm vào biểu tượng <strong>Trợ lý AI</strong> ở góc phải màn hình để được tư vấn chọn size theo chu vi cổ tay ngay lập tức!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Technical Specifications -->
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100" style="border: 1px solid var(--ws-border) !important;">
+                    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <i class="bi bi-sliders2-vertical fs-5 text-warning"></i>
+                        <h5 class="fw-bold mb-0">Thông số kỹ thuật</h5>
+                    </div>
+                    <div class="ws-spec-table">
+                        <table class="table mb-0">
+                            <tbody>
+                                <tr><th>Thương hiệu</th><td th:text="${product.brand != null ? product.brand.name : '-'}"></td></tr>
+                                <tr><th>Bộ sưu tập / Danh mục</th><td th:text="${product.category != null ? product.category.name : '-'}"></td></tr>
+                                <tr><th>Mã Model</th><td th:text="${product.model != null ? product.model : '-'}"></td></tr>
+                                <tr><th>Đối tượng sử dụng</th><td th:text="${product.gender != null ? product.gender : 'Unisex'}"></td></tr>
+                                <tr><th>Bộ máy (Movement)</th><td th:text="${product.movement != null ? product.movement : '-'}"></td></tr>
+                                <tr><th>Chất liệu vỏ</th><td th:text="${product.caseMaterial != null ? product.caseMaterial : 'Thép không gỉ 316L'}"></td></tr>
+                                <tr><th>Chất liệu dây</th><td th:text="${product.strapMaterial != null ? product.strapMaterial : '-'}"></td></tr>
+                                <tr><th>Độ chống nước</th><td th:text="${product.waterResistance != null ? product.waterResistance : '5 ATM (50m)'}"></td></tr>
+                                <tr><th class="border-bottom-0">Chế độ bảo hành</th><td class="border-bottom-0 text-success" th:text="${product.warranty != null ? product.warranty : '5 năm tại Watch Store'}"></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products Section -->
+        <section th:if="${relatedProducts != null and !relatedProducts.isEmpty()}" class="mt-5">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <span class="text-uppercase fw-bold small" style="color: var(--ws-accent-gold); letter-spacing: 1px;">Gợi ý dành riêng cho bạn</span>
+                    <h3 class="fw-bold mb-0 mt-1">Sản Phẩm Cùng Phân Khúc</h3>
+                </div>
+                <a th:href="@{/products}" class="btn btn-outline-dark rounded-pill px-4 btn-sm fw-semibold">
+                    Xem tất cả <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                <div class="col" th:each="rel : ${relatedProducts}">
+                    <div class="card h-100 product-card position-relative d-flex flex-column">
+                        <!-- Clickable Image & Content Area -->
+                        <a th:href="@{/products/{id}(id=${rel.id})}" class="card-link text-decoration-none flex-grow-1 d-flex flex-column">
+                            <!-- 1:1 Pearl Gray Image Box -->
+                            <div class="ws-product-img-box product-image-wrapper position-relative">
+                                <img th:if="${rel.image != null and !rel.image.isEmpty()}" 
+                                     th:src="${rel.image}" 
+                                     th:alt="${rel.name}" 
+                                     loading="lazy"
+                                     onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80';">
+                                <div th:unless="${rel.image != null and !rel.image.isEmpty()}" class="text-secondary d-flex flex-column align-items-center justify-content-center">
+                                    <i class="bi bi-watch fs-1 mb-1"></i>
+                                    <span class="small">Chưa có ảnh</span>
+                                </div>
+
+                                <!-- Left Badge: GIẢM 15% Wine Red -->
+                                <span class="position-absolute top-0 start-0 m-2 ws-badge-sale" style="margin: 12px; z-index: 2;">
+                                    <i class="bi bi-tag-fill me-1"></i>GIẢM 15%
+                                </span>
+
+                                <!-- Right Badge: Chính hãng / Hết hàng -->
+                                <span th:if="${rel.stock <= 0}" class="position-absolute top-0 end-0 m-2 badge bg-dark rounded-2 px-2 py-1" style="margin: 12px; z-index: 2;">Hết hàng</span>
+                                <span th:if="${rel.stock > 0}" class="position-absolute top-0 end-0 m-2 ws-badge-auth" style="margin: 12px; z-index: 2;">
+                                    <i class="bi bi-patch-check-fill me-1"></i>Chính hãng
+                                </span>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="card-body p-3 d-flex flex-column flex-grow-1">
+                                <!-- Brand & Gender -->
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="text-uppercase fw-extrabold" style="font-size: 0.72rem; color: #d97706; letter-spacing: 0.6px;"
+                                          th:text="${rel.brand != null ? rel.brand.name : 'LUXURY WATCH'}">THƯƠNG HIỆU</span>
+                                    <span class="text-muted" style="font-size: 0.72rem;" th:text="${rel.gender != null ? rel.gender : 'Unisex'}">Nam</span>
+                                </div>
+
+                                <!-- Product Title -->
+                                <h6 class="card-title fw-bold mb-2 text-truncate" style="color: #0f172a; font-size: 0.96rem;"
+                                    th:text="${rel.name}" th:title="${rel.name}">Tên sản phẩm</h6>
+
+                                <!-- Compact Tech Specs Pills (Diameter, Movement, Water Resistance) -->
+                                <div class="d-flex flex-wrap gap-1 mb-3">
+                                    <span class="ws-spec-tag">
+                                        <i class="bi bi-circle me-1 text-secondary" style="font-size: 9px;"></i><span th:text="${rel.gender == 'Nữ' ? '34mm' : '40mm'}">40mm</span>
+                                    </span>
+                                    <span class="ws-spec-tag" th:text="${rel.movement != null and !#strings.isEmpty(rel.movement) ? (#strings.length(rel.movement) > 14 ? #strings.substring(rel.movement, 0, 14) : rel.movement) : 'Automatic'}">Automatic</span>
+                                    <span class="ws-spec-tag" th:text="${rel.waterResistance != null and !#strings.isEmpty(rel.waterResistance) ? (#strings.length(rel.waterResistance) > 10 ? #strings.substring(rel.waterResistance, 0, 10) : rel.waterResistance) : '50M'}">50M</span>
+                                </div>
+
+                                <!-- Pricing Block (Current Price + Strikethrough Original Price) -->
+                                <div class="mt-auto pt-2" style="border-top: 1px dashed #e2e8f0;">
+                                    <div class="d-flex align-items-baseline gap-2 flex-wrap">
+                                        <span class="ws-price-current" th:text="${rel.price != null ? #numbers.formatDecimal(rel.price, 0, 'COMMA', 0, 'POINT') + ' ₫' : '0 ₫'}">0 ₫</span>
+                                        <span class="ws-price-old" th:if="${rel.price != null}"
+                                              th:text="${#numbers.formatDecimal(rel.price * 1.18, 0, 'COMMA', 0, 'POINT') + ' ₫'}">0 ₫</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Card Footer Actions -->
+                        <div class="card-footer bg-white border-top-0 px-3 pb-3 pt-0">
+                            <div class="row g-2">
+                                <div class="col-8">
+                                    <button type="button"
+                                            class="btn btn-sm ws-btn-cart w-100 rounded-pill py-2 d-flex align-items-center justify-content-center gap-1"
+                                            th:onclick="'addToCartAjax(' + ${rel.id} + ', 1, event);'"
+                                            th:disabled="${rel.stock <= 0}"
+                                            title="Thêm vào giỏ hàng">
+                                        <i class="bi bi-cart-plus-fill"></i>
+                                        <span th:text="${rel.stock > 0 ? 'Thêm vào giỏ' : 'Tạm hết hàng'}">Thêm vào giỏ</span>
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary w-100 rounded-pill py-2 d-flex align-items-center justify-content-center gap-1"
+                                            style="font-size: 0.78rem; font-weight: 600;"
+                                            th:attr="data-compare-id=${rel.id}"
+                                            th:onclick="'toggleCompareProduct(' + ${rel.id} + ', this);'"
+                                            title="So sánh đồng hồ">
+                                        <i class="bi bi-arrow-left-right"></i>
+                                        <span>So sánh</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Tracking Script for AI Chatbot Context -->
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                try {
+                    const pid = /*[[${product.id}]]*/ null;
+                    const pname = /*[[${product.name}]]*/ '';
+                    if (pid) {
+                        let list = JSON.parse(localStorage.getItem('recentlyViewed') || '[]');
+                        list = list.filter(id => id !== pid);
+                        list.unshift(pid);
+                        if (list.length > 10) list = list.slice(0, 10);
+                        localStorage.setItem('recentlyViewed', JSON.stringify(list));
+                        localStorage.setItem('currentViewingProduct', JSON.stringify({ id: pid, name: pname }));
+                    }
+                } catch(e) {
+                    console.warn('Tracking error:', e);
+                }
+            });
+        </script>
     </main>
 
     <footer th:replace="~{fragments/web-layout :: footer}"></footer>

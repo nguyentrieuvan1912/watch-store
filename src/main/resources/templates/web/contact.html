@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Liên hệ')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-light p-3 rounded-pill shadow-sm">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Liên hệ</li>
+            </ol>
+        </nav>
+
+        <!-- Header Title -->
+        <div class="text-center mb-5">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold mb-2">
+                <i class="bi bi-headset me-1"></i> Hỗ trợ khách hàng 24/7
+            </span>
+            <h1 class="display-6 fw-bold text-dark">Liên hệ với Watch Store</h1>
+            <p class="text-muted">Đội ngũ tư vấn viên và chuyên gia kỹ thuật của chúng tôi luôn sẵn sàng lắng nghe bạn.</p>
+        </div>
+
+        <!-- Contact Cards Row -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 text-center">
+                    <div class="card-body">
+                        <div class="badge bg-primary-subtle text-primary rounded-circle p-3 mb-3" style="width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-geo-alt-fill fs-3"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2">Địa chỉ cửa hàng</h6>
+                        <p class="text-muted small mb-0">12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, TP. Hồ Chí Minh</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 text-center">
+                    <div class="card-body">
+                        <div class="badge bg-success-subtle text-success rounded-circle p-3 mb-3" style="width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-telephone-fill fs-3"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2">Tổng đài hỗ trợ</h6>
+                        <p class="text-muted small mb-1">Hotline: <strong class="text-primary">1800 6868</strong></p>
+                        <small class="text-muted" style="font-size: 11px;">(Miễn phí, 8:00 - 21:30)</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 text-center">
+                    <div class="card-body">
+                        <div class="badge bg-warning-subtle text-warning rounded-circle p-3 mb-3" style="width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-envelope-fill fs-3"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2">Hộp thư điện tử</h6>
+                        <p class="text-muted small mb-1">support@watchstore.vn</p>
+                        <p class="text-muted small mb-0">cskh@watchstore.vn</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 text-center">
+                    <div class="card-body">
+                        <div class="badge bg-info-subtle text-info rounded-circle p-3 mb-3" style="width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-clock-fill fs-3"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2">Giờ mở cửa</h6>
+                        <p class="text-muted small mb-1">Thứ 2 - Chủ Nhật</p>
+                        <strong class="text-dark small">08:30 - 22:00</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form & Map Row -->
+        <div class="row g-4 mb-5">
+            <!-- Left: Contact Form -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h4 class="fw-bold text-dark mb-3"><i class="bi bi-send me-2 text-primary"></i>Gửi tin nhắn cho chúng tôi</h4>
+                    <p class="text-muted small mb-4">Hãy để lại thông tin và yêu cầu của bạn, đội ngũ chuyên viên Watch Store sẽ liên hệ lại trong thời gian sớm nhất.</p>
+
+                    <form id="contactForm" onsubmit="handleContactSubmit(event)">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="contactName" class="form-label small fw-semibold text-dark">Họ và tên <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-3" id="contactName" placeholder="Nguyễn Văn A" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contactPhone" class="form-label small fw-semibold text-dark">Số điện thoại <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control rounded-3" id="contactPhone" placeholder="0912 345 678" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="contactEmail" class="form-label small fw-semibold text-dark">Địa chỉ Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control rounded-3" id="contactEmail" placeholder="name@example.com" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="contactSubject" class="form-label small fw-semibold text-dark">Chủ đề cần hỗ trợ</label>
+                                <select class="form-select rounded-3" id="contactSubject">
+                                    <option value="Tư vấn mua đồng hồ">Tư vấn mua đồng hồ chính hãng</option>
+                                    <option value="Chính sách bảo hành">Hỏi về chính sách bảo hành & sửa chữa</option>
+                                    <option value="Tra cứu đơn hàng">Tra cứu trạng thái đơn hàng</option>
+                                    <option value="Hợp tác kinh doanh">Đề xuất hợp tác / Phản ánh dịch vụ</option>
+                                    <option value="Khác">Chủ đề khác</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="contactMessage" class="form-label small fw-semibold text-dark">Nội dung tin nhắn <span class="text-danger">*</span></label>
+                                <textarea class="form-control rounded-3" id="contactMessage" rows="4" placeholder="Nhập chi tiết yêu cầu của bạn..." required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" id="btnSubmitContact" class="btn btn-primary btn-lg rounded-pill w-100 fw-semibold shadow-sm">
+                                    <i class="bi bi-send-fill me-2"></i>Gửi thông tin liên hệ
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div id="contactSuccessAlert" class="alert alert-success d-none rounded-3 mt-3 mb-0" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>Cảm ơn bạn đã gửi liên hệ! Đội ngũ tư vấn Watch Store sẽ phản hồi trong vòng 24 giờ.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Interactive Google Map -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                    <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
+                        <h5 class="fw-bold text-dark mb-0"><i class="bi bi-map me-2 text-primary"></i>Vị trí Showroom Watch Store</h5>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Mở cửa</span>
+                    </div>
+                    <div class="card-body p-0 flex-grow-1">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.858237982038!2d106.68427047480556!3d10.822158889329431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528e549310397%3A0x5fb7099806977244!2zMTIgTmd1eeG7hW4gVsSDbiBC4bqjbywgUGjGsOG7nW5nIDQsIEjhu5MgQ2jDrSBNaW5oLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s" 
+                                width="100%" 
+                                height="100%" 
+                                style="border:0; min-height: 380px;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                    <div class="card-footer bg-light p-3 text-muted small">
+                        <i class="bi bi-info-circle me-1 text-primary"></i> Có chỗ đỗ xe ô tô và xe máy miễn phí cho khách hàng đến trải nghiệm tại Showroom.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+
+    <script>
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnSubmitContact');
+            const alertBox = document.getElementById('contactSuccessAlert');
+            const form = document.getElementById('contactForm');
+            
+            if (btn) btn.disabled = true;
+            setTimeout(() => {
+                if (alertBox) alertBox.classList.remove('d-none');
+                if (form) form.reset();
+                if (btn) btn.disabled = false;
+            }, 600);
+        }
+    </script>
+</body>
+</html>
+

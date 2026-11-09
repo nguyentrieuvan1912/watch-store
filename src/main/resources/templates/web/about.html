@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('Giới thiệu')}"></head>
+<body>
+    <header th:replace="~{fragments/web-layout :: navbar}"></header>
+
+    <main class="container my-5">
+        <div th:replace="~{fragments/web-layout :: alerts}"></div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-light p-3 rounded-pill shadow-sm">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none"><i class="bi bi-house-door me-1"></i>Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Giới thiệu</li>
+            </ol>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="row align-items-center mb-5 pb-3">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="pe-lg-4">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold mb-3">
+                        <i class="bi bi-award me-1"></i> Uy tín khẳng định từ 2015
+                    </span>
+                    <h1 class="display-5 fw-bold text-dark mb-3">Watch Store - Tinh hoa thời gian trên cổ tay bạn</h1>
+                    <p class="lead text-secondary mb-4">
+                        Hệ thống bán lẻ đồng hồ chính hãng cao cấp hàng đầu Việt Nam. Nơi bạn tìm thấy những tuyệt tác thời gian từ Nhật Bản và Thụy Sỹ với cam kết chất lượng tuyệt đối.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a th:href="@{/products}" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-semibold">
+                            <i class="bi bi-watch me-2"></i>Khám phá sản phẩm
+                        </a>
+                        <a th:href="@{/contact}" class="btn btn-outline-secondary btn-lg rounded-pill px-4 fw-semibold">
+                            <i class="bi bi-geo-alt me-2"></i>Ghé thăm cửa hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d" 
+                         alt="Watch Store Showroom" 
+                         class="img-fluid rounded-4 shadow-lg w-100" 
+                         style="max-height: 420px; object-fit: cover;">
+                    <div class="position-absolute bottom-0 start-0 m-4 p-3 bg-white bg-opacity-95 rounded-3 shadow border d-flex align-items-center gap-3">
+                        <div class="badge bg-success rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            <i class="bi bi-shield-check fs-4 text-white"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark mb-0">100% Chính Hãng</div>
+                            <small class="text-muted">Đầy đủ thẻ bảo hành quốc tế</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 Commitments Cards -->
+        <div class="mb-5">
+            <div class="text-center mb-4">
+                <h6 class="text-primary text-uppercase fw-bold letter-spacing-1">Cam kết vàng</h6>
+                <h2 class="fw-bold text-dark">Giá trị tạo nên niềm tin khách hàng</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-3 text-center transition-hover">
+                        <div class="card-body">
+                            <div class="badge bg-primary-subtle text-primary rounded-circle p-3 mb-3" style="width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-patch-check-fill fs-2"></i>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-2">Chính hãng 100%</h5>
+                            <p class="text-muted small mb-0">Cam kết hoàn tiền gấp 10 lần nếu phát hiện hàng giả, hàng nhái kém chất lượng.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-3 text-center transition-hover">
+                        <div class="card-body">
+                            <div class="badge bg-success-subtle text-success rounded-circle p-3 mb-3" style="width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-shield-fill-check fs-2"></i>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-2">Bảo hành 5 năm</h5>
+                            <p class="text-muted small mb-0">Bảo hành lên tới 5 năm tại trung tâm kỹ thuật Watch Store và thay pin miễn phí trọn đời.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-3 text-center transition-hover">
+                        <div class="card-body">
+                            <div class="badge bg-warning-subtle text-warning rounded-circle p-3 mb-3" style="width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-arrow-repeat fs-2"></i>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-2">1 đổi 1 trong 30 ngày</h5>
+                            <p class="text-muted small mb-0">Đổi mới hoàn toàn miễn phí trong 30 ngày đầu nếu đồng hồ có lỗi từ nhà sản xuất.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-3 text-center transition-hover">
+                        <div class="card-body">
+                            <div class="badge bg-info-subtle text-info rounded-circle p-3 mb-3" style="width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-truck fs-2"></i>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-2">Giao hàng hỏa tốc</h5>
+                            <p class="text-muted small mb-0">Miễn phí giao hàng toàn quốc. Khách hàng được kiểm tra hàng trước khi thanh toán.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Brand Partners Section -->
+        <div class="card border-0 shadow-sm rounded-4 bg-light p-4 p-md-5 mb-5 text-center">
+            <h6 class="text-primary text-uppercase fw-bold mb-2">Đối tác chiến lược</h6>
+            <h3 class="fw-bold text-dark mb-4">Các thương hiệu đồng hồ hàng đầu thế giới</h3>
+            <div class="row row-cols-2 row-cols-md-5 g-3 align-items-center justify-content-center">
+                <div class="col">
+                    <div class="bg-white p-3 rounded-3 shadow-sm border text-center">
+                        <span class="fs-5 fw-bold text-dark d-block">CASIO</span>
+                        <small class="text-muted">Nhật Bản</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="bg-white p-3 rounded-3 shadow-sm border text-center">
+                        <span class="fs-5 fw-bold text-dark d-block">SEIKO</span>
+                        <small class="text-muted">Nhật Bản</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="bg-white p-3 rounded-3 shadow-sm border text-center">
+                        <span class="fs-5 fw-bold text-dark d-block">CITIZEN</span>
+                        <small class="text-muted">Nhật Bản</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="bg-white p-3 rounded-3 shadow-sm border text-center">
+                        <span class="fs-5 fw-bold text-dark d-block">ORIENT</span>
+                        <small class="text-muted">Nhật Bản</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="bg-white p-3 rounded-3 shadow-sm border text-center">
+                        <span class="fs-5 fw-bold text-dark d-block">TISSOT</span>
+                        <small class="text-muted">Thụy Sỹ</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Numbers Counter Section -->
+        <div class="row g-4 text-center mb-5">
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-4 shadow-sm border">
+                    <div class="display-6 fw-bold text-primary mb-1">10+</div>
+                    <div class="text-muted small fw-semibold">Năm kinh nghiệm</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-4 shadow-sm border">
+                    <div class="display-6 fw-bold text-primary mb-1">50.000+</div>
+                    <div class="text-muted small fw-semibold">Khách hàng tin tưởng</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-4 shadow-sm border">
+                    <div class="display-6 fw-bold text-primary mb-1">100%</div>
+                    <div class="text-muted small fw-semibold">Chính hãng nhập khẩu</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-white rounded-4 shadow-sm border">
+                    <div class="display-6 fw-bold text-primary mb-1">24/7</div>
+                    <div class="text-muted small fw-semibold">Hỗ trợ & Tư vấn AI</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/web-layout :: footer}"></footer>
+</body>
+</html>
+

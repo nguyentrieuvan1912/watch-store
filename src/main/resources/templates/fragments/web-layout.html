@@ -3,25 +3,351 @@
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:if="${_csrf != null}" th:content="${_csrf.headerName}">
     <title th:text="${title} + ' - Watch Store'">Watch Store</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
+        :root {
+            /* Bảng màu chuẩn Luxury Watch Store */
+            --ws-primary-dark: #0f172a;       /* Slate Navy sâu thẳm */
+            --ws-primary-slate: #1e293b;      /* Slate vừa */
+            --ws-accent-gold: #d97706;        /* Amber Gold chủ đạo */
+            --ws-accent-amber: #b45309;       /* Amber đậm khi hover */
+            --ws-accent-light: #fef3c7;       /* Nền vàng kim nhạt */
+            --ws-sale-wine: #be123c;          /* Đỏ rượu vang cho badge sale */
+            --ws-bg-secondary: #f8fafc;
+            --ws-pearl-gray: #f1f5f9;
+            --ws-border-color: #e2e8f0;
+            --ws-border: #e2e8f0;
+            --ws-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Ghi đè biến gốc Bootstrap 5 sang Amber Gold */
+            --bs-primary: #d97706;
+            --bs-primary-rgb: 217, 119, 6;
+            --bs-primary-text-emphasis: #92400e;
+            --bs-primary-bg-subtle: #fef3c7;
+            --bs-primary-border-subtle: #fde68a;
+            --bs-link-color: #d97706;
+            --bs-link-color-rgb: 217, 119, 6;
+            --bs-link-hover-color: #b45309;
+            --bs-link-hover-color-rgb: 180, 83, 9;
+        }
+
+        /* Ép toàn bộ hệ thống Bootstrap Primary sang Amber Gold / Dark Navy */
+        .btn-primary {
+            background-color: var(--ws-accent-gold) !important;
+            border-color: var(--ws-accent-gold) !important;
+            color: #ffffff !important;
+        }
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: var(--ws-accent-amber) !important;
+            border-color: var(--ws-accent-amber) !important;
+            color: #ffffff !important;
+            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.28) !important;
+        }
+        .btn-outline-primary {
+            color: var(--ws-accent-gold) !important;
+            border-color: var(--ws-accent-gold) !important;
+        }
+        .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+            background-color: var(--ws-accent-gold) !important;
+            border-color: var(--ws-accent-gold) !important;
+            color: #ffffff !important;
+        }
+        .text-primary {
+            color: var(--ws-accent-gold) !important;
+        }
+        .bg-primary {
+            background-color: var(--ws-accent-gold) !important;
+        }
+        .bg-primary-subtle {
+            background-color: var(--ws-accent-light) !important;
+            color: var(--ws-accent-amber) !important;
+        }
+        .border-primary {
+            border-color: var(--ws-accent-gold) !important;
+        }
+        .border-primary-subtle {
+            border-color: #fde68a !important;
+        }
+        .dropdown-item:active, .dropdown-item.active {
+            background-color: var(--ws-accent-gold) !important;
+            color: #ffffff !important;
+        }
+        .page-item.active .page-link {
+            background-color: var(--ws-accent-gold) !important;
+            border-color: var(--ws-accent-gold) !important;
+            color: #ffffff !important;
+        }
+        .page-link {
+            color: var(--ws-primary-dark);
+        }
+        .page-link:hover {
+            color: var(--ws-accent-amber);
+        }
+
+        /* Đổi màu viền khi click vào các ô input form */
+        .form-control:focus, .form-select:focus {
+            border-color: var(--ws-accent-gold) !important;
+            box-shadow: 0 0 0 0.25rem rgba(217, 119, 6, 0.2) !important;
+        }
+
+        /* Badge giỏ hàng và checkbox */
+        .form-check-input:checked {
+            background-color: var(--ws-accent-gold) !important;
+            border-color: var(--ws-accent-gold) !important;
+        }
+        .form-check-input:focus {
+            border-color: var(--ws-accent-gold) !important;
+            box-shadow: 0 0 0 0.2rem rgba(217, 119, 6, 0.2) !important;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--ws-bg-secondary);
+            color: var(--ws-primary-dark);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a, button, .btn, .card, .badge, input, select {
+            transition: var(--ws-transition);
+        }
+
+        /* Glassmorphism Sticky Navbar & Sliding Underline */
+        .ws-navbar {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.94) !important;
+            border-bottom: 1px solid var(--ws-border-color) !important;
+        }
+
+        .navbar-nav .nav-link {
+            position: relative;
+            padding: 0.55rem 0.9rem !important;
+            border-radius: 0.5rem;
+            color: var(--ws-primary-dark) !important;
+            font-weight: 600;
+            font-size: 0.94rem;
+            transition: var(--ws-transition);
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            width: 0;
+            height: 2.5px;
+            background: linear-gradient(90deg, var(--ws-accent-gold), var(--ws-accent-amber));
+            border-radius: 2px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+        }
+
+        .navbar-nav .nav-link:hover::after,
+        .navbar-nav .nav-link.active-nav::after {
+            width: 65%;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active-nav {
+            color: var(--ws-accent-amber) !important;
+            background-color: rgba(217, 119, 6, 0.06);
+        }
+
+        /* Luxury Product Card Component */
         .product-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: #ffffff;
+            border: 1px solid var(--ws-border-color) !important;
+            border-radius: 16px !important;
+            transition: var(--ws-transition);
+            overflow: hidden;
         }
+
         .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.1) !important;
+            border-color: #cbd5e1 !important;
         }
+
+        .ws-product-img-box {
+            aspect-ratio: 1 / 1;
+            background-color: var(--ws-pearl-gray);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+        }
+
+        .ws-product-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card:hover .ws-product-img-box img {
+            transform: scale(1.06);
+        }
+
+        .ws-badge-sale {
+            background: linear-gradient(135deg, #be123c 0%, #881337 100%);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            padding: 0.35rem 0.65rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(190, 18, 60, 0.25);
+        }
+
+        .ws-badge-auth {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+            color: #0f766e;
+            border: 1px solid #99f6e4;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+        }
+
+        .ws-spec-tag {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .ws-price-current {
+            color: #be123c;
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: -0.3px;
+        }
+
+        .ws-price-old {
+            color: #94a3b8;
+            text-decoration: line-through;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+
+        .ws-btn-gold {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: #ffffff !important;
+            border: none;
+            font-weight: 700;
+        }
+
+        .ws-btn-gold:hover {
+            background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);
+        }
+
+        .ws-btn-cart {
+            background-color: var(--ws-primary-dark);
+            color: #ffffff;
+            border: 1px solid var(--ws-primary-dark);
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .ws-btn-cart:hover:not(:disabled) {
+            background-color: var(--ws-accent-gold);
+            border-color: var(--ws-accent-gold);
+            color: #ffffff;
+            box-shadow: 0 6px 15px rgba(217, 119, 6, 0.28);
+        }
+
         .card-link {
             cursor: pointer;
             color: inherit;
         }
         .card-link:hover .card-title {
-            color: #0d6efd;
+            color: var(--ws-accent-amber) !important;
+        }
+
+        /* Trust Badges & Brand Strip */
+        .ws-trust-card {
+            background: #ffffff;
+            border: 1px solid var(--ws-border-color);
+            border-radius: 16px;
+            transition: var(--ws-transition);
+        }
+        .ws-trust-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            border-color: #cbd5e1;
+        }
+        .ws-brand-pill {
+            background: #ffffff;
+            border: 1px solid var(--ws-border-color);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            transition: var(--ws-transition);
+            text-decoration: none;
+            color: var(--ws-primary-dark);
+        }
+        .ws-brand-pill:hover {
+            border-color: var(--ws-accent-gold);
+            background: #fffbeb;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(217, 119, 6, 0.12);
+            color: var(--ws-accent-amber);
+        }
+
+        /* Footer Luxury Styling */
+        .ws-footer {
+            background-color: #0b1120 !important;
+            border-top: 1px solid #1e293b !important;
+        }
+        .ws-footer-divider {
+            border-color: #1e293b !important;
+            opacity: 1 !important;
+        }
+        .ws-social-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid #1e293b;
+            background-color: #0f172a;
+            color: #94a3b8;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--ws-transition);
+            text-decoration: none;
+        }
+        .ws-social-btn:hover {
+            background-color: var(--ws-accent-gold);
+            border-color: var(--ws-accent-gold);
+            color: #ffffff;
+            transform: translateY(-3px);
+        }
+        .ws-footer-link {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: var(--ws-transition);
+        }
+        .ws-footer-link:hover {
+            color: #fbbf24;
+            padding-left: 4px;
         }
         /* Filter chips styling */
         .filter-chip {
@@ -42,64 +368,155 @@
             transition: all 0.2s ease;
         }
         .compare-slot.empty-slot:hover {
-            border-color: #0d6efd !important;
-            background-color: #eff6ff !important;
+            border-color: var(--ws-accent-gold) !important;
+            background-color: var(--ws-accent-light) !important;
+        }
+        /* AI Chatbox Luxury Styling */
+        #aiChatToggleBtn {
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.45) !important;
+            border: 2px solid var(--ws-accent-gold);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        #aiChatToggleBtn:hover {
+            transform: scale(1.08);
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            border-color: #ffffff;
+            box-shadow: 0 12px 30px rgba(217, 119, 6, 0.5) !important;
+        }
+        #aiChatWindow {
+            border-radius: 20px !important;
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.25) !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+        .ai-chat-bubble-user {
+            background-color: var(--ws-accent-gold);
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: #ffffff;
+            border-radius: 18px 18px 4px 18px;
+            padding: 10px 14px;
+            box-shadow: 0 3px 10px rgba(217, 119, 6, 0.25);
+            max-width: 82%;
+            font-size: 13.5px;
+            line-height: 1.5;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .ai-chat-bubble-bot {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px 18px 18px 4px;
+            padding: 12px 14px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            max-width: 85%;
+            font-size: 13.5px;
+            line-height: 1.55;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        .ai-chat-bubble-bot a {
+            color: var(--ws-accent-gold);
+            font-weight: 700;
+            text-decoration: underline;
+        }
+        .ai-chat-bubble-bot a:hover {
+            color: var(--ws-accent-amber);
+        }
+        .ai-close-btn {
+            transition: background-color 0.2s ease;
+        }
+        .ai-close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            border-radius: 50%;
+        }
+        @keyframes cartBadgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.14); }
+        }
+        .cart-badge-animate {
+            display: inline-block;
+            animation: cartBadgePulse 2.4s infinite ease-in-out;
         }
     </style>
 </head>
 <body>
 
 <header th:fragment="navbar">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm border-bottom py-2">
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm py-2 ws-navbar">
         <div class="container">
-            <a class="navbar-brand fw-bold text-dark fs-4" th:href="@{/}"><i class="bi bi-watch text-primary"></i> Watch Store</a>
+            <a class="navbar-brand fw-extrabold fs-4 me-3 d-flex align-items-center gap-2" th:href="@{/}" style="color: #0f172a; letter-spacing: -0.5px;">
+                <span class="d-inline-flex align-items-center justify-content-center rounded-3 text-white shadow-sm" style="width: 36px; height: 36px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid #d97706;">
+                    <i class="bi bi-watch" style="color: #fbbf24; font-size: 1.1rem;"></i>
+                </span>
+                <span>WATCH<span style="color: #d97706;">STORE</span></span>
+            </a>
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto gap-lg-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark fw-semibold" th:href="@{/}"><i class="bi bi-house-door me-1 text-primary"></i> Trang chủ</a>
+                        <a class="nav-link" th:href="@{/}"><i class="bi bi-house-door me-1" style="color: #d97706;"></i> Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark fw-semibold" th:href="@{/products}"><i class="bi bi-grid me-1 text-primary"></i> Sản phẩm</a>
+                        <a class="nav-link" th:href="@{/products}"><i class="bi bi-grid me-1" style="color: #d97706;"></i> Sản phẩm</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark fw-semibold" th:href="@{/compare}">
-                            <i class="bi bi-arrow-left-right me-1 text-primary"></i> So sánh
-                            <span id="navbarCompareBadge" class="badge bg-danger rounded-pill" 
+                        <a class="nav-link" th:href="@{/compare}">
+                            <i class="bi bi-arrow-left-right me-1" style="color: #d97706;"></i> So sánh
+                            <span id="navbarCompareBadge" class="badge bg-primary rounded-pill ms-1" 
                                   th:classappend="${session.COMPARE_PRODUCT_IDS == null or #lists.isEmpty(session.COMPARE_PRODUCT_IDS)} ? 'd-none' : ''"
                                   th:text="${session.COMPARE_PRODUCT_IDS != null ? #lists.size(session.COMPARE_PRODUCT_IDS) : 0}">0</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/size-guide}"><i class="bi bi-rulers me-1" style="color: #d97706;"></i> Hướng dẫn chọn size</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/contact}"><i class="bi bi-envelope me-1" style="color: #d97706;"></i> Liên hệ</a>
+                    </li>
                 </ul>
-                <ul class="navbar-nav align-items-lg-center">
+                <ul class="navbar-nav align-items-lg-center gap-lg-1">
                     <li class="nav-item me-2">
-                        <a class="nav-link text-dark fw-semibold" th:href="@{/cart}">
-                            <i class="bi bi-cart3 text-primary fs-5 align-middle"></i> Giỏ hàng
-                            <span id="navbarCartBadge" class="badge bg-danger rounded-pill" 
+                        <a class="nav-link d-inline-flex align-items-center gap-1" th:href="@{/cart}">
+                            <i class="bi bi-bag-heart-fill fs-5 align-middle" style="color: #d97706;"></i> <span>Giỏ hàng</span>
+                            <span id="navbarCartBadge" class="badge bg-primary rounded-pill cart-badge-animate ms-1" 
                                   th:classappend="${session.CART_SESSION == null or #lists.isEmpty(session.CART_SESSION)} ? 'd-none' : ''" 
                                   th:text="${session.CART_SESSION != null ? #aggregates.sum(session.CART_SESSION.![quantity]) : 0}">0</span>
                         </a>
                     </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link text-dark fw-semibold" th:href="@{/login}"><i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập</a>
+                        <a class="nav-link" th:href="@{/login}"><i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="btn btn-primary btn-sm rounded-pill px-3 ms-lg-2 fw-semibold" th:href="@{/register}"><i class="bi bi-person-plus me-1"></i> Đăng ký</a>
+                        <a class="btn ws-btn-gold btn-sm rounded-pill px-3 ms-lg-2 shadow-sm" th:href="@{/register}"><i class="bi bi-person-plus me-1"></i> Đăng ký</a>
                     </li>
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                        <a class="nav-link dropdown-toggle text-dark fw-semibold d-flex align-items-center gap-1" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle fs-5 text-primary"></i> <span sec:authentication="name">Tài khoản</span>
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                            <th:block th:with="avatarUrl=${#authentication.principal instanceof T(iuh.fit.watchstore.security.CustomUserDetails) ? #authentication.principal.avatar : null}">
+                                <img th:if="${avatarUrl != null and !#strings.isEmpty(avatarUrl)}"
+                                     th:src="${avatarUrl}"
+                                     alt="Avatar"
+                                     class="rounded-circle border object-fit-cover shadow-sm"
+                                     style="width: 32px; height: 32px; object-fit: cover; border-color: #d97706 !important;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.classList.remove('d-none');">
+                                <i th:classappend="${avatarUrl != null and !#strings.isEmpty(avatarUrl)} ? 'd-none' : ''"
+                                   class="bi bi-person-circle fs-5" style="color: #d97706;"></i>
+                            </th:block>
+                            <span th:text="${#authentication.principal instanceof T(iuh.fit.watchstore.security.CustomUserDetails) ? (#authentication.principal.user?.fullName != null and !#strings.isEmpty(#authentication.principal.user?.fullName) ? #authentication.principal.user.fullName : (#authentication.principal.user?.email != null and !#strings.isEmpty(#authentication.principal.user?.email) ? #authentication.principal.user.email : #authentication.principal.name)) : #authentication.name}">Tài khoản</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
-                            <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item py-2" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2 me-2 text-danger"></i> Trang quản trị</a></li>
-                            <li><a class="dropdown-item py-2" th:href="@{/profile}"><i class="bi bi-person-gear me-2 text-primary"></i> Hồ sơ cá nhân</a></li>
-                            <li><a class="dropdown-item py-2" th:href="@{/orders}"><i class="bi bi-bag-check me-2 text-success"></i> Đơn hàng của tôi</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border rounded-4 mt-2 p-2" style="border-color: #e2e8f0 !important;">
+                            <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item rounded-3 py-2 fw-medium" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2 me-2 text-danger"></i> Trang quản trị</a></li>
+                            <li><a class="dropdown-item rounded-3 py-2 fw-medium" th:href="@{/profile}"><i class="bi bi-person-gear me-2 text-primary"></i> Hồ sơ cá nhân</a></li>
+                            <li><a class="dropdown-item rounded-3 py-2 fw-medium" th:href="@{/orders}"><i class="bi bi-bag-check me-2 text-success"></i> Đơn hàng của tôi</a></li>
+                            <li><hr class="dropdown-divider my-1"></li>
                             <li>
                                 <form th:action="@{/logout}" method="post">
-                                    <button type="submit" class="dropdown-item text-danger py-2"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</button>
+                                    <button type="submit" class="dropdown-item rounded-3 text-danger py-2 fw-medium"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</button>
                                 </form>
                             </li>
                         </ul>
@@ -111,20 +528,111 @@
 </header>
 
 <div th:fragment="alerts" class="container mt-3">
-    <div th:if="${success}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show shadow-sm rounded-3 border-0" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm rounded-3 border-0" role="alert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 </div>
 
-<footer th:fragment="footer" class="bg-dark text-white text-center py-4 mt-5 border-top position-relative">
+<footer th:fragment="footer" class="text-white pt-5 pb-4 mt-5 position-relative ws-footer">
     <div class="container">
-        <p class="mb-1">&copy; 2026 Watch Store. Tất cả các quyền được bảo lưu.</p>
-        <small class="text-white-50">Hệ thống phân phối và bán lẻ đồng hồ chính hãng cao cấp.</small>
+        <div class="row g-4 pb-4" style="border-bottom: 1px solid #1e293b;">
+            <!-- Column 1: Thương hiệu & Liên hệ -->
+            <div class="col-lg-4 col-md-6">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-3 shadow-sm" style="width: 40px; height: 40px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%);">
+                        <i class="bi bi-watch text-white fs-5"></i>
+                    </span>
+                    <h5 class="fw-extrabold text-white mb-0 fs-4" style="letter-spacing: -0.5px;">WATCH<span style="color: #fbbf24;">STORE</span></h5>
+                </div>
+                <p class="small mb-3" style="color: #94a3b8; line-height: 1.65;">
+                    Hệ thống phân phối đồng hồ chính hãng cao cấp hàng đầu Việt Nam. Cam kết 100% sản phẩm chính hãng, đền gấp 10 lần nếu phát hiện hàng giả, bảo hành quốc tế lên đến 5 năm.
+                </p>
+                <ul class="list-unstyled small mb-0 d-flex flex-column gap-2" style="color: #cbd5e1;">
+                    <li class="d-flex align-items-start gap-2">
+                        <i class="bi bi-geo-alt-fill mt-1" style="color: #fbbf24;"></i>
+                        <span>12 Nguyễn Văn Bảo, Phường 4, Quận Gò Vấp, TP. Hồ Chí Minh</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-telephone-fill text-success"></i>
+                        <span>Hotline: <strong class="text-white">1800 6868</strong> (Miễn phí 8:00 - 21:30)</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-envelope-fill" style="color: #fbbf24;"></i>
+                        <span>Email: <a href="mailto:support@watchstore.vn" class="ws-footer-link">support@watchstore.vn</a></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Column 2: Hỗ trợ khách hàng -->
+            <div class="col-lg-2 col-md-6">
+                <h6 class="fw-bold text-white text-uppercase mb-3 small" style="letter-spacing: 0.8px;">Chính sách</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+                    <li><a th:href="@{/about}" class="ws-footer-link"><i class="bi bi-chevron-right me-1" style="font-size: 10px; color: #d97706;"></i> Bảo hành 5 năm</a></li>
+                    <li><a th:href="@{/about}" class="ws-footer-link"><i class="bi bi-chevron-right me-1" style="font-size: 10px; color: #d97706;"></i> Đổi mới trong 30 ngày</a></li>
+                    <li><a th:href="@{/size-guide}" class="ws-footer-link"><i class="bi bi-chevron-right me-1" style="font-size: 10px; color: #d97706;"></i> Hướng dẫn chọn size</a></li>
+                    <li><a th:href="@{/contact}" class="ws-footer-link"><i class="bi bi-chevron-right me-1" style="font-size: 10px; color: #d97706;"></i> Bảo dưỡng lau dầu</a></li>
+                    <li><a th:href="@{/tracking}" class="ws-footer-link"><i class="bi bi-chevron-right me-1" style="font-size: 10px; color: #d97706;"></i> Tra cứu bảo hành</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Liên kết nhanh -->
+            <div class="col-lg-2 col-md-6">
+                <h6 class="fw-bold text-white text-uppercase mb-3 small" style="letter-spacing: 0.8px;">Khám phá</h6>
+                <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+                    <li><a th:href="@{/}" class="ws-footer-link"><i class="bi bi-house-door me-1" style="color: #d97706;"></i> Trang chủ</a></li>
+                    <li><a th:href="@{/products}" class="ws-footer-link"><i class="bi bi-grid me-1" style="color: #d97706;"></i> Bộ sưu tập 2026</a></li>
+                    <li><a th:href="@{/compare}" class="ws-footer-link"><i class="bi bi-arrow-left-right me-1" style="color: #d97706;"></i> So sánh đồng hồ</a></li>
+                    <li><a th:href="@{/size-guide}" class="ws-footer-link"><i class="bi bi-rulers me-1" style="color: #d97706;"></i> Bảng quy đổi size</a></li>
+                    <li><a th:href="@{/contact}" class="ws-footer-link"><i class="bi bi-envelope me-1" style="color: #d97706;"></i> Liên hệ showroom</a></li>
+                    <li><a th:href="@{/about}" class="ws-footer-link"><i class="bi bi-info-circle me-1" style="color: #d97706;"></i> Về Watch Store</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 4: Đăng ký nhận ưu đãi & Mạng xã hội -->
+            <div class="col-lg-4 col-md-6">
+                <h6 class="fw-bold text-white text-uppercase mb-3 small" style="letter-spacing: 0.8px;">Đặc quyền thành viên</h6>
+                <p class="small mb-3" style="color: #94a3b8;">
+                    Đăng ký nhận tin để sở hữu ngay đặc quyền giảm giá <strong class="text-warning">15%</strong> cho bộ sưu tập đồng hồ Thụy Sĩ & Nhật Bản mới nhất.
+                </p>
+                <form onsubmit="handleNewsletterSubmit(event)" class="mb-3">
+                    <div class="input-group">
+                        <input type="email" id="newsletterEmailInput" required class="form-control form-control-sm text-white shadow-none" style="background-color: #0f172a; border-color: #1e293b;" placeholder="Nhập địa chỉ email của bạn...">
+                        <button class="btn ws-btn-gold btn-sm px-3" type="submit">
+                            <i class="bi bi-send-fill me-1"></i> Đăng ký
+                        </button>
+                    </div>
+                </form>
+                <div>
+                    <span class="small d-block mb-2" style="color: #94a3b8;">Kênh truyền thông chính thức:</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="https://facebook.com" target="_blank" class="ws-social-btn" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="https://instagram.com" target="_blank" class="ws-social-btn" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="https://youtube.com" target="_blank" class="ws-social-btn" title="YouTube"><i class="bi bi-youtube"></i></a>
+                        <a href="https://tiktok.com" target="_blank" class="ws-social-btn" title="TikTok"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 pt-4">
+            <div class="text-center text-md-start">
+                <p class="mb-1 small" style="color: #94a3b8;">&copy; 2026 <strong class="text-white">WATCH STORE LUXURY</strong>. Tất cả các quyền được bảo lưu. Đồ án Chuyên ngành WWW.</p>
+                <small style="color: #64748b;">Giấy phép ĐKKD số 0312345678 do Sở KH&ĐT TP.HCM cấp.</small>
+            </div>
+            <!-- Payment Badges -->
+            <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
+                <span class="badge px-3 py-2 fw-bold" style="background-color: #0f172a; border: 1px solid #334155; color: #fbbf24;"><i class="bi bi-qr-code me-1"></i>VietQR BIDV</span>
+                <span class="badge px-3 py-2 fw-bold" style="background-color: #0f172a; border: 1px solid #334155; color: #fbbf24;">VNPAY-QR</span>
+                <span class="badge px-3 py-2 fw-bold" style="background-color: #0f172a; border: 1px solid #334155; color: #e2e8f0;"><i class="bi bi-credit-card me-1" style="color: #fbbf24;"></i>VISA / Master</span>
+                <span class="badge px-3 py-2 fw-bold" style="background-color: #0f172a; border: 1px solid #334155; color: #4ade80;"><i class="bi bi-shield-check me-1"></i>COD Kiểm hàng</span>
+            </div>
+        </div>
     </div>
 
     <!-- Floating Compare Bar (CellphoneS Standard) -->
@@ -134,7 +642,7 @@
              style="bottom: 24px; left: 24px; z-index: 1050; cursor: pointer;"
              onclick="expandCompareBar()"
              title="Bấm để mở rộng thanh so sánh">
-            <span class="badge bg-danger rounded-circle p-1 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
+            <span class="badge bg-primary rounded-circle p-1 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
                 <i class="bi bi-arrow-left-right text-white" style="font-size: 12px;"></i>
             </span>
             <span class="fw-bold text-dark fs-6">So sánh (<span id="compareCollapsedCount">0</span>)</span>
@@ -164,7 +672,7 @@
                         <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="collapseCompareBar()">
                             <i class="bi bi-chevron-down me-1"></i>Thu gọn
                         </button>
-                        <a th:href="@{/compare}" class="btn btn-danger btn-sm rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-1" id="btnGoToCompare">
+                        <a th:href="@{/compare}" class="btn btn-primary btn-sm rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center gap-1" id="btnGoToCompare">
                             <span>So sánh ngay</span>
                             <i class="bi bi-arrow-right"></i>
                         </a>
@@ -194,6 +702,94 @@
                     <span>Thông báo</span>
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chatbot Widget (Spring AI Assistant) -->
+    <div id="aiChatWidgetContainer">
+        <!-- Floating Chat Button -->
+        <button id="aiChatToggleBtn" type="button" 
+                class="btn rounded-circle d-flex align-items-center justify-content-center position-fixed"
+                style="bottom: 24px; right: 24px; width: 62px; height: 62px; z-index: 1070; transition: transform 0.2s ease, box-shadow 0.2s ease;"
+                onclick="toggleAiChatbox()"
+                title="Trợ lý AI tư vấn đồng hồ">
+            <i id="aiChatIconOpen" class="bi bi-robot fs-2" style="color: #fbbf24;"></i>
+            <i id="aiChatIconClose" class="bi bi-x-lg fs-3 text-white d-none"></i>
+            <span class="position-absolute top-0 start-100 translate-middle p-1.5 border border-light rounded-circle" style="background-color: #d97706;">
+                <span class="visually-hidden">AI sẵn sàng</span>
+            </span>
+        </button>
+
+        <!-- Floating Chatbox Window -->
+        <div id="aiChatWindow" class="position-fixed bg-white d-none flex-column"
+             style="bottom: 96px; right: 24px; width: 400px; max-width: calc(100vw - 32px); height: 560px; max-height: calc(100vh - 120px); z-index: 1075; overflow: hidden;">
+
+            <!-- Header -->
+            <div class="px-3 py-2.5 text-white d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 2px solid #d97706;">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="position-relative">
+                        <span class="badge rounded-circle p-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: #ffffff;">
+                            <i class="bi bi-robot fs-5"></i>
+                        </span>
+                        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-white rounded-circle" title="Online"></span>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                            Trợ lý AI Watch Store
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5 rounded-pill" style="font-size: 10px;">Online</span>
+                        </h6>
+                        <small style="font-size: 11px; color: #cbd5e1;">Tư vấn & tra cứu dữ liệu thời gian thực</small>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-link text-white text-decoration-none ai-close-btn p-1.5 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" onclick="toggleAiChatbox()" title="Đóng chat">
+                    <i class="bi bi-x-lg fs-6"></i>
+                </button>
+            </div>
+
+            <!-- Context Banner (Current viewing product) -->
+            <div id="aiChatContextBanner" class="bg-light border-bottom px-3 py-1.5 small text-muted d-none align-items-center justify-content-between" style="font-size: 12px;">
+                <div class="text-truncate me-2">
+                    <i class="bi bi-eye text-primary me-1"></i>Đang xem: <span id="aiChatContextName" class="fw-semibold text-dark"></span>
+                </div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 10px;">Tracking</span>
+            </div>
+
+            <!-- Messages List -->
+            <div id="aiChatMessages" class="flex-grow-1 p-3 overflow-y-auto d-flex flex-column gap-3" style="background-color: #f8fafc; font-size: 13.5px; line-height: 1.5;">
+                <div class="w-100 d-flex justify-content-start align-items-start gap-2 mb-2">
+                    <span class="badge bg-white text-primary rounded-circle border shadow-xs p-1.5 flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-robot" style="font-size: 16px;"></i>
+                    </span>
+                    <div class="ai-chat-bubble-bot">
+                        <p class="mb-1 fw-semibold text-dark">Xin chào quý khách! 👋 Tôi là trợ lý ảo của <strong>Watch Store</strong>.</p>
+                        <p class="mb-2 text-secondary">Tôi có thể hỗ trợ bạn tìm kiếm đồng hồ chính hãng theo thương hiệu (Casio, Seiko, Citizen, Orient, Tissot), khoảng giá, kiểu máy hoặc phong cách theo nhu cầu.</p>
+                        <div class="d-flex flex-wrap gap-1 mt-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill py-1 px-2.5" style="font-size: 11.5px;" onclick="sendAiQuickPrompt('Gợi ý đồng hồ nam bán chạy dưới 5 triệu')"><i class="bi bi-tag me-1"></i>Nam &lt; 5 triệu</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill py-1 px-2.5" style="font-size: 11.5px;" onclick="sendAiQuickPrompt('Có mẫu đồng hồ lặn thể thao nào chống nước tốt?')"><i class="bi bi-water me-1"></i>Đồng hồ lặn thể thao</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill py-1 px-2.5" style="font-size: 11.5px;" onclick="sendAiQuickPrompt('Tư vấn đồng hồ nữ thanh lịch sang trọng')"><i class="bi bi-gem me-1"></i>Đồng hồ nữ sang trọng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing indicator -->
+            <div id="aiChatTypingIndicator" class="px-3 py-2 bg-white border-top small text-muted d-none align-items-center gap-2" style="font-size: 12px;">
+                <div class="spinner-grow spinner-grow-sm text-primary" role="status" style="width: 13px; height: 13px;"></div>
+                <span>AI đang tìm kiếm cơ sở dữ liệu và soạn câu trả lời...</span>
+            </div>
+
+            <!-- Input Form -->
+            <div class="p-3 bg-white border-top">
+                <form id="aiChatForm" onsubmit="handleAiChatSubmit(event)" class="d-flex align-items-center gap-2 mb-0">
+                    <input type="text" id="aiChatInput" class="form-control rounded-pill border px-3 py-2 shadow-sm"
+                           style="font-size: 13.5px;"
+                           placeholder="Hỏi về đồng hồ, giá cả, thương hiệu..." autocomplete="off">
+                    <button type="submit" id="aiChatSendBtn" class="btn btn-primary rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 38px; height: 38px;" title="Gửi tin nhắn">
+                        <i class="bi bi-send-fill text-white" style="font-size: 14px;"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -451,6 +1047,18 @@
 
         // Initialize state on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Highlight active navbar link
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.ws-navbar .navbar-nav .nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                if (!href || href === '#') return;
+                if (href === '/' && currentPath === '/') {
+                    link.classList.add('active-nav');
+                } else if (href !== '/' && currentPath.startsWith(href)) {
+                    link.classList.add('active-nav');
+                }
+            });
+
             fetch('/compare/api/list')
                 .then(res => res.json())
                 .then(data => {
@@ -459,7 +1067,210 @@
                     }
                 })
                 .catch(err => console.error('Error loading compare state:', err));
+
+            // Cập nhật context banner cho AI Chatbot nếu đang ở trang chi tiết sản phẩm
+            updateAiChatContextDisplay();
         });
+
+        /* ===== AI CHATBOT & USER TRACKING UTILITIES ===== */
+        function toggleAiChatbox() {
+            const chatWindow = document.getElementById('aiChatWindow');
+            const iconOpen = document.getElementById('aiChatIconOpen');
+            const iconClose = document.getElementById('aiChatIconClose');
+            if (!chatWindow) return;
+
+            if (chatWindow.classList.contains('d-none')) {
+                chatWindow.classList.remove('d-none');
+                chatWindow.classList.add('d-flex');
+                if (iconOpen) iconOpen.classList.add('d-none');
+                if (iconClose) iconClose.classList.remove('d-none');
+                updateAiChatContextDisplay();
+                setTimeout(() => {
+                    const input = document.getElementById('aiChatInput');
+                    if (input) input.focus();
+                    scrollAiChatToBottom();
+                }, 100);
+            } else {
+                chatWindow.classList.add('d-none');
+                chatWindow.classList.remove('d-flex');
+                if (iconOpen) iconOpen.classList.remove('d-none');
+                if (iconClose) iconClose.classList.add('d-none');
+            }
+        }
+
+        function updateAiChatContextDisplay() {
+            const banner = document.getElementById('aiChatContextBanner');
+            const nameEl = document.getElementById('aiChatContextName');
+            if (!banner || !nameEl) return;
+
+            try {
+                const viewing = JSON.parse(localStorage.getItem('currentViewingProduct') || 'null');
+                const isProductDetailPage = window.location.pathname.includes('/products/');
+                if (viewing && isProductDetailPage) {
+                    nameEl.textContent = viewing.name || ('ID: ' + viewing.id);
+                    banner.classList.remove('d-none');
+                    banner.classList.add('d-flex');
+                } else {
+                    banner.classList.add('d-none');
+                    banner.classList.remove('d-flex');
+                }
+            } catch(e) {
+                banner.classList.add('d-none');
+                banner.classList.remove('d-flex');
+            }
+        }
+
+        function scrollAiChatToBottom() {
+            const container = document.getElementById('aiChatMessages');
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        function sendAiQuickPrompt(promptText) {
+            const input = document.getElementById('aiChatInput');
+            if (input) {
+                input.value = promptText;
+                handleAiChatSubmit(new Event('submit'));
+            }
+        }
+
+        function handleAiChatSubmit(event) {
+            if (event && event.preventDefault) event.preventDefault();
+            const input = document.getElementById('aiChatInput');
+            const sendBtn = document.getElementById('aiChatSendBtn');
+            const messagesContainer = document.getElementById('aiChatMessages');
+            const typingIndicator = document.getElementById('aiChatTypingIndicator');
+
+            if (!input) return;
+            const userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            // Append User Message
+            const userBubble = document.createElement('div');
+            userBubble.className = 'w-100 d-flex justify-content-end mb-2';
+            userBubble.innerHTML = `
+                <div class="ai-chat-bubble-user shadow-sm">
+                    ${escapeHtml(userMsg)}
+                </div>
+            `;
+            messagesContainer.appendChild(userBubble);
+            input.value = '';
+            scrollAiChatToBottom();
+
+            // Show Typing Indicator
+            if (typingIndicator) {
+                typingIndicator.classList.remove('d-none');
+                typingIndicator.classList.add('d-flex');
+            }
+            scrollAiChatToBottom();
+            if (sendBtn) sendBtn.disabled = true;
+
+            // Extract Tracking Context
+            let viewingId = null;
+            const pathMatch = window.location.pathname.match(/\/products\/(\d+)$/);
+            if (pathMatch) {
+                viewingId = parseInt(pathMatch[1]);
+            } else {
+                try {
+                    const viewing = JSON.parse(localStorage.getItem('currentViewingProduct') || 'null');
+                    if (viewing && viewing.id) viewingId = viewing.id;
+                } catch(e) {}
+            }
+
+            let recentlyViewed = [];
+            try {
+                recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed') || '[]');
+            } catch(e) {}
+
+            const payload = {
+                message: userMsg,
+                viewingProductId: viewingId,
+                recentlyViewedIds: recentlyViewed
+            };
+
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('HTTP error ' + res.status);
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (typingIndicator) {
+                    typingIndicator.classList.add('d-none');
+                    typingIndicator.classList.remove('d-flex');
+                }
+                if (sendBtn) sendBtn.disabled = false;
+
+                const replyText = data.reply || data.error || 'Xin lỗi quý khách, không nhận được phản hồi từ AI.';
+                const botBubble = document.createElement('div');
+                botBubble.className = 'w-100 d-flex justify-content-start align-items-start gap-2 mb-2';
+                botBubble.innerHTML = `
+                    <span class="badge bg-white text-primary rounded-circle border shadow-xs p-1.5 flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-robot" style="font-size: 16px;"></i>
+                    </span>
+                    <div class="ai-chat-bubble-bot">
+                        ${formatAiResponse(replyText)}
+                    </div>
+                `;
+                messagesContainer.appendChild(botBubble);
+                scrollAiChatToBottom();
+            })
+            .catch(err => {
+                console.error('Error calling AI chat API:', err);
+                if (typingIndicator) {
+                    typingIndicator.classList.add('d-none');
+                    typingIndicator.classList.remove('d-flex');
+                }
+                if (sendBtn) sendBtn.disabled = false;
+
+                const errBubble = document.createElement('div');
+                errBubble.className = 'w-100 d-flex justify-content-start align-items-start gap-2 mb-2';
+                errBubble.innerHTML = `
+                    <span class="badge bg-danger text-white rounded-circle p-1.5 flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-exclamation-triangle" style="font-size: 15px;"></i>
+                    </span>
+                    <div class="ai-chat-bubble-bot text-danger border-danger-subtle">
+                        Có lỗi kết nối tới máy chủ AI. Quý khách vui lòng thử lại sau giây lát!
+                    </div>
+                `;
+                messagesContainer.appendChild(errBubble);
+                scrollAiChatToBottom();
+            });
+        }
+
+        function handleNewsletterSubmit(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            const input = document.getElementById('newsletterEmailInput');
+            if (input && input.value) {
+                showCartToast('Cảm ơn bạn! Đã đăng ký nhận bản tin khuyến mãi thành công với ' + input.value, true);
+                input.value = '';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatAiResponse(text) {
+            if (!text) return '';
+            // Cho phép hiển thị an toàn các thẻ liên kết sản phẩm và định dạng markdown cơ bản
+            let formatted = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n\n/g, '<div class="my-1.5"></div>')
+                .replace(/\n/g, '<br>');
+            return formatted;
+        }
     </script>
 </footer>
 
