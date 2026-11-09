@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div th:replace="~{fragments/admin-layout :: sidebar}"></div>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div th:replace="~{fragments/admin-layout :: header}"></div>
+
+                <!-- Tiêu đề -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold">Quản lý khách hàng</h2>
+                        <p class="text-muted mb-0">
+                            Danh sách và thông tin tài khoản khách hàng
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tìm kiếm khách hàng -->
+                <div class="card shadow-sm mb-4" th:if="${selectedUser == null}">
+                    <div class="card-body">
+                        <form th:action="@{/admin/users}" method="get" class="row g-2">
+
+                            <div class="col-md-10">
+                                <input type="text" name="keyword" class="form-control"
+                                    placeholder="Tìm theo tên, email hoặc số điện thoại..." th:value="${keyword}">
+                            </div>
+
+                            <div class="col-md-2 d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    Tìm kiếm
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
