@@ -25,6 +25,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.status = true AND p.brand.id IN :brandIds")
     List<Product> findActiveByBrandIds(@Param("brandIds") List<Long> brandIds);
 
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.brand LEFT JOIN FETCH p.category WHERE p.status = true")
+    List<Product> findAllActiveWithBrandAndCategory();
+
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.brand LEFT JOIN FETCH p.category WHERE p.id IN :ids AND p.status = true")
+    List<Product> findActiveByIdsWithBrandAndCategory(@Param("ids") List<Long> ids);
+
     @Query("SELECT p FROM Product p WHERE p.status = true " +
            "AND (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
            "     OR LOWER(p.model) LIKE LOWER(CONCAT('%', :keyword, '%')) " +

@@ -121,28 +121,68 @@
             transition: var(--ws-transition);
         }
 
-        /* Glassmorphism Sticky Navbar & Sliding Underline */
+        /* 2-Tier Luxury Header & Sliding Underline Navigation */
+        .ws-header {
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            background: rgba(255, 255, 255, 0.97) !important;
+            z-index: 1030;
+        }
+
+        .ws-search-pill {
+            border: 1.5px solid #cbd5e1;
+            background-color: #f8fafc;
+            transition: var(--ws-transition);
+        }
+
+        .ws-search-pill:focus-within {
+            background-color: #ffffff;
+            border-color: var(--ws-accent-gold) !important;
+            box-shadow: 0 0 0 0.22rem rgba(217, 119, 6, 0.16) !important;
+        }
+
+        .ws-header-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid var(--ws-border-color);
+            background-color: #ffffff;
+            color: var(--ws-primary-dark);
+            font-weight: 600;
+            font-size: 0.88rem;
+            text-decoration: none;
+            transition: var(--ws-transition);
+        }
+
+        .ws-header-action-btn:hover {
+            border-color: var(--ws-accent-gold);
+            color: var(--ws-accent-amber);
+            background-color: #fffbeb;
+            transform: translateY(-1px);
+        }
+
         .ws-navbar {
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.94) !important;
+            background-color: #f8fafc !important;
             border-bottom: 1px solid var(--ws-border-color) !important;
         }
 
         .navbar-nav .nav-link {
             position: relative;
-            padding: 0.55rem 0.9rem !important;
+            padding: 0.5rem 0.85rem !important;
             border-radius: 0.5rem;
             color: var(--ws-primary-dark) !important;
             font-weight: 600;
-            font-size: 0.94rem;
+            font-size: 0.92rem;
+            white-space: nowrap;
             transition: var(--ws-transition);
         }
 
         .navbar-nav .nav-link::after {
             content: '';
             position: absolute;
-            bottom: 4px;
+            bottom: 3px;
             left: 50%;
             width: 0;
             height: 2.5px;
@@ -154,7 +194,7 @@
 
         .navbar-nav .nav-link:hover::after,
         .navbar-nav .nav-link.active-nav::after {
-            width: 65%;
+            width: 70%;
         }
 
         .navbar-nav .nav-link:hover,
@@ -371,7 +411,7 @@
             border-color: var(--ws-accent-gold) !important;
             background-color: var(--ws-accent-light) !important;
         }
-        /* AI Chatbox Luxury Styling */
+        /* AI Chatbox & Live Chat Luxury Styling */
         #aiChatToggleBtn {
             box-shadow: 0 8px 24px rgba(15, 23, 42, 0.45) !important;
             border: 2px solid var(--ws-accent-gold);
@@ -388,35 +428,116 @@
             box-shadow: 0 18px 50px rgba(15, 23, 42, 0.25) !important;
             border: 1px solid #e2e8f0 !important;
         }
+        /* Header & Mode Tabs */
+        #aiChatHeader {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-bottom: 2px solid #d97706;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        #aiChatHeader.staff-mode {
+            background: linear-gradient(135deg, #1e293b 0%, #0f3d3e 100%);
+            border-bottom: 2px solid #10b981;
+        }
+        .ws-chat-mode-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            padding: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+        }
+        .ws-chat-mode-btn {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 999px;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .ws-chat-mode-btn:hover {
+            color: #ffffff;
+        }
+        .ws-chat-mode-btn.active {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35);
+        }
+        /* Chat Body & Message Alignment */
+        #aiChatMessages {
+            padding: 16px 14px !important;
+            background-color: #f8fafc;
+            scroll-behavior: smooth;
+        }
+        .ws-chat-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+        .ws-chat-row.row-user {
+            justify-content: flex-end;
+        }
+        .ws-chat-row.row-bot {
+            justify-content: flex-start;
+        }
+        .ws-chat-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 15px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+        }
+        .ws-chat-avatar.avatar-bot {
+            background: #ffffff;
+            color: var(--ws-accent-gold);
+            border: 1px solid #fde68a;
+        }
+        .ws-chat-avatar.avatar-staff {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+        .ws-chat-avatar.avatar-user {
+            background: var(--ws-primary-dark);
+            color: #fbbf24;
+            border: 1px solid #334155;
+        }
         .ai-chat-bubble-user {
             background-color: var(--ws-accent-gold);
             background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
             color: #ffffff;
             border-radius: 18px 18px 4px 18px;
             padding: 10px 14px;
-            box-shadow: 0 3px 10px rgba(217, 119, 6, 0.25);
-            max-width: 82%;
+            box-shadow: 0 3px 10px rgba(217, 119, 6, 0.22);
+            max-width: 78%;
             font-size: 13.5px;
             line-height: 1.5;
             word-break: break-word;
             overflow-wrap: anywhere;
-            align-self: flex-end;
-            margin-left: auto;
         }
         .ai-chat-bubble-bot {
-            background-color: #f1f5f9;
+            background-color: #ffffff;
             color: #1e293b;
             border: 1px solid #e2e8f0;
             border-radius: 18px 18px 18px 4px;
-            padding: 12px 14px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-            max-width: 85%;
+            padding: 11px 14px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+            max-width: 80%;
             font-size: 13.5px;
             line-height: 1.55;
             word-break: break-word;
             overflow-wrap: anywhere;
-            align-self: flex-start;
-            margin-right: auto;
         }
         .ai-chat-bubble-bot a {
             color: var(--ws-accent-gold);
@@ -425,6 +546,65 @@
         }
         .ai-chat-bubble-bot a:hover {
             color: var(--ws-accent-amber);
+        }
+        /* Horizontal Quick Questions Bar (above input) */
+        .ws-quick-questions-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 8px 12px;
+            background-color: #ffffff;
+            border-top: 1px solid #f1f5f9;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .ws-quick-questions-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .ws-quick-chip {
+            border-radius: 999px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .ws-quick-chip:hover {
+            background-color: var(--ws-accent-light);
+            color: var(--ws-accent-amber);
+            border-color: var(--ws-accent-gold);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(217, 119, 6, 0.14);
+        }
+        /* Smooth Typing Dots Animation */
+        .ws-typing-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 6px;
+        }
+        .ws-typing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--ws-accent-gold);
+            animation: wsTypingBounce 1.3s infinite ease-in-out both;
+        }
+        .ws-typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .ws-typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .ws-typing-dots span:nth-child(3) { animation-delay: 0s; }
+        @keyframes wsTypingBounce {
+            0%, 80%, 100% { transform: scale(0.55); opacity: 0.45; }
+            40% { transform: scale(1); opacity: 1; }
         }
         .ai-close-btn {
             transition: background-color 0.2s ease;
@@ -445,69 +625,80 @@
 </head>
 <body>
 
-<header th:fragment="navbar">
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm py-2 ws-navbar">
+<header th:fragment="navbar" class="ws-header sticky-top bg-white shadow-sm">
+    <!-- Tầng 1: Header Top (Logo, Search, Icons) -->
+    <div class="border-bottom py-2.5 py-md-3" style="border-color: var(--ws-border-color) !important;">
         <div class="container">
-            <a class="navbar-brand fw-extrabold fs-4 me-3 d-flex align-items-center gap-2" th:href="@{/}" style="color: #0f172a; letter-spacing: -0.5px;">
-                <span class="d-inline-flex align-items-center justify-content-center rounded-3 text-white shadow-sm" style="width: 36px; height: 36px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid #d97706;">
-                    <i class="bi bi-watch" style="color: #fbbf24; font-size: 1.1rem;"></i>
-                </span>
-                <span>WATCH<span style="color: #d97706;">STORE</span></span>
-            </a>
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto gap-lg-1">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}"><i class="bi bi-house-door me-1" style="color: #d97706;"></i> Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/products}"><i class="bi bi-grid me-1" style="color: #d97706;"></i> Sản phẩm</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/compare}">
-                            <i class="bi bi-arrow-left-right me-1" style="color: #d97706;"></i> So sánh
-                            <span id="navbarCompareBadge" class="badge bg-primary rounded-pill ms-1" 
-                                  th:classappend="${session.COMPARE_PRODUCT_IDS == null or #lists.isEmpty(session.COMPARE_PRODUCT_IDS)} ? 'd-none' : ''"
-                                  th:text="${session.COMPARE_PRODUCT_IDS != null ? #lists.size(session.COMPARE_PRODUCT_IDS) : 0}">0</span>
+            <div class="row align-items-center g-2 g-md-3">
+                <!-- Cột Trái (col-md-3): Logo Watch Store & Mobile Toggle -->
+                <div class="col-6 col-md-3 d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none border-0 p-1.5" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Menu">
+                        <i class="bi bi-list fs-4" style="color: #0f172a;"></i>
+                    </button>
+                    <a class="navbar-brand fw-extrabold fs-4 m-0 d-flex align-items-center gap-2 text-decoration-none" th:href="@{/}" style="color: #0f172a; letter-spacing: -0.5px;">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-3 text-white shadow-sm" style="width: 38px; height: 38px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid #d97706;">
+                            <i class="bi bi-watch" style="color: #fbbf24; font-size: 1.15rem;"></i>
+                        </span>
+                        <span>WATCH<span style="color: #d97706;">STORE</span></span>
+                    </a>
+                </div>
+
+                <!-- Cột Giữa (col-md-6): Form Tìm kiếm Ngữ nghĩa AI to bản -->
+                <div class="col-12 col-md-6 order-3 order-md-2">
+                    <form id="navbarSearchForm" th:action="@{/products}" method="get" class="m-0">
+                        <div class="input-group rounded-pill ws-search-pill p-1">
+                            <span class="input-group-text bg-transparent border-0 ps-3 pe-1 text-muted">
+                                <i class="bi bi-stars" style="color: #d97706;"></i>
+                            </span>
+                            <input type="text" name="keyword" th:value="${keyword}"
+                                   class="form-control border-0 bg-transparent shadow-none px-2"
+                                   style="font-size: 0.92rem;"
+                                   placeholder="Tìm kiếm đồng hồ, thương hiệu hoặc mô tả nhu cầu (AI Search)...">
+                            <button class="btn ws-btn-gold rounded-pill px-3.5 py-1.5 d-flex align-items-center gap-1.5" type="submit" title="Tìm kiếm">
+                                <i class="bi bi-search"></i>
+                                <span class="d-none d-sm-inline small fw-bold">Tìm kiếm</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Cột Phải (col-md-3): Cụm Tài khoản & Giỏ hàng -->
+                <div class="col-6 col-md-3 order-2 order-md-3 d-flex align-items-center justify-content-end gap-2 gap-lg-3">
+                    <!-- Tài khoản (Chưa đăng nhập) -->
+                    <div class="dropdown" sec:authorize="isAnonymous()">
+                        <a class="ws-header-action-btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle fs-5" style="color: #d97706;"></i>
+                            <span class="d-none d-xl-inline">Tài khoản</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/size-guide}"><i class="bi bi-rulers me-1" style="color: #d97706;"></i> Hướng dẫn chọn size</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/contact}"><i class="bi bi-envelope me-1" style="color: #d97706;"></i> Liên hệ</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav align-items-lg-center gap-lg-1">
-                    <li class="nav-item me-2">
-                        <a class="nav-link d-inline-flex align-items-center gap-1" th:href="@{/cart}">
-                            <i class="bi bi-bag-heart-fill fs-5 align-middle" style="color: #d97706;"></i> <span>Giỏ hàng</span>
-                            <span id="navbarCartBadge" class="badge bg-primary rounded-pill cart-badge-animate ms-1" 
-                                  th:classappend="${session.CART_SESSION == null or #lists.isEmpty(session.CART_SESSION)} ? 'd-none' : ''" 
-                                  th:text="${session.CART_SESSION != null ? #aggregates.sum(session.CART_SESSION.![quantity]) : 0}">0</span>
-                        </a>
-                    </li>
-                    <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link" th:href="@{/login}"><i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="btn ws-btn-gold btn-sm rounded-pill px-3 ms-lg-2 shadow-sm" th:href="@{/register}"><i class="bi bi-person-plus me-1"></i> Đăng ký</a>
-                    </li>
-                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border rounded-4 mt-2 p-2" style="border-color: #e2e8f0 !important; min-width: 200px;">
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2 fw-semibold" th:href="@{/login}">
+                                    <i class="bi bi-box-arrow-in-right me-2 text-primary"></i> Đăng nhập
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2 fw-semibold" th:href="@{/register}">
+                                    <i class="bi bi-person-plus me-2 text-warning"></i> Đăng ký thành viên
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tài khoản (Đã đăng nhập) -->
+                    <div class="dropdown" sec:authorize="isAuthenticated()">
+                        <a class="ws-header-action-btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <th:block th:with="avatarUrl=${#authentication.principal instanceof T(iuh.fit.watchstore.security.CustomUserDetails) ? #authentication.principal.avatar : null}">
                                 <img th:if="${avatarUrl != null and !#strings.isEmpty(avatarUrl)}"
                                      th:src="${avatarUrl}"
                                      alt="Avatar"
                                      class="rounded-circle border object-fit-cover shadow-sm"
-                                     style="width: 32px; height: 32px; object-fit: cover; border-color: #d97706 !important;"
+                                     style="width: 28px; height: 28px; object-fit: cover; border-color: #d97706 !important;"
                                      onerror="this.style.display='none'; this.nextElementSibling.classList.remove('d-none');">
                                 <i th:classappend="${avatarUrl != null and !#strings.isEmpty(avatarUrl)} ? 'd-none' : ''"
                                    class="bi bi-person-circle fs-5" style="color: #d97706;"></i>
                             </th:block>
-                            <span th:text="${#authentication.principal instanceof T(iuh.fit.watchstore.security.CustomUserDetails) ? (#authentication.principal.user?.fullName != null and !#strings.isEmpty(#authentication.principal.user?.fullName) ? #authentication.principal.user.fullName : (#authentication.principal.user?.email != null and !#strings.isEmpty(#authentication.principal.user?.email) ? #authentication.principal.user.email : #authentication.principal.name)) : #authentication.name}">Tài khoản</span>
+                            <span class="d-none d-xl-inline text-truncate" style="max-width: 115px;"
+                                  th:text="${#authentication.principal instanceof T(iuh.fit.watchstore.security.CustomUserDetails) ? (#authentication.principal.user?.fullName != null and !#strings.isEmpty(#authentication.principal.user?.fullName) ? #authentication.principal.user.fullName : (#authentication.principal.user?.email != null and !#strings.isEmpty(#authentication.principal.user?.email) ? #authentication.principal.user.email : #authentication.principal.name)) : #authentication.name}">Tài khoản</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border rounded-4 mt-2 p-2" style="border-color: #e2e8f0 !important;">
                             <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item rounded-3 py-2 fw-medium" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2 me-2 text-danger"></i> Trang quản trị</a></li>
@@ -520,6 +711,52 @@
                                 </form>
                             </li>
                         </ul>
+                    </div>
+
+                    <!-- Nút Giỏ hàng kèm Badge màu đỏ rượu (Wine Red) -->
+                    <a class="ws-header-action-btn position-relative" th:href="@{/cart}" title="Giỏ hàng của bạn">
+                        <i class="bi bi-bag-heart-fill fs-5" style="color: #d97706;"></i>
+                        <span class="d-none d-sm-inline">Giỏ hàng</span>
+                        <span id="navbarCartBadge" class="badge rounded-pill cart-badge-animate ms-1 text-white"
+                              style="background-color: var(--ws-sale-wine) !important;"
+                              th:classappend="${session.CART_SESSION == null or #lists.isEmpty(session.CART_SESSION)} ? 'd-none' : ''"
+                              th:text="${session.CART_SESSION != null ? #aggregates.sum(session.CART_SESSION.![quantity]) : 0}">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tầng 2: Navigation Bottom (Menu điều hướng ngang) -->
+    <nav class="navbar navbar-expand-lg navbar-light py-0 ws-navbar">
+        <div class="container">
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav justify-content-center align-items-lg-center gap-1 gap-lg-4 py-2 py-lg-1">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}"><i class="bi bi-house-door me-1" style="color: #d97706;"></i> Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/products(gender='Nam')}"><i class="bi bi-smartwatch me-1" style="color: #d97706;"></i> Đồng hồ Nam</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/products(gender='Nữ')}"><i class="bi bi-gem me-1" style="color: #d97706;"></i> Đồng hồ Nữ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/products}"><i class="bi bi-award me-1" style="color: #d97706;"></i> Thương hiệu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/compare}">
+                            <i class="bi bi-arrow-left-right me-1" style="color: #d97706;"></i> So sánh
+                            <span id="navbarCompareBadge" class="badge bg-primary rounded-pill ms-1"
+                                  th:classappend="${session.COMPARE_PRODUCT_IDS == null or #lists.isEmpty(session.COMPARE_PRODUCT_IDS)} ? 'd-none' : ''"
+                                  th:text="${session.COMPARE_PRODUCT_IDS != null ? #lists.size(session.COMPARE_PRODUCT_IDS) : 0}">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/size-guide}"><i class="bi bi-rulers me-1" style="color: #d97706;"></i> Hướng dẫn chọn size</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/contact}"><i class="bi bi-envelope me-1" style="color: #d97706;"></i> Liên hệ</a>
                     </li>
                 </ul>
             </div>
@@ -706,45 +943,69 @@
         </div>
     </div>
 
-    <!-- AI Chatbot Widget (Spring AI Assistant) -->
+    <!-- AI Chatbot & Live Chat Widget -->
     <div id="aiChatWidgetContainer">
         <!-- Floating Chat Button -->
         <button id="aiChatToggleBtn" type="button" 
                 class="btn rounded-circle d-flex align-items-center justify-content-center position-fixed"
                 style="bottom: 24px; right: 24px; width: 62px; height: 62px; z-index: 1070; transition: transform 0.2s ease, box-shadow 0.2s ease;"
                 onclick="toggleAiChatbox()"
-                title="Trợ lý AI tư vấn đồng hồ">
+                title="Hỗ trợ trực tuyến & Trợ lý AI">
             <i id="aiChatIconOpen" class="bi bi-robot fs-2" style="color: #fbbf24;"></i>
             <i id="aiChatIconClose" class="bi bi-x-lg fs-3 text-white d-none"></i>
             <span class="position-absolute top-0 start-100 translate-middle p-1.5 border border-light rounded-circle" style="background-color: #d97706;">
-                <span class="visually-hidden">AI sẵn sàng</span>
+                <span class="visually-hidden">Sẵn sàng hỗ trợ</span>
             </span>
         </button>
 
         <!-- Floating Chatbox Window -->
         <div id="aiChatWindow" class="position-fixed bg-white d-none flex-column"
-             style="bottom: 96px; right: 24px; width: 400px; max-width: calc(100vw - 32px); height: 560px; max-height: calc(100vh - 120px); z-index: 1075; overflow: hidden;">
+             style="bottom: 96px; right: 24px; width: 410px; max-width: calc(100vw - 32px); height: 590px; max-height: calc(100vh - 115px); z-index: 1075; overflow: hidden;">
 
-            <!-- Header -->
-            <div class="px-3 py-2.5 text-white d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 2px solid #d97706;">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="position-relative">
-                        <span class="badge rounded-circle p-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: #ffffff;">
-                            <i class="bi bi-robot fs-5"></i>
-                        </span>
-                        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-white rounded-circle" title="Online"></span>
+            <!-- Header with Mode Toggle Tabs -->
+            <div id="aiChatHeader" class="px-3 pt-2.5 pb-2 text-white">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <div class="position-relative">
+                            <span id="aiChatHeaderAvatarBadge" class="badge rounded-circle p-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: #ffffff;">
+                                <i id="aiChatHeaderIcon" class="bi bi-robot fs-5"></i>
+                            </span>
+                            <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-white rounded-circle" title="Online"></span>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold d-flex align-items-center gap-2" style="font-size: 14.5px;">
+                                <span id="aiChatHeaderTitle">Trợ lý AI Watch Store</span>
+                                <span id="aiChatHeaderStatusBadge" class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5 rounded-pill" style="font-size: 10px;">Online</span>
+                            </h6>
+                            <small id="aiChatHeaderSubtitle" style="font-size: 11px; color: #cbd5e1;">Tư vấn & tra cứu dữ liệu thời gian thực</small>
+                        </div>
                     </div>
-                    <div>
-                        <h6 class="mb-0 fw-bold d-flex align-items-center gap-2">
-                            Trợ lý AI Watch Store
-                            <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5 rounded-pill" style="font-size: 10px;">Online</span>
-                        </h6>
-                        <small style="font-size: 11px; color: #cbd5e1;">Tư vấn & tra cứu dữ liệu thời gian thực</small>
-                    </div>
+                    <button type="button" class="btn btn-sm btn-link text-white text-decoration-none ai-close-btn p-1.5 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" onclick="toggleAiChatbox()" title="Đóng chat">
+                        <i class="bi bi-x-lg fs-6"></i>
+                    </button>
                 </div>
-                <button type="button" class="btn btn-sm btn-link text-white text-decoration-none ai-close-btn p-1.5 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" onclick="toggleAiChatbox()" title="Đóng chat">
-                    <i class="bi bi-x-lg fs-6"></i>
-                </button>
+
+                <!-- Mode Switcher: Trợ lý AI vs Nhân viên CSKH -->
+                <div class="ws-chat-mode-tabs">
+                    <button type="button" id="tabModeAI" class="ws-chat-mode-btn active" onclick="switchChatMode('AI')">
+                        <i class="bi bi-robot"></i>
+                        <span>Trợ lý AI</span>
+                    </button>
+                    <button type="button" id="tabModeStaff" class="ws-chat-mode-btn" onclick="switchChatMode('STAFF')">
+                        <i class="bi bi-headset"></i>
+                        <span>Nhân viên CSKH</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Chat Staff Waiting Banner (Shown in STAFF Mode) -->
+            <div id="liveChatStaffNotice" class="px-3 py-1.5 d-none align-items-center justify-content-between border-bottom"
+                 style="background-color: #ecfdf5; color: #065f46; font-size: 11.5px;">
+                <div class="d-flex align-items-center gap-1.5">
+                    <span class="spinner-grow spinner-grow-sm text-success" style="width: 8px; height: 8px;" role="status"></span>
+                    <span class="fw-semibold">Chế độ kết nối Tư vấn viên trực tuyến</span>
+                </div>
+                <span class="badge rounded-pill" style="background-color: #10b981; color: #fff; font-size: 10px;">Live CSKH</span>
             </div>
 
             <!-- Context Banner (Current viewing product) -->
@@ -755,32 +1016,47 @@
                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 10px;">Tracking</span>
             </div>
 
-            <!-- Messages List -->
-            <div id="aiChatMessages" class="flex-grow-1 p-3 overflow-y-auto d-flex flex-column gap-3" style="background-color: #f8fafc; font-size: 13.5px; line-height: 1.5;">
-                <div class="w-100 d-flex justify-content-start align-items-start gap-2 mb-2">
-                    <span class="badge bg-white text-primary rounded-circle border shadow-xs p-1.5 flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-robot" style="font-size: 16px;"></i>
-                    </span>
+            <!-- Messages List (chat-body) -->
+            <div id="aiChatMessages" class="flex-grow-1 overflow-y-auto d-flex flex-column gap-2.5" style="font-size: 13.5px; line-height: 1.5;">
+                <div class="ws-chat-row row-bot">
+                    <div class="ws-chat-avatar avatar-bot">
+                        <i class="bi bi-robot"></i>
+                    </div>
                     <div class="ai-chat-bubble-bot">
                         <p class="mb-1 fw-semibold text-dark">Xin chào quý khách! 👋 Tôi là trợ lý ảo của <strong>Watch Store</strong>.</p>
-                        <p class="mb-2 text-secondary">Tôi có thể hỗ trợ bạn tìm kiếm đồng hồ chính hãng theo thương hiệu (Casio, Seiko, Citizen, Orient, Tissot), khoảng giá, kiểu máy hoặc phong cách theo nhu cầu.</p>
-                        <div class="d-flex flex-wrap gap-1 mt-2">
-                            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill py-1 px-2.5" style="font-size: 11.5px;" onclick="sendAiQuickPrompt('Gợi ý đồng hồ nam bán chạy dưới 5 triệu')"><i class="bi bi-tag me-1"></i>Nam &lt; 5 triệu</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill py-1 px-2.5" style="font-size: 11.5px;" onclick="sendAiQuickPrompt('Có mẫu đồng hồ lặn thể thao nào chống nước tốt?')"><i class="bi bi-water me-1"></i>Đồng hồ lặn thể thao</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill py-1 px-2.5" style="font-size: 11.5px;" onclick="sendAiQuickPrompt('Tư vấn đồng hồ nữ thanh lịch sang trọng')"><i class="bi bi-gem me-1"></i>Đồng hồ nữ sang trọng</button>
-                        </div>
+                        <p class="mb-0 text-secondary">Tôi có thể tư vấn chọn size cổ tay, tìm đồng hồ chính hãng theo thương hiệu (Casio, Seiko, Citizen, Orient, Tissot), khoảng giá hoặc kết nối bạn với nhân viên CSKH.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Typing indicator -->
+            <!-- Smooth Typing Indicator -->
             <div id="aiChatTypingIndicator" class="px-3 py-2 bg-white border-top small text-muted d-none align-items-center gap-2" style="font-size: 12px;">
-                <div class="spinner-grow spinner-grow-sm text-primary" role="status" style="width: 13px; height: 13px;"></div>
-                <span>AI đang tìm kiếm cơ sở dữ liệu và soạn câu trả lời...</span>
+                <div class="ws-typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span id="aiChatTypingText" class="fst-italic">AI đang phân tích và soạn câu trả lời...</span>
+            </div>
+
+            <!-- Quick Questions Horizontal Scroll Bar (Ngay phía trên ô nhập liệu) -->
+            <div class="ws-quick-questions-bar" id="aiQuickQuestionsBar">
+                <button type="button" class="ws-quick-chip" onclick="sendAiQuickPrompt('Tư vấn chọn size')">
+                    <i class="bi bi-rulers text-primary"></i> Tư vấn chọn size
+                </button>
+                <button type="button" class="ws-quick-chip" onclick="sendAiQuickPrompt('Tìm đồng hồ nam dây da')">
+                    <i class="bi bi-watch text-primary"></i> Tìm đồng hồ nam dây da
+                </button>
+                <button type="button" class="ws-quick-chip" onclick="sendAiQuickPrompt('Chính sách bảo hành')">
+                    <i class="bi bi-shield-check text-primary"></i> Chính sách bảo hành
+                </button>
+                <button type="button" class="ws-quick-chip" onclick="sendAiQuickPrompt('Tra cứu đơn hàng')">
+                    <i class="bi bi-box-seam text-primary"></i> Tra cứu đơn hàng
+                </button>
             </div>
 
             <!-- Input Form -->
-            <div class="p-3 bg-white border-top">
+            <div class="p-2.5 px-3 bg-white border-top">
                 <form id="aiChatForm" onsubmit="handleAiChatSubmit(event)" class="d-flex align-items-center gap-2 mb-0">
                     <input type="text" id="aiChatInput" class="form-control rounded-pill border px-3 py-2 shadow-sm"
                            style="font-size: 13.5px;"
@@ -797,8 +1073,69 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Global Cart & Compare Utilities -->
+    <!-- Global Cart, Compare & TrackingJS Utilities -->
     <script>
+        /* ===== TRACKING JS (AI BEHAVIOR PROFILING) ===== */
+        const TrackingJS = {
+            getSessionId: function() {
+                try {
+                    const match = document.cookie.match(/(?:^|;\s*)WS_SESSION_ID=([^;]+)/);
+                    if (match && match[1]) {
+                        return decodeURIComponent(match[1]);
+                    }
+                    let sid = localStorage.getItem('ws_session_id');
+                    if (!sid) {
+                        sid = 'ws-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 10);
+                        localStorage.setItem('ws_session_id', sid);
+                    }
+                    document.cookie = 'WS_SESSION_ID=' + encodeURIComponent(sid) + '; path=/; max-age=2592000; SameSite=Lax';
+                    return sid;
+                } catch (e) {
+                    return 'ws-fallback-session';
+                }
+            },
+            track: function(actionType, productId = null, searchKeyword = null) {
+                const sessionId = this.getSessionId();
+                const payload = {
+                    actionType: actionType,
+                    productId: productId,
+                    searchKeyword: searchKeyword
+                };
+                return fetch('/api/tracking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Session-Id': sessionId
+                    },
+                    credentials: 'same-origin',
+                    keepalive: true,
+                    body: JSON.stringify(payload)
+                }).catch(err => console.debug('TrackingJS error:', err));
+            },
+            initSearchFormTracking: function() {
+                this.getSessionId();
+                document.querySelectorAll('form[action*="/products"]').forEach(form => {
+                    if (form.dataset.trackingBound === 'true') return;
+                    form.dataset.trackingBound = 'true';
+                    form.addEventListener('submit', function(e) {
+                        const kwInput = form.querySelector('input[name="keyword"]');
+                        const kw = kwInput ? kwInput.value.trim() : '';
+                        if (kw && !form.dataset.trackedSubmitting) {
+                            e.preventDefault();
+                            form.dataset.trackedSubmitting = 'true';
+                            TrackingJS.track('SEARCH', null, kw).finally(() => {
+                                form.submit();
+                            });
+                        }
+                    });
+                });
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            TrackingJS.initSearchFormTracking();
+        });
+
         function showCartToast(message, isSuccess = true) {
             const toastEl = document.getElementById('cartLiveToast');
             const messageEl = document.getElementById('cartToastMessage');
@@ -832,6 +1169,11 @@
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
+            }
+
+            // Ghi nhận hành vi ADD_TO_CART qua TrackingJS
+            if (typeof TrackingJS !== 'undefined') {
+                TrackingJS.track('ADD_TO_CART', productId, null);
             }
 
             const formData = new FormData();
@@ -1049,11 +1391,20 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Highlight active navbar link
             const currentPath = window.location.pathname;
+            const currentSearch = decodeURIComponent(window.location.search);
             document.querySelectorAll('.ws-navbar .navbar-nav .nav-link').forEach(link => {
-                const href = link.getAttribute('href');
+                const href = decodeURIComponent(link.getAttribute('href') || '');
                 if (!href || href === '#') return;
                 if (href === '/' && currentPath === '/') {
                     link.classList.add('active-nav');
+                } else if (href.includes('?')) {
+                    if ((currentPath + currentSearch).startsWith(href)) {
+                        link.classList.add('active-nav');
+                    }
+                } else if (href === '/products') {
+                    if (currentPath.startsWith('/products') && !currentSearch.includes('gender=Nam') && !currentSearch.includes('gender=Nữ')) {
+                        link.classList.add('active-nav');
+                    }
                 } else if (href !== '/' && currentPath.startsWith(href)) {
                     link.classList.add('active-nav');
                 }
@@ -1072,7 +1423,71 @@
             updateAiChatContextDisplay();
         });
 
-        /* ===== AI CHATBOT & USER TRACKING UTILITIES ===== */
+        /* ===== AI CHATBOT, LIVE CHAT & USER TRACKING UTILITIES ===== */
+        let currentChatMode = 'AI';
+
+        function switchChatMode(mode) {
+            if (currentChatMode === mode) return;
+            currentChatMode = mode;
+
+            const tabAI = document.getElementById('tabModeAI');
+            const tabStaff = document.getElementById('tabModeStaff');
+            const header = document.getElementById('aiChatHeader');
+            const headerTitle = document.getElementById('aiChatHeaderTitle');
+            const headerSubtitle = document.getElementById('aiChatHeaderSubtitle');
+            const headerIcon = document.getElementById('aiChatHeaderIcon');
+            const headerAvatarBadge = document.getElementById('aiChatHeaderAvatarBadge');
+            const staffNotice = document.getElementById('liveChatStaffNotice');
+            const input = document.getElementById('aiChatInput');
+            const messagesContainer = document.getElementById('aiChatMessages');
+
+            if (mode === 'STAFF') {
+                if (tabAI) tabAI.classList.remove('active');
+                if (tabStaff) tabStaff.classList.add('active');
+                if (header) header.classList.add('staff-mode');
+                if (headerTitle) headerTitle.textContent = 'Nhân viên CSKH';
+                if (headerSubtitle) headerSubtitle.textContent = 'Hỗ trợ trực tuyến (8:00 - 21:30)';
+                if (headerIcon) headerIcon.className = 'bi bi-headset fs-5';
+                if (headerAvatarBadge) headerAvatarBadge.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                if (staffNotice) {
+                    staffNotice.classList.remove('d-none');
+                    staffNotice.classList.add('d-flex');
+                }
+                if (input) input.placeholder = 'Nhập nội dung cần nhân viên tư vấn hỗ trợ...';
+
+                if (messagesContainer) {
+                    const sysNotice = document.createElement('div');
+                    sysNotice.className = 'text-center my-1';
+                    sysNotice.innerHTML = '<span class="badge bg-light text-secondary border px-2.5 py-1 rounded-pill" style="font-size: 11px;"><i class="bi bi-headset text-success me-1"></i>Đã chuyển sang chế độ Chat với Nhân viên CSKH</span>';
+                    messagesContainer.appendChild(sysNotice);
+                    scrollAiChatToBottom();
+                }
+            } else {
+                if (tabStaff) tabStaff.classList.remove('active');
+                if (tabAI) tabAI.classList.add('active');
+                if (header) header.classList.remove('staff-mode');
+                if (headerTitle) headerTitle.textContent = 'Trợ lý AI Watch Store';
+                if (headerSubtitle) headerSubtitle.textContent = 'Tư vấn & tra cứu dữ liệu thời gian thực';
+                if (headerIcon) headerIcon.className = 'bi bi-robot fs-5';
+                if (headerAvatarBadge) headerAvatarBadge.style.background = 'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+                if (staffNotice) {
+                    staffNotice.classList.add('d-none');
+                    staffNotice.classList.remove('d-flex');
+                }
+                if (input) input.placeholder = 'Hỏi về đồng hồ, giá cả, thương hiệu...';
+
+                if (messagesContainer) {
+                    const sysNotice = document.createElement('div');
+                    sysNotice.className = 'text-center my-1';
+                    sysNotice.innerHTML = '<span class="badge bg-light text-secondary border px-2.5 py-1 rounded-pill" style="font-size: 11px;"><i class="bi bi-robot text-primary me-1"></i>Đã chuyển sang chế độ Trợ lý AI thông minh</span>';
+                    messagesContainer.appendChild(sysNotice);
+                    scrollAiChatToBottom();
+                }
+            }
+
+            if (input) input.focus();
+        }
+
         function toggleAiChatbox() {
             const chatWindow = document.getElementById('aiChatWindow');
             const iconOpen = document.getElementById('aiChatIconOpen');
@@ -1141,24 +1556,33 @@
             const sendBtn = document.getElementById('aiChatSendBtn');
             const messagesContainer = document.getElementById('aiChatMessages');
             const typingIndicator = document.getElementById('aiChatTypingIndicator');
+            const typingText = document.getElementById('aiChatTypingText');
 
             if (!input) return;
             const userMsg = input.value.trim();
             if (!userMsg) return;
 
-            // Append User Message
+            // Append User Message with aligned User Avatar
             const userBubble = document.createElement('div');
-            userBubble.className = 'w-100 d-flex justify-content-end mb-2';
+            userBubble.className = 'ws-chat-row row-user';
             userBubble.innerHTML = `
                 <div class="ai-chat-bubble-user shadow-sm">
                     ${escapeHtml(userMsg)}
+                </div>
+                <div class="ws-chat-avatar avatar-user">
+                    <i class="bi bi-person-fill"></i>
                 </div>
             `;
             messagesContainer.appendChild(userBubble);
             input.value = '';
             scrollAiChatToBottom();
 
-            // Show Typing Indicator
+            // Show Smooth Typing Indicator
+            if (typingText) {
+                typingText.textContent = (currentChatMode === 'STAFF')
+                    ? 'Hệ thống CSKH đang ghi nhận yêu cầu...'
+                    : 'AI đang tìm kiếm cơ sở dữ liệu và soạn câu trả lời...';
+            }
             if (typingIndicator) {
                 typingIndicator.classList.remove('d-none');
                 typingIndicator.classList.add('d-flex');
@@ -1166,7 +1590,32 @@
             scrollAiChatToBottom();
             if (sendBtn) sendBtn.disabled = true;
 
-            // Extract Tracking Context
+            // Phân nhánh 1: Chế độ "Nhân viên CSKH" (Live Chat Mode - không gọi API Gemini)
+            if (currentChatMode === 'STAFF') {
+                setTimeout(() => {
+                    if (typingIndicator) {
+                        typingIndicator.classList.add('d-none');
+                        typingIndicator.classList.remove('d-flex');
+                    }
+                    if (sendBtn) sendBtn.disabled = false;
+
+                    const staffBubble = document.createElement('div');
+                    staffBubble.className = 'ws-chat-row row-bot';
+                    staffBubble.innerHTML = `
+                        <div class="ws-chat-avatar avatar-staff">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <div class="ai-chat-bubble-bot">
+                            Dạ, hệ thống đã ghi nhận yêu cầu. Quý khách vui lòng giữ máy trong giây lát, nhân viên tư vấn sẽ phản hồi lại ngay ạ 🕒
+                        </div>
+                    `;
+                    messagesContainer.appendChild(staffBubble);
+                    scrollAiChatToBottom();
+                }, 1500);
+                return;
+            }
+
+            // Phân nhánh 2: Chế độ "Trợ lý AI" (Gọi API /api/chat)
             let viewingId = null;
             const pathMatch = window.location.pathname.match(/\/products\/(\d+)$/);
             if (pathMatch) {
@@ -1211,11 +1660,11 @@
 
                 const replyText = data.reply || data.error || 'Xin lỗi quý khách, không nhận được phản hồi từ AI.';
                 const botBubble = document.createElement('div');
-                botBubble.className = 'w-100 d-flex justify-content-start align-items-start gap-2 mb-2';
+                botBubble.className = 'ws-chat-row row-bot';
                 botBubble.innerHTML = `
-                    <span class="badge bg-white text-primary rounded-circle border shadow-xs p-1.5 flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-robot" style="font-size: 16px;"></i>
-                    </span>
+                    <div class="ws-chat-avatar avatar-bot">
+                        <i class="bi bi-robot"></i>
+                    </div>
                     <div class="ai-chat-bubble-bot">
                         ${formatAiResponse(replyText)}
                     </div>
@@ -1232,11 +1681,11 @@
                 if (sendBtn) sendBtn.disabled = false;
 
                 const errBubble = document.createElement('div');
-                errBubble.className = 'w-100 d-flex justify-content-start align-items-start gap-2 mb-2';
+                errBubble.className = 'ws-chat-row row-bot';
                 errBubble.innerHTML = `
-                    <span class="badge bg-danger text-white rounded-circle p-1.5 flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-exclamation-triangle" style="font-size: 15px;"></i>
-                    </span>
+                    <div class="ws-chat-avatar bg-danger text-white">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
                     <div class="ai-chat-bubble-bot text-danger border-danger-subtle">
                         Có lỗi kết nối tới máy chủ AI. Quý khách vui lòng thử lại sau giây lát!
                     </div>

@@ -49,12 +49,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/compare/api/**", "/cart/api/**", "/api/chat/**", "/checkout/api/**"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/compare/api/**", "/cart/api/**", "/api/chat/**", "/api/recommendations/**", "/api/tracking/**", "/checkout/api/**"))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/checkout/api/**", "/tracking/**").permitAll()
+                .requestMatchers("/checkout/api/**", "/tracking/**", "/api/tracking/**").permitAll()
                 .requestMatchers("/profile/**", "/orders/**", "/checkout/**", "/customer/**").authenticated()
-                .requestMatchers("/", "/products/**", "/about", "/contact", "/size-guide", "/cart/**", "/compare/**", "/api/chat/**", "/login", "/register", "/css/**", "/js/**", "/images/**", "/uploads/**", "/oauth2/**", "/login/oauth2/**").permitAll()
+                .requestMatchers("/", "/products/**", "/about", "/contact", "/size-guide", "/cart/**", "/compare/**", "/api/chat/**", "/api/recommendations/**", "/login", "/register", "/css/**", "/js/**", "/images/**", "/uploads/**", "/oauth2/**", "/login/oauth2/**").permitAll()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form

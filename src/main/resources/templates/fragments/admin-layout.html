@@ -1,50 +1,165 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title} + ' - Watch Store Admin'">Admin</title>
+    <title th:text="${title} + ' - Watch Store Admin'">Watch Store Admin</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        .sidebar { min-height: 100vh; }
+        :root {
+            /* Luxury Watch Store Admin Color Palette */
+            --ws-primary-dark: #0f172a;       /* Slate Navy sâu thẳm */
+            --ws-primary-slate: #1e293b;      /* Slate vừa */
+            --ws-accent-gold: #d97706;        /* Amber Gold chủ đạo */
+            --ws-accent-amber: #b45309;       /* Amber đậm */
+            --ws-accent-light: #fef3c7;       /* Nền vàng kim nhạt */
+            --ws-bg-secondary: #f8fafc;
+            --ws-border-color: #e2e8f0;
+            --ws-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+            --bs-primary: #d97706;
+            --bs-primary-rgb: 217, 119, 6;
+            --bs-link-color: #d97706;
+            --bs-link-hover-color: #b45309;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--ws-bg-secondary);
+            color: var(--ws-primary-dark);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Sidebar Styling (Slate Navy #0f172a) */
+        .admin-sidebar {
+            background-color: var(--ws-primary-dark) !important;
+            border-right: 1px solid #1e293b;
+            min-height: 100vh;
+        }
+        .admin-sidebar .nav-link {
+            color: #94a3b8 !important;
+            font-weight: 500;
+            border-radius: 10px;
+            padding: 0.65rem 1rem;
+            margin-bottom: 0.25rem;
+            transition: var(--ws-transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .admin-sidebar .nav-link:hover {
+            color: #f8fafc !important;
+            background-color: #1e293b !important;
+            transform: translateX(4px);
+        }
+        .admin-sidebar .nav-link.active,
+        .admin-sidebar .nav-link.active-admin {
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+        }
+
+        /* Button & Utility Overrides */
+        .btn-primary {
+            background-color: var(--ws-accent-gold) !important;
+            border-color: var(--ws-accent-gold) !important;
+            color: #ffffff !important;
+        }
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: var(--ws-accent-amber) !important;
+            border-color: var(--ws-accent-amber) !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+        }
+        .btn-outline-primary {
+            color: var(--ws-accent-gold) !important;
+            border-color: var(--ws-accent-gold) !important;
+        }
+        .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+            background-color: var(--ws-accent-gold) !important;
+            border-color: var(--ws-accent-gold) !important;
+            color: #ffffff !important;
+        }
+        .text-primary {
+            color: var(--ws-accent-gold) !important;
+        }
+        .bg-primary {
+            background-color: var(--ws-accent-gold) !important;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--ws-accent-gold) !important;
+            box-shadow: 0 0 0 0.25rem rgba(217, 119, 6, 0.2) !important;
+        }
     </style>
 </head>
 <body>
 
-<div th:fragment="sidebar" class="bg-dark text-white sidebar p-3 col-md-3 col-lg-2 d-flex flex-column">
-    <a href="/admin" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <span class="fs-4"><i class="bi bi-speedometer2"></i> Admin Panel</span>
+<div th:fragment="sidebar" class="admin-sidebar text-white p-3 col-md-3 col-lg-2 d-flex flex-column">
+    <a th:href="@{/admin/dashboard}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none py-2">
+        <span class="fs-4 fw-bold d-flex align-items-center gap-2">
+            <span class="d-inline-flex align-items-center justify-content-center rounded-3 shadow-sm" style="width: 36px; height: 36px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%);">
+                <i class="bi bi-watch text-white fs-5"></i>
+            </span>
+            <span>WATCH<span style="color: #d97706;">STORE</span></span>
+        </span>
     </a>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
+    <div class="small text-muted mb-3 ps-1" style="font-size: 11px; letter-spacing: 0.5px;">HỆ THỐNG QUẢN TRỊ</div>
+    <hr class="border-secondary opacity-25 mt-0 mb-3">
+    
+    <ul class="nav flex-column mb-auto">
         <li class="nav-item">
-            <a th:href="@{/admin/dashboard}" class="nav-link text-white"><i class="bi bi-house"></i> Dashboard</a>
+            <a th:href="@{/admin/dashboard}" class="nav-link" id="nav-dashboard">
+                <i class="bi bi-grid-1x2-fill"></i> <span>Tổng quan</span>
+            </a>
         </li>
-        <li>
-            <a th:href="@{/admin/orders}" class="nav-link text-white"><i class="bi bi-receipt"></i> Orders</a>
+        <li class="nav-item">
+            <a th:href="@{/admin/orders}" class="nav-link" id="nav-orders">
+                <i class="bi bi-receipt"></i> <span>Quản lý Đơn hàng</span>
+            </a>
         </li>
-        <li>
-            <a th:href="@{/admin/products}" class="nav-link text-white"><i class="bi bi-box"></i> Products</a>
+        <li class="nav-item">
+            <a th:href="@{/admin/products}" class="nav-link" id="nav-products">
+                <i class="bi bi-box-seam"></i> <span>Quản lý Sản phẩm</span>
+            </a>
         </li>
-        <li>
-            <a th:href="@{/admin/categories}" class="nav-link text-white"><i class="bi bi-tags"></i> Categories</a>
+        <li class="nav-item">
+            <a th:href="@{/admin/categories}" class="nav-link" id="nav-categories">
+                <i class="bi bi-tags"></i> <span>Danh mục đồng hồ</span>
+            </a>
         </li>
-        <li>
-            <a th:href="@{/admin/brands}" class="nav-link text-white"><i class="bi bi-award"></i> Brands</a>
+        <li class="nav-item">
+            <a th:href="@{/admin/brands}" class="nav-link" id="nav-brands">
+                <i class="bi bi-award"></i> <span>Thương hiệu</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/admin/users}" class="nav-link" id="nav-users">
+                <i class="bi bi-people"></i> <span>Khách hàng</span>
+            </a>
         </li>
     </ul>
-    <hr>
+    
+    <hr class="border-secondary opacity-25">
+    
     <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <strong>Admin</strong>
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle p-2 rounded-3" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #1e293b;">
+            <i class="bi bi-person-circle fs-5 me-2 text-warning"></i>
+            <strong class="text-truncate" style="max-width: 110px;">Admin</strong>
         </a>
-        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" th:href="@{/}">Go to Storefront</a></li>
-            <li><hr class="dropdown-divider"></li>
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow border-0" aria-labelledby="dropdownUser1" style="background-color: #1e293b;">
+            <li><a class="dropdown-item py-2" th:href="@{/}" target="_blank"><i class="bi bi-shop me-2 text-warning"></i> Xem cửa hàng (Web)</a></li>
+            <li><hr class="dropdown-divider border-secondary opacity-25"></li>
             <li>
                 <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="dropdown-item">Sign out</button>
+                    <button type="submit" class="dropdown-item py-2 text-danger"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</button>
                 </form>
             </li>
         </ul>
@@ -52,18 +167,32 @@
 </div>
 
 <div th:fragment="alerts" class="mt-3">
-    <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
-        <span th:text="${success}"></span>
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show shadow-sm border-0 rounded-3" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
-        <span th:text="${error}"></span>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm border-0 rounded-3" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 </div>
 
 <div th:fragment="scripts">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Tự động highlight mục menu đang active
+        document.addEventListener('DOMContentLoaded', function() {
+            const path = window.location.pathname;
+            document.querySelectorAll('.admin-sidebar .nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && (path === href || (href !== '/admin' && href !== '/admin/dashboard' && path.startsWith(href)))) {
+                    link.classList.add('active-admin');
+                } else if ((path === '/admin' || path === '/admin/' || path === '/admin/dashboard') && href.includes('dashboard')) {
+                    link.classList.add('active-admin');
+                }
+            });
+        });
+    </script>
 </div>
 
 </body>
