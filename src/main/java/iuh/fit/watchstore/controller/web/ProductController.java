@@ -1,10 +1,15 @@
 package iuh.fit.watchstore.controller.web;
 
 import iuh.fit.watchstore.entity.Product;
+import iuh.fit.watchstore.entity.UserTracking;
+import iuh.fit.watchstore.entity.enums.ActionType;
 import iuh.fit.watchstore.repository.ProductRepository;
+import iuh.fit.watchstore.repository.UserTrackingRepository;
 import iuh.fit.watchstore.service.BrandService;
 import iuh.fit.watchstore.service.CategoryService;
+import iuh.fit.watchstore.service.ProductRecommendationService;
 import iuh.fit.watchstore.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +17,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/products")
@@ -25,19 +36,26 @@ public class ProductController {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final BrandService brandService;
+    private final ProductRecommendationService productRecommendationService;
+    private final UserTrackingRepository userTrackingRepository;
 
     public ProductController(ProductService productService,
                              ProductRepository productRepository,
                              CategoryService categoryService,
-                             BrandService brandService) {
+                             BrandService brandService,
+                             ProductRecommendationService productRecommendationService,
+                             UserTrackingRepository userTrackingRepository) {
         this.productService = productService;
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.brandService = brandService;
+        this.productRecommendationService = productRecommendationService;
+        this.userTrackingRepository = userTrackingRepository;
     }
 
     @GetMapping
     public String listProducts(Model model,
+                               HttpServletRequest request,
                                @RequestParam(required = false) Long categoryId,
                                @RequestParam(value = "brandId", required = false) List<Long> brandIds,
                                @RequestParam(required = false) String keyword,
@@ -60,11 +78,33 @@ public class ProductController {
                     .toList();
         }
         if (keyword != null && !keyword.isBlank()) {
-            String kw = keyword.trim().toLowerCase();
-            products = products.stream()
+            String trimmedKeyword = keyword.trim();
+            String kw = trimmedKeyword.toLowerCase();
+
+            // Tự động ghi nhận hành vi SEARCH nếu chưa được gửi từ TrackingJS trong 3 giây qua
+            recordSearchTrackingIfNeeded(request, trimmedKeyword);
+
+            // 1. Kết quả tìm kiếm truyền thống (JPA / Substring LIKE)
+            List<Product> traditionalMatches = products.stream()
                     .filter(p -> (p.getName() != null && p.getName().toLowerCase().contains(kw)) ||
                                  (p.getModel() != null && p.getModel().toLowerCase().contains(kw)))
                     .toList();
+
+            // 2. Kết quả Tìm kiếm ngữ nghĩa (AI Semantic Search qua VectorStore)
+            Set<Long> candidateIds = products.stream().map(Product::getId).collect(Collectors.toSet());
+            List<Product> semanticMatches = productRecommendationService.semanticSearch(trimmedKeyword, 8).stream()
+                    .filter(p -> candidateIds.contains(p.getId()))
+                    .toList();
+
+            // 3. Merge kết quả: Ưu tiên khớp chính xác lên đầu, nối tiếp bằng kết quả ngữ nghĩa AI (loại trùng)
+            Map<Long, Product> mergedMap = new LinkedHashMap<>();
+            for (Product p : traditionalMatches) {
+                mergedMap.put(p.getId(), p);
+            }
+            for (Product p : semanticMatches) {
+                mergedMap.putIfAbsent(p.getId(), p);
+            }
+            products = new ArrayList<>(mergedMap.values());
         }
         if (priceRange != null && !priceRange.isBlank()) {
             products = products.stream()
@@ -121,13 +161,31 @@ public class ProductController {
     public String productDetail(@PathVariable Long id, Model model) {
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);
-        List<Product> relatedProducts = productService.getActiveProducts().stream()
-                .filter(p -> !p.getId().equals(id))
-                .sorted(Comparator.comparing((Product p) ->
-                        (product.getBrand() != null && p.getBrand() != null && product.getBrand().getId().equals(p.getBrand().getId())) ? 0 : 1))
-                .limit(4)
-                .toList();
+        List<Product> relatedProducts = productRecommendationService.getRelatedProducts(product, 4);
         model.addAttribute("relatedProducts", relatedProducts);
         return "web/product-detail";
+    }
+
+    private void recordSearchTrackingIfNeeded(HttpServletRequest request, String keyword) {
+        try {
+            String sessionId = TrackingController.resolveSessionId(request);
+            List<UserTracking> recent = userTrackingRepository.findTop20BySessionIdOrderByCreatedAtDesc(sessionId);
+            LocalDateTime cutoff = LocalDateTime.now().minusSeconds(4);
+            boolean alreadyLogged = recent.stream().anyMatch(t ->
+                    t.getActionType() == ActionType.SEARCH
+                    && keyword.equalsIgnoreCase(t.getSearchKeyword())
+                    && t.getCreatedAt() != null
+                    && t.getCreatedAt().isAfter(cutoff));
+
+            if (!alreadyLogged) {
+                UserTracking tracking = UserTracking.builder()
+                        .userId(TrackingController.resolveCurrentUserId())
+                        .sessionId(sessionId)
+                        .actionType(ActionType.SEARCH)
+                        .searchKeyword(keyword)
+                        .build();
+                userTrackingRepository.save(tracking);
+            }
+        } catch (Exception ignored) {}
     }
 }

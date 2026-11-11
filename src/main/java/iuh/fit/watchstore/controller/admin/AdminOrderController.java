@@ -4,6 +4,7 @@ import iuh.fit.watchstore.entity.Order;
 import iuh.fit.watchstore.entity.enums.OrderStatus;
 import iuh.fit.watchstore.exception.InvalidOperationException;
 import iuh.fit.watchstore.exception.OutOfStockException;
+import iuh.fit.watchstore.repository.OrderDetailRepository;
 import iuh.fit.watchstore.repository.OrderRepository;
 import iuh.fit.watchstore.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminOrderController {
 
     private final OrderRepository orderRepository;
+    private final OrderDetailRepository orderDetailRepository;
     private final OrderService orderService;
 
     @GetMapping
@@ -28,7 +30,11 @@ public class AdminOrderController {
 
     @GetMapping("/{id}")
     public String orderDetail(@PathVariable Long id, Model model) {
-        model.addAttribute("order", orderRepository.findById(id).orElse(null));
+        Order order = orderRepository.findById(id).orElse(null);
+        model.addAttribute("order", order);
+        if (order != null) {
+            model.addAttribute("orderDetails", orderDetailRepository.findByOrder_Id(id));
+        }
         return "admin/order-detail";
     }
 

@@ -353,11 +353,13 @@
             </div>
         </div>
 
-        <!-- Related Products Section -->
+        <!-- Related Products Section (AI Vector Similarity) -->
         <section th:if="${relatedProducts != null and !relatedProducts.isEmpty()}" class="mt-5">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <span class="text-uppercase fw-bold small" style="color: var(--ws-accent-gold); letter-spacing: 1px;">Gợi ý dành riêng cho bạn</span>
+                    <span class="text-uppercase fw-bold small d-inline-flex align-items-center gap-1" style="color: var(--ws-accent-gold); letter-spacing: 1px;">
+                        <i class="bi bi-stars"></i> AI Vector Similarity • Gợi ý thông minh
+                    </span>
                     <h3 class="fw-bold mb-0 mt-1">Sản Phẩm Cùng Phân Khúc</h3>
                 </div>
                 <a th:href="@{/products}" class="btn btn-outline-dark rounded-pill px-4 btn-sm fw-semibold">
@@ -458,7 +460,7 @@
             </div>
         </section>
 
-        <!-- User Tracking Script for AI Chatbot Context -->
+        <!-- User Tracking Script for AI Chatbot Context & Behavior Profiling -->
         <script th:inline="javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 try {
@@ -471,6 +473,18 @@
                         if (list.length > 10) list = list.slice(0, 10);
                         localStorage.setItem('recentlyViewed', JSON.stringify(list));
                         localStorage.setItem('currentViewingProduct', JSON.stringify({ id: pid, name: pname }));
+
+                        // Gửi sự kiện VIEW tới /api/tracking qua TrackingJS
+                        if (typeof TrackingJS !== 'undefined') {
+                            TrackingJS.track('VIEW', pid, null);
+                        } else {
+                            fetch('/api/tracking', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                credentials: 'same-origin',
+                                body: JSON.stringify({ actionType: 'VIEW', productId: pid })
+                            });
+                        }
                     }
                 } catch(e) {
                     console.warn('Tracking error:', e);

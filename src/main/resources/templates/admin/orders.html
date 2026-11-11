@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/admin-layout :: head('Orders')}"></head>
+<head th:replace="~{fragments/admin-layout :: head('Quản Lý Đơn Hàng')}"></head>
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -8,48 +8,71 @@
             
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Manage Orders</h1>
+                    <div>
+                        <h1 class="h3 fw-bold text-slate">Quản Lý Đơn Hàng</h1>
+                        <p class="text-muted small mb-0">Theo dõi toàn bộ đơn hàng và cập nhật tiến độ vận chuyển</p>
+                    </div>
                 </div>
                 
                 <div th:replace="~{fragments/admin-layout :: alerts}"></div>
                 
-                <div class="table-responsive bg-white rounded shadow-sm">
-                    <table class="table table-striped table-hover m-0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>ID</th>
-                                <th>Customer</th>
-                                <th>Date</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="order : ${orders}">
-                                <td th:text="${order.id}">1</td>
-                                <td>
-                                    <div th:text="${order.receiverName}">Name</div>
-                                    <small class="text-muted" th:text="${order.phone}">Phone</small>
-                                </td>
-                                <td th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy HH:mm')}">Date</td>
-                                <td th:text="${'$' + order.totalAmount}">$0.00</td>
-                                <td>
-                                    <span class="badge" 
-                                        th:classappend="${order.status.name() == 'PENDING' ? 'bg-warning text-dark' : (order.status.name() == 'COMPLETED' ? 'bg-success' : (order.status.name() == 'CANCELLED' ? 'bg-danger' : 'bg-primary'))}"
-                                        th:text="${order.status}">Status</span>
-                                </td>
-                                <td>
-                                    <a th:href="@{/admin/orders/{id}(id=${order.id})}" class="btn btn-sm btn-info text-white"><i class="bi bi-eye"></i> Detail</a>
-                                    <form th:if="${order.status.name() != 'COMPLETED' and order.status.name() != 'CANCELLED'}" 
-                                          th:action="@{/admin/orders/cancel/{id}(id=${order.id})}" method="post" class="d-inline"
-                                          onsubmit="return confirm('Cancel this order?');">
-                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-x-circle"></i> Cancel</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 80px;">Mã ĐH</th>
+                                        <th>Khách hàng</th>
+                                        <th>Thời gian</th>
+                                        <th class="text-end">Tổng tiền</th>
+                                        <th class="text-center">Trạng thái</th>
+                                        <th class="text-end" style="width: 170px;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${orders}">
+                                        <td class="fw-bold">#<span th:text="${order.id}">1</span></td>
+                                        <td>
+                                            <div class="fw-semibold" th:text="${order.receiverName}">Name</div>
+                                            <small class="text-muted"><i class="bi bi-telephone me-1"></i><span th:text="${order.phone}">Phone</span></small>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                                        </td>
+                                        <td class="text-end fw-bold text-primary" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + ' đ'}">
+                                            0 đ
+                                        </td>
+                                        <td class="text-center">
+                                            <span th:if="${order.status.name() == 'PENDING'}" class="badge bg-warning text-dark px-3 py-2">Chờ xử lý</span>
+                                            <span th:if="${order.status.name() == 'CONFIRMED'}" class="badge bg-info text-dark px-3 py-2">Đã xác nhận</span>
+                                            <span th:if="${order.status.name() == 'PROCESSING'}" class="badge bg-primary px-3 py-2">Đóng gói</span>
+                                            <span th:if="${order.status.name() == 'SHIPPED'}" class="badge bg-primary px-3 py-2">Đang giao</span>
+                                            <span th:if="${order.status.name() == 'COMPLETED'}" class="badge bg-success px-3 py-2">Hoàn tất</span>
+                                            <span th:if="${order.status.name() == 'CANCELLED'}" class="badge bg-danger px-3 py-2">Đã hủy</span>
+                                        </td>
+                                        <td class="text-end">
+                                            <a th:href="@{/admin/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary me-1" title="Xem chi tiết">
+                                                <i class="bi bi-eye"></i> Chi tiết
+                                            </a>
+                                            <form th:if="${order.status.name() != 'COMPLETED' and order.status.name() != 'CANCELLED'}" 
+                                                  th:action="@{/admin/orders/cancel/{id}(id=${order.id})}" method="post" class="d-inline"
+                                                  onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Hủy đơn">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(orders)}">
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            Chưa có đơn hàng nào trong hệ thống.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>

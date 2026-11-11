@@ -151,9 +151,9 @@ public class CustomUserDetails implements UserDetails, OAuth2User, OidcUser {
 
     @Override
     public boolean isEnabled() {
-        if (user != null && user.getStatus() != null) {
-            return Boolean.TRUE.equals(user.getStatus());
+        if (user == null) {
+            return true;
         }
-        return true;
+        return user.getStatus() == null || user.getStatus();
     }
 }
