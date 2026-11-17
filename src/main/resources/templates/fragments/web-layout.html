@@ -144,6 +144,9 @@
         .ws-header-action-btn {
             display: inline-flex;
             align-items: center;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+            white-space: nowrap;
             gap: 0.5rem;
             padding: 0.45rem 0.9rem;
             border-radius: 999px;
@@ -469,7 +472,8 @@
             box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35);
         }
         /* Chat Body & Message Alignment */
-        #aiChatMessages {
+        #aiChatMessages,
+        #staffChatMessages {
             padding: 16px 14px !important;
             background-color: #f8fafc;
             scroll-behavior: smooth;
@@ -550,15 +554,24 @@
         /* Horizontal Quick Questions Bar (above input) */
         .ws-quick-questions-bar {
             display: flex;
+            flex-wrap: nowrap;
             align-items: center;
-            gap: 6px;
+            flex-shrink: 0;
+            gap: 10px;
             overflow-x: auto;
+            overflow-y: hidden;
             white-space: nowrap;
-            padding: 8px 12px;
+            padding: 10px 14px !important;
+            padding-inline: 14px;
             background-color: #ffffff;
             border-top: 1px solid #f1f5f9;
             scrollbar-width: none;
             -ms-overflow-style: none;
+        }
+        .ws-quick-questions-bar::after {
+            content: '';
+            flex: 0 0 1px;
+            padding-right: 1px;
         }
         .ws-quick-questions-bar::-webkit-scrollbar {
             display: none;
@@ -663,7 +676,7 @@
                 </div>
 
                 <!-- Cột Phải (col-md-3): Cụm Tài khoản & Giỏ hàng -->
-                <div class="col-6 col-md-3 order-2 order-md-3 d-flex align-items-center justify-content-end gap-2 gap-lg-3">
+                <div class="col-6 col-md-3 order-2 order-md-3 d-flex flex-nowrap align-items-center justify-content-end gap-2 gap-lg-3">
                     <!-- Tài khoản (Chưa đăng nhập) -->
                     <div class="dropdown" sec:authorize="isAnonymous()">
                         <a class="ws-header-action-btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -714,10 +727,10 @@
                     </div>
 
                     <!-- Nút Giỏ hàng kèm Badge màu đỏ rượu (Wine Red) -->
-                    <a class="ws-header-action-btn position-relative" th:href="@{/cart}" title="Giỏ hàng của bạn">
-                        <i class="bi bi-bag-heart-fill fs-5" style="color: #d97706;"></i>
-                        <span class="d-none d-sm-inline">Giỏ hàng</span>
-                        <span id="navbarCartBadge" class="badge rounded-pill cart-badge-animate ms-1 text-white"
+                    <a class="ws-header-action-btn position-relative d-flex align-items-center flex-nowrap text-nowrap" th:href="@{/cart}" title="Giỏ hàng của bạn">
+                        <i class="bi bi-bag-heart-fill fs-5 flex-shrink-0" style="color: #d97706;"></i>
+                        <span class="d-none d-lg-inline">Giỏ hàng</span>
+                        <span id="navbarCartBadge" class="badge rounded-pill cart-badge-animate ms-1 text-white flex-shrink-0"
                               style="background-color: var(--ws-sale-wine) !important;"
                               th:classappend="${session.CART_SESSION == null or #lists.isEmpty(session.CART_SESSION)} ? 'd-none' : ''"
                               th:text="${session.CART_SESSION != null ? #aggregates.sum(session.CART_SESSION.![quantity]) : 0}">0</span>
@@ -1016,7 +1029,7 @@
                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 10px;">Tracking</span>
             </div>
 
-            <!-- Messages List (chat-body) -->
+            <!-- Messages List (chat-body: Trợ lý AI) -->
             <div id="aiChatMessages" class="flex-grow-1 overflow-y-auto d-flex flex-column gap-2.5" style="font-size: 13.5px; line-height: 1.5;">
                 <div class="ws-chat-row row-bot">
                     <div class="ws-chat-avatar avatar-bot">
@@ -1024,7 +1037,20 @@
                     </div>
                     <div class="ai-chat-bubble-bot">
                         <p class="mb-1 fw-semibold text-dark">Xin chào quý khách! 👋 Tôi là trợ lý ảo của <strong>Watch Store</strong>.</p>
-                        <p class="mb-0 text-secondary">Tôi có thể tư vấn chọn size cổ tay, tìm đồng hồ chính hãng theo thương hiệu (Casio, Seiko, Citizen, Orient, Tissot), khoảng giá hoặc kết nối bạn với nhân viên CSKH.</p>
+                        <p class="mb-0 text-secondary">Tôi có thể tư vấn chọn size cổ tay, tìm đồng hồ chính hãng theo thương hiệu (Casio, Seiko, Citizen, Orient, Tissot), khoảng giá hoặc tra cứu đơn hàng của bạn.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages List (chat-body: Nhân viên CSKH - độc lập & ẩn mặc định) -->
+            <div id="staffChatMessages" class="flex-grow-1 overflow-y-auto d-none flex-column gap-2.5" style="font-size: 13.5px; line-height: 1.5;">
+                <div class="ws-chat-row row-bot">
+                    <div class="ws-chat-avatar avatar-staff">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <div class="ai-chat-bubble-bot">
+                        <p class="mb-1 fw-semibold text-dark">Xin chào quý khách! 👋 Kết nối với <strong>Bộ phận CSKH Watch Store</strong>.</p>
+                        <p class="mb-0 text-secondary">Quý khách vui lòng để lại lời nhắn, thông tin sản phẩm hoặc mã đơn hàng cần hỗ trợ, nhân viên tư vấn sẽ phản hồi trực tiếp trong khung giờ 8:00 - 21:30.</p>
                     </div>
                 </div>
             </div>
@@ -1060,7 +1086,7 @@
                 <form id="aiChatForm" onsubmit="handleAiChatSubmit(event)" class="d-flex align-items-center gap-2 mb-0">
                     <input type="text" id="aiChatInput" class="form-control rounded-pill border px-3 py-2 shadow-sm"
                            style="font-size: 13.5px;"
-                           placeholder="Hỏi về đồng hồ, giá cả, thương hiệu..." autocomplete="off">
+                           placeholder="Hỏi về đồng hồ, giá cả, thương hiệu..." autocomplete="off" maxlength="250">
                     <button type="submit" id="aiChatSendBtn" class="btn btn-primary rounded-circle shadow-sm d-flex align-items-center justify-content-center flex-shrink-0"
                             style="width: 38px; height: 38px;" title="Gửi tin nhắn">
                         <i class="bi bi-send-fill text-white" style="font-size: 14px;"></i>
@@ -1426,8 +1452,18 @@
         /* ===== AI CHATBOT, LIVE CHAT & USER TRACKING UTILITIES ===== */
         let currentChatMode = 'AI';
 
+        function getActiveChatContainer() {
+            return document.getElementById(currentChatMode === 'STAFF' ? 'staffChatMessages' : 'aiChatMessages');
+        }
+
         function switchChatMode(mode) {
             if (currentChatMode === mode) return;
+            if (aiChatIsSending) {
+                if (typeof showCartToast === 'function') {
+                    showCartToast('Bot đang suy nghĩ, vui lòng đợi phản hồi xong trước khi chuyển tab!', false);
+                }
+                return;
+            }
             currentChatMode = mode;
 
             const tabAI = document.getElementById('tabModeAI');
@@ -1439,7 +1475,8 @@
             const headerAvatarBadge = document.getElementById('aiChatHeaderAvatarBadge');
             const staffNotice = document.getElementById('liveChatStaffNotice');
             const input = document.getElementById('aiChatInput');
-            const messagesContainer = document.getElementById('aiChatMessages');
+            const aiContainer = document.getElementById('aiChatMessages');
+            const staffContainer = document.getElementById('staffChatMessages');
 
             if (mode === 'STAFF') {
                 if (tabAI) tabAI.classList.remove('active');
@@ -1453,15 +1490,15 @@
                     staffNotice.classList.remove('d-none');
                     staffNotice.classList.add('d-flex');
                 }
-                if (input) input.placeholder = 'Nhập nội dung cần nhân viên tư vấn hỗ trợ...';
-
-                if (messagesContainer) {
-                    const sysNotice = document.createElement('div');
-                    sysNotice.className = 'text-center my-1';
-                    sysNotice.innerHTML = '<span class="badge bg-light text-secondary border px-2.5 py-1 rounded-pill" style="font-size: 11px;"><i class="bi bi-headset text-success me-1"></i>Đã chuyển sang chế độ Chat với Nhân viên CSKH</span>';
-                    messagesContainer.appendChild(sysNotice);
-                    scrollAiChatToBottom();
+                if (aiContainer) {
+                    aiContainer.classList.add('d-none');
+                    aiContainer.classList.remove('d-flex');
                 }
+                if (staffContainer) {
+                    staffContainer.classList.remove('d-none');
+                    staffContainer.classList.add('d-flex');
+                }
+                if (input) input.placeholder = 'Nhập nội dung cần nhân viên tư vấn hỗ trợ...';
             } else {
                 if (tabStaff) tabStaff.classList.remove('active');
                 if (tabAI) tabAI.classList.add('active');
@@ -1474,17 +1511,18 @@
                     staffNotice.classList.add('d-none');
                     staffNotice.classList.remove('d-flex');
                 }
-                if (input) input.placeholder = 'Hỏi về đồng hồ, giá cả, thương hiệu...';
-
-                if (messagesContainer) {
-                    const sysNotice = document.createElement('div');
-                    sysNotice.className = 'text-center my-1';
-                    sysNotice.innerHTML = '<span class="badge bg-light text-secondary border px-2.5 py-1 rounded-pill" style="font-size: 11px;"><i class="bi bi-robot text-primary me-1"></i>Đã chuyển sang chế độ Trợ lý AI thông minh</span>';
-                    messagesContainer.appendChild(sysNotice);
-                    scrollAiChatToBottom();
+                if (staffContainer) {
+                    staffContainer.classList.add('d-none');
+                    staffContainer.classList.remove('d-flex');
                 }
+                if (aiContainer) {
+                    aiContainer.classList.remove('d-none');
+                    aiContainer.classList.add('d-flex');
+                }
+                if (input) input.placeholder = 'Hỏi về đồng hồ, giá cả, thương hiệu...';
             }
 
+            scrollAiChatToBottom();
             if (input) input.focus();
         }
 
@@ -1536,13 +1574,160 @@
         }
 
         function scrollAiChatToBottom() {
-            const container = document.getElementById('aiChatMessages');
+            const container = getActiveChatContainer();
             if (container) {
                 container.scrollTop = container.scrollHeight;
             }
         }
 
+        /* ===== CHAT HISTORY (SESSION STORAGE - 2 KHÓA ĐỘC LẬP) ===== */
+        const WS_CHAT_AI_KEY = 'ws_chat_ai';
+        const WS_CHAT_STAFF_KEY = 'ws_chat_staff';
+        const WS_CHAT_HISTORY_MAX = 50;
+        let aiChatIsSending = false;
+
+        function getHistoryKeyByMode(mode) {
+            return mode === 'STAFF' ? WS_CHAT_STAFF_KEY : WS_CHAT_AI_KEY;
+        }
+
+        function buildChatBubble(role, message) {
+            const row = document.createElement('div');
+            if (role === 'user') {
+                row.className = 'ws-chat-row row-user';
+                row.innerHTML = `
+                    <div class="ai-chat-bubble-user shadow-sm">${escapeHtml(message)}</div>
+                    <div class="ws-chat-avatar avatar-user"><i class="bi bi-person-fill"></i></div>
+                `;
+            } else if (role === 'staff') {
+                row.className = 'ws-chat-row row-bot';
+                row.innerHTML = `
+                    <div class="ws-chat-avatar avatar-staff"><i class="bi bi-headset"></i></div>
+                    <div class="ai-chat-bubble-bot">${escapeHtml(message)}</div>
+                `;
+            } else if (role === 'error') {
+                row.className = 'ws-chat-row row-bot';
+                row.innerHTML = `
+                    <div class="ws-chat-avatar bg-danger text-white"><i class="bi bi-exclamation-triangle"></i></div>
+                    <div class="ai-chat-bubble-bot text-danger border-danger-subtle">${escapeHtml(message)}</div>
+                `;
+            } else {
+                row.className = 'ws-chat-row row-bot';
+                row.innerHTML = `
+                    <div class="ws-chat-avatar avatar-bot"><i class="bi bi-robot"></i></div>
+                    <div class="ai-chat-bubble-bot">${formatAiResponse(message)}</div>
+                `;
+            }
+            return row;
+        }
+
+        function appendChatBubble(role, message, targetMode = currentChatMode) {
+            const containerId = targetMode === 'STAFF' ? 'staffChatMessages' : 'aiChatMessages';
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.appendChild(buildChatBubble(role, message));
+            if (targetMode === currentChatMode) {
+                scrollAiChatToBottom();
+            }
+        }
+
+        function readChatHistory(storageKey) {
+            try {
+                const data = JSON.parse(sessionStorage.getItem(storageKey) || '[]');
+                return Array.isArray(data) ? data : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveChatToSession(role, message, mode = currentChatMode) {
+            if ((role !== 'user' && role !== 'bot' && role !== 'staff') || !message) return;
+            const storageKey = getHistoryKeyByMode(mode);
+            try {
+                const history = readChatHistory(storageKey);
+                history.push({ role: role, message: message, ts: Date.now() });
+                while (history.length > WS_CHAT_HISTORY_MAX) history.shift();
+                sessionStorage.setItem(storageKey, JSON.stringify(history));
+            } catch (e) {
+                console.warn('Cannot save chat history:', e);
+            }
+        }
+
+        function loadChatFromSession() {
+            const aiContainer = document.getElementById('aiChatMessages');
+            if (aiContainer) {
+                readChatHistory(WS_CHAT_AI_KEY).forEach(item => {
+                    if (item && (item.role === 'user' || item.role === 'bot') && typeof item.message === 'string') {
+                        aiContainer.appendChild(buildChatBubble(item.role, item.message));
+                    }
+                });
+            }
+
+            const staffContainer = document.getElementById('staffChatMessages');
+            if (staffContainer) {
+                readChatHistory(WS_CHAT_STAFF_KEY).forEach(item => {
+                    if (item && (item.role === 'user' || item.role === 'staff') && typeof item.message === 'string') {
+                        staffContainer.appendChild(buildChatBubble(item.role, item.message));
+                    }
+                });
+            }
+            scrollAiChatToBottom();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadChatFromSession);
+
+        // Cảnh báo nhẹ khi khách đang chat với AI mà định chuyển trang
+        window.addEventListener('beforeunload', function(e) {
+            if (aiChatIsSending && currentChatMode === 'AI') {
+                e.preventDefault();
+                e.returnValue = 'Bot đang suy nghĩ, bạn chuyển trang có thể làm đứt kết nối';
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!aiChatIsSending || currentChatMode !== 'AI') return;
+            const link = e.target.closest('a[href]');
+            if (!link) return;
+            const href = link.getAttribute('href') || '';
+            if (!href || href.startsWith('#') || href.startsWith('javascript:') || link.target === '_blank') return;
+
+            if (typeof showCartToast === 'function') {
+                showCartToast('Bot đang suy nghĩ, bạn chuyển trang có thể làm đứt kết nối', false);
+            }
+            if (!confirm('Bot đang suy nghĩ, bạn chuyển trang có thể làm đứt kết nối. Bạn có muốn tiếp tục chuyển trang không?')) {
+                e.preventDefault();
+            }
+        });
+
+        /* ===== ANTI-SPAM: KHÓA / MỞ Ô NHẬP LIỆU & TAB CHUYỂN ===== */
+        function setAiChatLocked(locked) {
+            const input = document.getElementById('aiChatInput');
+            const sendBtn = document.getElementById('aiChatSendBtn');
+            const tabAI = document.getElementById('tabModeAI');
+            const tabStaff = document.getElementById('tabModeStaff');
+            aiChatIsSending = locked;
+            if (input) input.disabled = locked;
+            if (tabAI) tabAI.disabled = locked;
+            if (tabStaff) tabStaff.disabled = locked;
+            if (sendBtn) {
+                sendBtn.disabled = locked;
+                sendBtn.innerHTML = locked
+                    ? '<span class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>'
+                    : '<i class="bi bi-send-fill text-white" style="font-size: 14px;"></i>';
+            }
+            document.querySelectorAll('#aiQuickQuestionsBar .ws-quick-chip').forEach(chip => chip.disabled = locked);
+            if (!locked && input) input.focus();
+        }
+
+        function hideAiTypingIndicator() {
+            const typingIndicator = document.getElementById('aiChatTypingIndicator');
+            if (typingIndicator) {
+                typingIndicator.classList.add('d-none');
+                typingIndicator.classList.remove('d-flex');
+            }
+        }
+
         function sendAiQuickPrompt(promptText) {
+            if (aiChatIsSending) return;
             const input = document.getElementById('aiChatInput');
             if (input) {
                 input.value = promptText;
@@ -1552,34 +1737,27 @@
 
         function handleAiChatSubmit(event) {
             if (event && event.preventDefault) event.preventDefault();
+            if (aiChatIsSending) return;
+
             const input = document.getElementById('aiChatInput');
-            const sendBtn = document.getElementById('aiChatSendBtn');
-            const messagesContainer = document.getElementById('aiChatMessages');
             const typingIndicator = document.getElementById('aiChatTypingIndicator');
             const typingText = document.getElementById('aiChatTypingText');
 
             if (!input) return;
-            const userMsg = input.value.trim();
+            const userMsg = input.value.trim().substring(0, 250);
             if (!userMsg) return;
 
-            // Append User Message with aligned User Avatar
-            const userBubble = document.createElement('div');
-            userBubble.className = 'ws-chat-row row-user';
-            userBubble.innerHTML = `
-                <div class="ai-chat-bubble-user shadow-sm">
-                    ${escapeHtml(userMsg)}
-                </div>
-                <div class="ws-chat-avatar avatar-user">
-                    <i class="bi bi-person-fill"></i>
-                </div>
-            `;
-            messagesContainer.appendChild(userBubble);
-            input.value = '';
-            scrollAiChatToBottom();
+            const submitMode = currentChatMode;
 
-            // Show Smooth Typing Indicator
+            // Hiển thị tin nhắn của khách đúng tab hiện tại
+            appendChatBubble('user', userMsg, submitMode);
+            input.value = '';
+
+            // Khóa input + nút gửi ngay khi bắt đầu gửi (chống spam)
+            setAiChatLocked(true);
+
             if (typingText) {
-                typingText.textContent = (currentChatMode === 'STAFF')
+                typingText.textContent = (submitMode === 'STAFF')
                     ? 'Hệ thống CSKH đang ghi nhận yêu cầu...'
                     : 'AI đang tìm kiếm cơ sở dữ liệu và soạn câu trả lời...';
             }
@@ -1588,34 +1766,23 @@
                 typingIndicator.classList.add('d-flex');
             }
             scrollAiChatToBottom();
-            if (sendBtn) sendBtn.disabled = true;
 
-            // Phân nhánh 1: Chế độ "Nhân viên CSKH" (Live Chat Mode - không gọi API Gemini)
-            if (currentChatMode === 'STAFF') {
+            // Phân nhánh 1: Live Chat (Nhân viên CSKH) — lưu vào ws_chat_staff
+            if (submitMode === 'STAFF') {
+                saveChatToSession('user', userMsg, 'STAFF');
                 setTimeout(() => {
-                    if (typingIndicator) {
-                        typingIndicator.classList.add('d-none');
-                        typingIndicator.classList.remove('d-flex');
-                    }
-                    if (sendBtn) sendBtn.disabled = false;
-
-                    const staffBubble = document.createElement('div');
-                    staffBubble.className = 'ws-chat-row row-bot';
-                    staffBubble.innerHTML = `
-                        <div class="ws-chat-avatar avatar-staff">
-                            <i class="bi bi-headset"></i>
-                        </div>
-                        <div class="ai-chat-bubble-bot">
-                            Dạ, hệ thống đã ghi nhận yêu cầu. Quý khách vui lòng giữ máy trong giây lát, nhân viên tư vấn sẽ phản hồi lại ngay ạ 🕒
-                        </div>
-                    `;
-                    messagesContainer.appendChild(staffBubble);
-                    scrollAiChatToBottom();
+                    hideAiTypingIndicator();
+                    const staffReply = 'Dạ, hệ thống đã ghi nhận yêu cầu. Quý khách vui lòng giữ máy trong giây lát, nhân viên tư vấn sẽ phản hồi lại ngay ạ 🕒';
+                    appendChatBubble('staff', staffReply, 'STAFF');
+                    saveChatToSession('staff', staffReply, 'STAFF');
+                    setAiChatLocked(false);
                 }, 1500);
                 return;
             }
 
-            // Phân nhánh 2: Chế độ "Trợ lý AI" (Gọi API /api/chat)
+            // Phân nhánh 2: Trợ lý AI — lưu vào ws_chat_ai
+            saveChatToSession('user', userMsg, 'AI');
+
             let viewingId = null;
             const pathMatch = window.location.pathname.match(/\/products\/(\d+)$/);
             if (pathMatch) {
@@ -1640,58 +1807,26 @@
 
             fetch('/api/chat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
             .then(res => {
-                if (!res.ok) {
-                    throw new Error('HTTP error ' + res.status);
-                }
+                if (!res.ok) throw new Error('HTTP error ' + res.status);
                 return res.json();
             })
             .then(data => {
-                if (typingIndicator) {
-                    typingIndicator.classList.add('d-none');
-                    typingIndicator.classList.remove('d-flex');
-                }
-                if (sendBtn) sendBtn.disabled = false;
-
+                hideAiTypingIndicator();
                 const replyText = data.reply || data.error || 'Xin lỗi quý khách, không nhận được phản hồi từ AI.';
-                const botBubble = document.createElement('div');
-                botBubble.className = 'ws-chat-row row-bot';
-                botBubble.innerHTML = `
-                    <div class="ws-chat-avatar avatar-bot">
-                        <i class="bi bi-robot"></i>
-                    </div>
-                    <div class="ai-chat-bubble-bot">
-                        ${formatAiResponse(replyText)}
-                    </div>
-                `;
-                messagesContainer.appendChild(botBubble);
-                scrollAiChatToBottom();
+                appendChatBubble('bot', replyText, 'AI');
+                if (data.success !== false) saveChatToSession('bot', replyText, 'AI');
             })
             .catch(err => {
                 console.error('Error calling AI chat API:', err);
-                if (typingIndicator) {
-                    typingIndicator.classList.add('d-none');
-                    typingIndicator.classList.remove('d-flex');
-                }
-                if (sendBtn) sendBtn.disabled = false;
-
-                const errBubble = document.createElement('div');
-                errBubble.className = 'ws-chat-row row-bot';
-                errBubble.innerHTML = `
-                    <div class="ws-chat-avatar bg-danger text-white">
-                        <i class="bi bi-exclamation-triangle"></i>
-                    </div>
-                    <div class="ai-chat-bubble-bot text-danger border-danger-subtle">
-                        Có lỗi kết nối tới máy chủ AI. Quý khách vui lòng thử lại sau giây lát!
-                    </div>
-                `;
-                messagesContainer.appendChild(errBubble);
-                scrollAiChatToBottom();
+                hideAiTypingIndicator();
+                appendChatBubble('error', 'Có lỗi kết nối tới máy chủ AI. Quý khách vui lòng thử lại sau giây lát!', 'AI');
+            })
+            .finally(() => {
+                setAiChatLocked(false);
             });
         }
 
@@ -1712,10 +1847,16 @@
 
         function formatAiResponse(text) {
             if (!text) return '';
-            // Cho phép hiển thị an toàn các thẻ liên kết sản phẩm và định dạng markdown cơ bản
-            let formatted = text
+            // Escape HTML trước (chống XSS), sau đó render Markdown cơ bản + link nội bộ an toàn
+            let formatted = escapeHtml(text)
+                // Tương thích ngược: thẻ <a href="/products/{id}">Tên</a> do phiên bản prompt cũ sinh ra
+                .replace(/&lt;a\s+href="(\/products\/\d+)"[^&]*?&gt;(.*?)&lt;\/a&gt;/g, '[$2]($1)')
+                // Markdown link: chỉ cho phép đường dẫn nội bộ bắt đầu bằng "/"
+                // (dùng \x5B thay cho dấu mở ngoặc vuông để tránh xung đột cú pháp inline của Thymeleaf)
+                .replace(/\x5B([^\]]+)\]\((\/[A-Za-z0-9\-_\/?=&;.%]*)\)/g,
+                    '<a href="$2" class="text-primary fw-bold text-decoration-underline">$1</a>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/(^|[^*])\*(?!\s)([^*\n]+?)\*/g, '$1<em>$2</em>')
                 .replace(/\n\n/g, '<div class="my-1.5"></div>')
                 .replace(/\n/g, '<br>');
             return formatted;

@@ -15,6 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByBrand_Id(Long brandId);
     
     List<Product> findByStatusTrue();
+
+    long countByStatusTrue();
     
     List<Product> findByNameContainingIgnoreCaseOrModelContainingIgnoreCase(String name, String model);
     

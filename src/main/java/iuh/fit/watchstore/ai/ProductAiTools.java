@@ -66,11 +66,25 @@ public class ProductAiTools {
             String description
     ) {}
 
+    /**
+     * Kết quả trả về cho Gemini.
+     * - totalElements: TỔNG số sản phẩm khớp tiêu chí trong DB (không bị giới hạn).
+     * - returnedCount: số sản phẩm thực sự nằm trong danh sách items (tối đa MAX_RESULTS).
+     * - totalProductsInStore: tổng số sản phẩm đang kinh doanh của toàn cửa hàng.
+     * - hasMore: true nếu còn sản phẩm khớp nhưng không được liệt kê trong items.
+     */
     public record Response(
-            List<WatchSummary> watches,
-            int totalFound,
+            int totalElements,
+            int returnedCount,
+            long totalProductsInStore,
+            boolean hasMore,
+            List<WatchSummary> items,
             String message
     ) {}
+
+    /** Số sản phẩm tối đa trả về cho AI trong một lần gọi tool (trước đây là 6 → khiến AI ngộ nhận kho chỉ có 6 món). */
+    private static final int MAX_RESULTS = 40;
+    private static final int MAX_DESCRIPTION_LENGTH = 160;
 
     @Tool(description = "Tìm kiếm đồng hồ trong cơ sở dữ liệu của Watch Store dựa trên từ khóa, mức giá tối thiểu (minPrice), mức giá tối đa (maxPrice) và giới tính (gender). Trả về danh sách đồng hồ kèm giá bán, số lượng tồn kho (stock) và kích thước mặt (size).")
     public Response executeSearchWatches(
@@ -112,14 +126,18 @@ public class ProductAiTools {
                 normalizedGender
         );
 
+        long totalInStore = repository.countByStatusTrue();
+
         if (products == null || products.isEmpty()) {
-            return new Response(Collections.emptyList(), 0, "Không tìm thấy đồng hồ nào phù hợp với tiêu chí tìm kiếm trong cơ sở dữ liệu.");
+            return new Response(0, 0, totalInStore, false, Collections.emptyList(),
+                    "Không tìm thấy đồng hồ nào phù hợp với tiêu chí tìm kiếm. Lưu ý: cửa hàng hiện có tổng cộng "
+                            + totalInStore + " sản phẩm đang kinh doanh, hãy gợi ý khách đổi tiêu chí.");
         }
 
         NumberFormat currencyFormat = NumberFormat.getInstance(VI_LOCALE);
 
         List<WatchSummary> matchingWatches = products.stream()
-                .limit(6)
+                .limit(MAX_RESULTS)
                 .map(p -> {
                     int stockQty = p.getStock() != null ? p.getStock() : 0;
                     String stockText = stockQty > 0
@@ -143,14 +161,25 @@ public class ProductAiTools {
                             p.getCaseMaterial(),
                             p.getStrapMaterial(),
                             "/products/" + p.getId(),
-                            p.getDescription()
+                            truncate(p.getDescription())
                     );
                 })
                 .collect(Collectors.toList());
 
-        String message = "Tìm thấy " + products.size() + " mẫu đồng hồ phù hợp (hiển thị " + matchingWatches.size() + " mẫu tiêu biểu kèm tồn kho và kích thước mặt).";
-        log.info("AI Function Calling - searchWatches completed. Found {} total, returning {}.", products.size(), matchingWatches.size());
-        return new Response(matchingWatches, products.size(), message);
+        int total = products.size();
+        boolean hasMore = total > matchingWatches.size();
+        String message = "Tìm thấy TỔNG CỘNG " + total + " mẫu đồng hồ phù hợp tiêu chí (totalElements = " + total + ")"
+                + (hasMore ? ", danh sách items chỉ liệt kê " + matchingWatches.size() + " mẫu đầu tiên" : ", đã liệt kê đầy đủ trong items")
+                + ". Toàn cửa hàng hiện có " + totalInStore + " sản phẩm đang kinh doanh."
+                + " Khi khách hỏi số lượng mẫu, PHẢI dùng totalElements/totalProductsInStore, KHÔNG đếm số phần tử trong items.";
+        log.info("AI Function Calling - searchWatches completed. Found {} total, returning {}.", total, matchingWatches.size());
+        return new Response(total, matchingWatches.size(), totalInStore, hasMore, matchingWatches, message);
+    }
+
+    private String truncate(String text) {
+        if (text == null) return null;
+        String clean = text.replaceAll("\\s+", " ").trim();
+        return clean.length() > MAX_DESCRIPTION_LENGTH ? clean.substring(0, MAX_DESCRIPTION_LENGTH) + "..." : clean;
     }
 
     private String extractWatchSize(Product p) {
