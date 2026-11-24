@@ -214,7 +214,9 @@
 
                 // Validate file size (10MB limit)
                 if (file.size > 10 * 1024 * 1024) {
-                    alert('Dung lượng ảnh vượt quá giới hạn 10MB! Vui lòng chọn ảnh nhỏ hơn.');
+                    if (typeof showCartToast === 'function') {
+                        showCartToast('Dung lượng ảnh vượt quá giới hạn 10MB! Vui lòng chọn ảnh nhỏ hơn.', false);
+                    }
                     fileInput.value = '';
                     return;
                 }

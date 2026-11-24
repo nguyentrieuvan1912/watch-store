@@ -123,7 +123,8 @@
             <div class="col-lg-5">
                 <div class="ws-detail-gallery product-image-wrapper position-relative shadow-sm">
                     <span class="position-absolute top-0 start-0 m-3 ws-badge-sale" style="z-index: 2;"><i class="bi bi-tag-fill me-1"></i>GIẢM 15%</span>
-                    <span class="position-absolute top-0 end-0 m-3 ws-badge-auth" style="z-index: 2;"><i class="bi bi-patch-check-fill text-warning me-1"></i>100% Chính hãng</span>
+                    <span th:if="${product.stock <= 0}" class="position-absolute top-0 end-0 m-3 badge bg-dark rounded-2 px-3 py-1.5" style="z-index: 2;">Hết hàng</span>
+                    <span th:if="${product.stock > 0}" class="position-absolute top-0 end-0 m-3 ws-badge-auth" style="z-index: 2;"><i class="bi bi-patch-check-fill text-warning me-1"></i>100% Chính hãng</span>
 
                     <img th:if="${product.image != null and !product.image.isEmpty()}" 
                          th:src="${product.image}" 
@@ -212,7 +213,7 @@
                         <label for="quantity" class="form-label mb-0 fw-bold text-dark">Số lượng:</label>
                         <div class="ws-qty-stepper">
                             <button type="button" onclick="stepDetailQty(-1)"><i class="bi bi-dash"></i></button>
-                            <input type="number" id="quantity" name="quantity" value="1" min="1" th:max="${product.stock}">
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" th:max="${product.stock}" onchange="validateDetailQtyInput()">
                             <button type="button" onclick="stepDetailQty(1)"><i class="bi bi-plus"></i></button>
                         </div>
                         <span class="text-muted small">Có sẵn <strong th:text="${product.stock}"></strong> sản phẩm tại showroom</span>
@@ -246,19 +247,42 @@
                         const max = parseInt(qtyInput.getAttribute('max')) || 99;
                         let val = (parseInt(qtyInput.value) || 1) + delta;
                         if (val < 1) val = 1;
-                        if (val > max) val = max;
+                        if (val > max) {
+                            val = max;
+                            if (typeof showCartToast === 'function') {
+                                showCartToast('Số lượng yêu cầu vượt quá tồn kho hiện tại (tối đa ' + max + ' sản phẩm)!', false);
+                            }
+                        }
                         qtyInput.value = val;
                     }
-                    function addToCartFromDetail(productId) {
+                    function validateDetailQtyInput() {
                         const qtyInput = document.getElementById('quantity');
-                        const qty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+                        if (!qtyInput) return 1;
+                        const max = parseInt(qtyInput.getAttribute('max')) || 99;
+                        let val = parseInt(qtyInput.value);
+                        if (isNaN(val) || val < 1) {
+                            val = 1;
+                        } else if (val > max) {
+                            val = max;
+                            if (typeof showCartToast === 'function') {
+                                showCartToast('Số lượng tồn kho hiện tại chỉ còn tối đa ' + max + ' sản phẩm!', false);
+                            }
+                        }
+                        qtyInput.value = val;
+                        return val;
+                    }
+                    function addToCartFromDetail(productId) {
+                        const qty = validateDetailQtyInput();
                         addToCartAjax(productId, qty);
                     }
                 </script>
 
-                <div th:unless="${product.stock > 0}" class="mb-4">
+                <div th:unless="${product.stock > 0}" class="mb-4 d-flex flex-wrap gap-3">
+                    <button type="button" class="btn btn-secondary btn-lg rounded-pill px-4 flex-grow-1 fw-bold opacity-75" disabled>
+                        <i class="bi bi-bag-x-fill me-2"></i>Tạm hết hàng
+                    </button>
                     <button type="button" 
-                            class="btn btn-outline-secondary rounded-pill px-4 py-2" 
+                            class="btn btn-outline-secondary btn-lg rounded-pill px-4" 
                             th:attr="data-compare-id=${product.id}"
                             th:onclick="'toggleCompareProduct(' + ${product.id} + ', this);'"
                             title="Thêm vào danh sách so sánh (tối đa 3)">
@@ -368,8 +392,8 @@
             </div>
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                <div class="col" th:each="rel : ${relatedProducts}">
-                    <div class="card h-100 product-card position-relative d-flex flex-column">
+                <div class="col ws-reveal" th:each="rel, iterStat : ${relatedProducts}" th:style="'transition-delay:' + (${iterStat.index % 4} * 80) + 'ms'">
+                    <div class="card h-100 product-card ws-product-card position-relative d-flex flex-column">
                         <!-- Clickable Image & Content Area -->
                         <a th:href="@{/products/{id}(id=${rel.id})}" class="card-link text-decoration-none flex-grow-1 d-flex flex-column">
                             <!-- 1:1 Pearl Gray Image Box -->

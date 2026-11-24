@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/admin-layout :: head('Báo cáo & Thống kê Chuyên sâu')}"></head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav th:replace="~{fragments/admin-layout :: sidebar}"></nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <!-- Header & Report Export Toolbar -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-3 border-bottom">
+                    <div>
+                        <span class="text-uppercase fw-bold small" style="color: #d97706; letter-spacing: 0.8px;">REVENUE ANALYTICS &amp; AI INSIGHTS</span>
+                        <h2 class="fw-extrabold mb-1" style="color: var(--ws-primary-dark);">Báo Cáo Doanh Thu &amp; Thống Kê AI</h2>
+                        <p class="text-muted mb-0 small">Phân tích chuyên sâu doanh thu, cơ cấu vận đơn, sản phẩm bán chạy và hành vi người dùng AI</p>
+                    </div>
+
+                    <!-- Export & Print Actions -->
+                    <div class="d-flex flex-wrap align-items-center gap-2 no-print">
+                        <a th:href="@{/admin/reports/export(fromDate=${fromDate}, toDate=${toDate})}"
+                           class="btn btn-sm btn-success rounded-pill px-3.5 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5">
+                            <i class="bi bi-file-earmark-excel-fill"></i>
+                            <span>Xuất Excel (CSV)</span>
+                        </a>
+
+                        <button type="button" onclick="window.print()"
+                                class="btn btn-sm btn-outline-dark rounded-pill px-3.5 py-2 fw-bold d-inline-flex align-items-center gap-1.5">
+                            <i class="bi bi-printer-fill"></i>
+                            <span>In / Lưu PDF</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Date Range Filter Toolbar -->
+                <div class="ws-admin-card p-3 mb-4 no-print">
+                    <form th:action="@{/admin/reports}" method="get" class="row g-2 align-items-end">
+                        <div class="col-sm-4 col-md-3">
+                            <label class="form-label small fw-bold text-secondary mb-1"><i class="bi bi-calendar-event me-1 text-warning"></i>Từ ngày</label>
+                            <input type="date" name="fromDate" class="form-control form-control-sm rounded-3" th:value="${fromDate}">
+                        </div>
+                        <div class="col-sm-4 col-md-3">
+                            <label class="form-label small fw-bold text-secondary mb-1"><i class="bi bi-calendar-check me-1 text-warning"></i>Đến ngày</label>
+                            <input type="date" name="toDate" class="form-control form-control-sm rounded-3" th:value="${toDate}">
+                        </div>
+                        <div class="col-sm-4 col-md-6 d-flex align-items-center gap-2">
+                            <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3.5 py-1.5 fw-bold">
+                                <i class="bi bi-funnel-fill me-1"></i>Áp dụng bộ lọc
+                            </button>
+                            <a th:if="${fromDate != null or toDate != null}" th:href="@{/admin/reports}"
+                               class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1.5">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại
+                            </a>
+                            <span class="ms-auto small text-muted d-none d-lg-inline">
+                                <i class="bi bi-cpu text-warning me-1"></i>Tổng sự kiện AI Tracking: <strong class="text-dark" th:text="${totalAiEvents}">0</strong>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Period Summary KPI Strip -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 14px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff;">
+                            <span class="small text-uppercase fw-semibold d-block mb-1" style="color: #cbd5e1; font-size: 0.74rem;">Doanh thu kỳ báo cáo</span>
+                            <h4 class="fw-extrabold mb-0" style="color: #fbbf24;" th:text="${totalRevenue != null ? #numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</h4>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="ws-admin-card p-3 h-100">
+                            <span class="small text-uppercase fw-semibold text-muted d-block mb-1" style="font-size: 0.74rem;">Đơn hoàn thành</span>
+                            <h4 class="fw-extrabold text-success mb-0" th:text="${completedOrders + ' / ' + totalOrders + ' đơn'}">0 / 0 đơn</h4>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="ws-admin-card p-3 h-100">
+                            <span class="small text-uppercase fw-semibold text-muted d-block mb-1" style="font-size: 0.74rem;">Đang chờ &amp; Đang giao</span>
+                            <h4 class="fw-extrabold text-warning mb-0" th:text="${(pendingOrders + shippingOrders) + ' đơn'}">0 đơn</h4>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="ws-admin-card p-3 h-100">
+                            <span class="small text-uppercase fw-semibold text-muted d-block mb-1" style="font-size: 0.74rem;">Đơn đã hủy</span>
+                            <h4 class="fw-extrabold text-danger mb-0" th:text="${cancelledOrders + ' đơn'}">0 đơn</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row: Revenue Area Line Chart & Order Status Doughnut Chart -->
+                <div class="row g-3 mb-4">
+                    <div class="col-lg-8">
+                        <div class="ws-admin-card p-3 p-md-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold mb-0" style="color: var(--ws-primary-dark);">
+                                        <i class="bi bi-graph-up-arrow text-warning me-2"></i>Biểu đồ Doanh thu theo Thời gian
+                                    </h6>
+                                    <small class="text-muted" style="font-size: 0.75rem;">Doanh thu hợp lệ theo từng ngày trong kỳ báo cáo (VNĐ)</small>
+                                </div>
+                                <span class="badge rounded-pill px-2.5 py-1" style="background: #fffbeb; color: #b45309; border: 1px solid #fde68a; font-size: 0.72rem;">
+                                    Area Chart
+                                </span>
+                            </div>
+                            <div style="position: relative; height: 280px;">
+                                <canvas id="revenueLineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="ws-admin-card p-3 p-md-4 h-100">
+                            <div class="mb-3">
+                                <h6 class="fw-bold mb-0" style="color: var(--ws-primary-dark);">
+                                    <i class="bi bi-pie-chart-fill text-warning me-2"></i>Cơ cấu Trạng thái Đơn hàng
+                                </h6>
+                                <small class="text-muted" style="font-size: 0.75rem;">Tỷ trọng 4 nhóm trạng thái vận đơn</small>
+                            </div>
+                            <div style="position: relative; height: 225px;" class="d-flex align-items-center justify-content-center">
+                                <canvas id="orderStatusDoughnutChart"></canvas>
+                            </div>
+                            <div class="d-flex flex-wrap justify-content-center gap-2 mt-3 small" style="font-size: 0.74rem;">
+                                <span class="badge bg-warning-subtle text-warning-emphasis border">Chờ duyệt: <strong th:text="${pendingOrders}">0</strong></span>
+                                <span class="badge bg-info-subtle text-info-emphasis border">Đang giao: <strong th:text="${shippingOrders}">0</strong></span>
+                                <span class="badge bg-success-subtle text-success-emphasis border">Hoàn thành: <strong th:text="${completedOrders}">0</strong></span>
+                                <span class="badge bg-danger-subtle text-danger-emphasis border">Đã hủy: <strong th:text="${cancelledOrders}">0</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Tracking Insights & Top 5 Best-Selling Products Row -->
+                <div class="row g-3 mb-4">
+                    <!-- 1. Top 5 Từ khóa tìm kiếm nhiều nhất (SEARCH) -->
+                    <div class="col-lg-4">
+                        <div class="ws-admin-card p-3 p-md-4 h-100">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="fw-bold mb-0" style="color: var(--ws-primary-dark);">
+                                    <i class="bi bi-search-heart text-warning me-2"></i>Top 5 Từ khóa Tìm kiếm
+                                </h6>
+                                <span class="badge rounded-pill bg-dark text-warning" style="font-size: 0.7rem;">AI SEARCH</span>
+                            </div>
+                            <div th:if="${#lists.isEmpty(topSearchKeywords)}" class="text-center text-muted small py-4">
+                                <i class="bi bi-inbox fs-3 d-block mb-1"></i>Chưa có dữ liệu tìm kiếm từ khách hàng.
+                            </div>
+                            <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(topSearchKeywords)}">
+                                <li th:each="kw, st : ${topSearchKeywords}"
+                                    class="list-group-item px-0 py-2 d-flex align-items-center justify-content-between border-bottom-0">
+                                    <div class="d-flex align-items-center gap-2 text-truncate">
+                                        <span class="badge rounded-circle d-inline-flex align-items-center justify-content-center"
+                                              style="width: 22px; height: 22px; background: #fffbeb; color: #b45309; border: 1px solid #fde68a; font-size: 0.72rem;"
+                                              th:text="${st.count}">1</span>
+                                        <span class="fw-semibold text-dark small text-truncate" th:text="${kw.keyword()}">casio</span>
+                                    </div>
+                                    <span class="badge rounded-pill bg-light text-secondary border" style="font-size: 0.72rem;"
+                                          th:text="${kw.count() + ' lượt'}">1 lượt</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 2. Top 5 Đồng hồ được xem nhiều nhất (VIEW) -->
+                    <div class="col-lg-4">
+                        <div class="ws-admin-card p-3 p-md-4 h-100">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="fw-bold mb-0" style="color: var(--ws-primary-dark);">
+                                    <i class="bi bi-eye-fill text-warning me-2"></i>Top 5 Đồng hồ Xem nhiều
+                                </h6>
+                                <span class="badge rounded-pill bg-dark text-warning" style="font-size: 0.7rem;">AI VIEW</span>
+                            </div>
+                            <div th:if="${#lists.isEmpty(topViewedProducts)}" class="text-center text-muted small py-4">
+                                <i class="bi bi-inbox fs-3 d-block mb-1"></i>Chưa có lượt xem sản phẩm nào được ghi nhận.
+                            </div>
+                            <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(topViewedProducts)}">
+                                <li th:each="vp, st : ${topViewedProducts}"
+                                    class="list-group-item px-0 py-2 d-flex align-items-center justify-content-between border-bottom-0">
+                                    <div class="d-flex align-items-center gap-2 text-truncate pe-2">
+                                        <span class="badge rounded-circle d-inline-flex align-items-center justify-content-center flex-shrink-0"
+                                              style="width: 22px; height: 22px; background: #0f172a; color: #fbbf24; font-size: 0.72rem;"
+                                              th:text="${st.count}">1</span>
+                                        <div class="text-truncate">
+                                            <a th:href="@{/products/{id}(id=${vp.productId()})}" target="_blank"
+                                               class="fw-semibold text-dark text-decoration-none small d-block text-truncate"
+                                               th:text="${vp.productName()}">Tên đồng hồ</a>
+                                            <small class="text-muted" style="font-size: 0.7rem;" th:text="${vp.model()}">Model</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis border flex-shrink-0" style="font-size: 0.72rem;"
+                                          th:text="${vp.views() + ' xem'}">1 xem</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 3. Top 5 Sản phẩm Bán chạy nhất -->
+                    <div class="col-lg-4">
+                        <div class="ws-admin-card p-3 p-md-4 h-100">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="fw-bold mb-0" style="color: var(--ws-primary-dark);">
+                                    <i class="bi bi-trophy-fill text-warning me-2"></i>Top 5 Sản phẩm Bán chạy
+                                </h6>
+                                <span class="badge rounded-pill bg-success-subtle text-success border" style="font-size: 0.7rem;">BEST SELLER</span>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li th:each="sp, st : ${topSellingProducts}"
+                                    class="list-group-item px-0 py-2 d-flex align-items-center justify-content-between border-bottom-0">
+                                    <div class="d-flex align-items-center gap-2 text-truncate pe-2">
+                                        <span class="badge rounded-circle d-inline-flex align-items-center justify-content-center flex-shrink-0"
+                                              style="width: 22px; height: 22px; background: #fffbeb; color: #b45309; border: 1px solid #fde68a; font-size: 0.72rem;"
+                                              th:text="${st.count}">1</span>
+                                        <div class="text-truncate">
+                                            <div class="fw-semibold text-dark small text-truncate" th:text="${sp.productName}">Tên SP</div>
+                                            <small class="text-muted" style="font-size: 0.7rem;" th:text="${sp.model}">Model</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge rounded-pill bg-success-subtle text-success border flex-shrink-0" style="font-size: 0.72rem;"
+                                          th:text="${sp.quantitySold + ' đã bán'}">0 đã bán</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Report Orders Table -->
+                <div class="ws-admin-card overflow-hidden">
+                    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
+                        <h6 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-table text-warning"></i> Chi tiết Đơn hàng trong Kỳ Báo cáo
+                        </h6>
+                        <span class="small text-muted" th:text="'Hiển thị ' + ${#lists.size(reportOrders)} + ' đơn gần nhất'"></span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 small">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-4">Mã Đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Ngày đặt</th>
+                                        <th>Thanh toán</th>
+                                        <th>Trạng thái</th>
+                                        <th class="text-end pe-4">Tổng tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${reportOrders}">
+                                        <td class="ps-4 fw-bold" th:text="${'#' + order.id}">#1</td>
+                                        <td class="fw-semibold" th:text="${order.receiverName}">Tên người nhận</td>
+                                        <td class="text-muted" th:text="${order.phone}">SĐT</td>
+                                        <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm') : '--'}">Ngày đặt</td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border"
+                                                  th:text="${order.payment != null and order.payment.method != null ? order.payment.method.name() : 'COD'}">COD</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge rounded-pill px-2 py-1"
+                                                  th:classappend="${order.status.name() == 'PENDING' ? 'bg-warning text-dark' : (order.status.name() == 'COMPLETED' ? 'bg-success' : (order.status.name() == 'CANCELLED' ? 'bg-danger' : 'bg-primary'))}"
+                                                  th:text="${order.status.name() == 'PENDING' ? 'Chờ duyệt' : (order.status.name() == 'CONFIRMED' ? 'Đã duyệt' : (order.status.name() == 'SHIPPED' ? 'Đang giao' : (order.status.name() == 'COMPLETED' ? 'Hoàn thành' : 'Đã hủy')))}">
+                                                PENDING
+                                            </span>
+                                        </td>
+                                        <td class="text-end pe-4 fw-bold text-danger"
+                                            th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(reportOrders)}">
+                                        <td colspan="7" class="text-center py-4 text-muted">Không có đơn hàng nào khớp với khoảng thời gian đã chọn.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/admin-layout :: scripts}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script th:inline="javascript">
+        const revenueLabels = /*[[${revenueLabels}]]*/ [];
+        const revenueValues = /*[[${revenueValues}]]*/ [];
+        const orderStatusCounts = /*[[${orderStatusCounts}]]*/ [0, 0, 0, 0];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Revenue Area Line Chart
+            const revCtx = document.getElementById('revenueLineChart');
+            if (revCtx && typeof Chart !== 'undefined') {
+                const ctx2d = revCtx.getContext('2d');
+                const grad = ctx2d.createLinearGradient(0, 0, 0, 270);
+                grad.addColorStop(0, 'rgba(217, 119, 6, 0.32)');
+                grad.addColorStop(1, 'rgba(217, 119, 6, 0.01)');
+
+                new Chart(revCtx, {
+                    type: 'line',
+                    data: {
+                        labels: revenueLabels,
+                        datasets: [{
+                            label: 'Doanh thu (VNĐ)',
+                            data: revenueValues,
+                            borderColor: '#d97706',
+                            backgroundColor: grad,
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#0f172a',
+                            pointBorderColor: '#fbbf24',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            fill: true,
+                            tension: 0.35
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return new Intl.NumberFormat('vi-VN').format(value) + ' đ';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Order Status Doughnut Chart
+            const statusCtx = document.getElementById('orderStatusDoughnutChart');
+            if (statusCtx && typeof Chart !== 'undefined') {
+                const totalStatus = orderStatusCounts.reduce((a, b) => a + b, 0);
+                const chartData = totalStatus > 0 ? orderStatusCounts : [1, 0, 0, 0];
+                new Chart(statusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Chờ duyệt', 'Đang giao', 'Hoàn thành', 'Đã hủy'],
+                        datasets: [{
+                            data: chartData,
+                            backgroundColor: ['#f59e0b', '#0ea5e9', '#16a34a', '#ef4444'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '66%',
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

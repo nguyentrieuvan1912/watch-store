@@ -98,6 +98,34 @@
             border-color: var(--ws-accent-gold) !important;
             box-shadow: 0 0 0 0.25rem rgba(217, 119, 6, 0.2) !important;
         }
+
+        .ws-admin-card {
+            border-radius: 14px !important;
+            border: 1px solid var(--ws-border-color) !important;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+            background: #ffffff;
+        }
+
+        /* Print / Save PDF Styling */
+        @media print {
+            .admin-sidebar,
+            .no-print,
+            .btn,
+            .toast-container {
+                display: none !important;
+            }
+            main.col-md-9,
+            main.col-lg-10 {
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: 0 0 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body {
+                background-color: #ffffff !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -118,6 +146,11 @@
         <li class="nav-item">
             <a th:href="@{/admin/dashboard}" class="nav-link" id="nav-dashboard">
                 <i class="bi bi-grid-1x2-fill"></i> <span>Tổng quan</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/admin/reports}" class="nav-link" id="nav-reports">
+                <i class="bi bi-bar-chart-line"></i> <span>Báo cáo &amp; Thống kê</span>
             </a>
         </li>
         <li class="nav-item">

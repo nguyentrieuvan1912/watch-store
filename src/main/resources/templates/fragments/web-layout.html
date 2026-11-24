@@ -14,6 +14,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- AOS - Animate On Scroll CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         :root {
             /* Bảng màu chuẩn Luxury Watch Store */
@@ -206,19 +208,21 @@
             background-color: rgba(217, 119, 6, 0.06);
         }
 
-        /* Luxury Product Card Component */
-        .product-card {
+        /* Luxury Product Card Component (Hover Elevate & Gold Shadow) */
+        .product-card,
+        .ws-product-card {
             background: #ffffff;
             border: 1px solid var(--ws-border-color) !important;
             border-radius: 16px !important;
-            transition: var(--ws-transition);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
             overflow: hidden;
         }
 
-        .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.1) !important;
-            border-color: #cbd5e1 !important;
+        .product-card:hover,
+        .ws-product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.25) !important; /* Hào quang Vàng Kim */
+            border-color: rgba(217, 119, 6, 0.45) !important;
         }
 
         .ws-product-img-box {
@@ -236,11 +240,85 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .product-card:hover .ws-product-img-box img {
+        .product-card:hover .ws-product-img-box img,
+        .ws-product-card:hover .ws-product-img-box img {
             transform: scale(1.06);
+        }
+
+        /* Luxury Sidebar Filter Components */
+        .ws-brand-scroll-area {
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .ws-brand-scroll-area::-webkit-scrollbar {
+            width: 4px;
+        }
+        .ws-brand-scroll-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .ws-brand-scroll-area::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
+        .ws-brand-scroll-area .form-check-input:checked {
+            background-color: var(--ws-accent-gold) !important;
+            border-color: var(--ws-accent-gold) !important;
+        }
+        .ws-brand-scroll-area .form-check-input:focus {
+            border-color: var(--ws-accent-gold);
+            box-shadow: 0 0 0 0.2rem rgba(217, 119, 6, 0.2);
+        }
+        .ws-filter-vlist-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            text-align: left;
+            padding: 0.48rem 0.7rem;
+            border-radius: 0.375rem;
+            font-size: 0.86rem;
+            font-weight: 500;
+            color: #475569;
+            text-decoration: none;
+            background-color: transparent;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .ws-filter-vlist-item:hover {
+            background-color: #f8fafc;
+            color: var(--ws-primary-dark);
+        }
+        .ws-filter-vlist-item.active {
+            background-color: #fffbeb;
+            color: #b45309;
+            font-weight: 700;
+            border-color: #fde68a;
+        }
+        .ws-gender-pill {
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.42rem 0.5rem;
+            border-radius: 999px;
+            text-decoration: none;
+            color: #475569;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .ws-gender-pill:hover {
+            background-color: #fffbeb;
+            color: #b45309;
+            border-color: var(--ws-accent-gold);
+        }
+        .ws-gender-pill.active {
+            background-color: var(--ws-primary-dark);
+            color: #ffffff;
+            border-color: var(--ws-primary-dark);
+            font-weight: 700;
         }
 
         .ws-badge-sale {
@@ -634,6 +712,334 @@
             display: inline-block;
             animation: cartBadgePulse 2.4s infinite ease-in-out;
         }
+
+        /* ===== LUXURY STORYTELLING E-COMMERCE: 3D STAGE, REVEAL & MICRO-INTERACTIONS ===== */
+        :root {
+            --ws-ease-quint: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* 1. Scroll Reveal */
+        .ws-reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.65s var(--ws-ease-quint), transform 0.65s var(--ws-ease-quint);
+            will-change: opacity, transform;
+        }
+        .ws-reveal.ws-reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 2. 3D Perspective Stage & Ken Burns Zoom */
+        .ws-stage {
+            perspective: 1200px;
+            overflow: hidden;
+            position: relative;
+        }
+        .ws-stage-bg {
+            transform: scale(1.08);
+            transition: transform 1.4s var(--ws-ease-quint);
+            will-change: transform;
+        }
+        .ws-stage.ws-stage-active .ws-stage-bg,
+        .carousel-item.active .ws-stage-bg {
+            transform: scale(1);
+        }
+        .ws-enter-left,
+        .ws-enter-right,
+        .ws-enter-zoom {
+            opacity: 0;
+            transition: opacity 0.85s var(--ws-ease-quint), transform 0.85s var(--ws-ease-quint);
+            will-change: opacity, transform;
+        }
+        .ws-enter-left {
+            transform: translate3d(-36px, 12px, 0) rotateY(4deg);
+        }
+        .ws-enter-right {
+            transform: translate3d(36px, 12px, 0) rotateY(-4deg);
+        }
+        .ws-enter-zoom {
+            transform: translate3d(0, 24px, 0) scale(0.94);
+        }
+        .ws-stage.ws-stage-active .ws-enter-left,
+        .ws-stage.ws-stage-active .ws-enter-right,
+        .ws-stage.ws-stage-active .ws-enter-zoom,
+        .carousel-item.active .ws-enter-left,
+        .carousel-item.active .ws-enter-right,
+        .carousel-item.active .ws-enter-zoom {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+        }
+
+        /* 3. Floating Badges & Ambient Gold Blobs */
+        @keyframes wsFloatSlow {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, -8px, 0); }
+        }
+        @keyframes wsFloatReverse {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, 8px, 0); }
+        }
+        @keyframes wsBlobDrift {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(18px, -14px, 0) scale(1.1); }
+        }
+        .ws-float-slow {
+            animation: wsFloatSlow 5.5s ease-in-out infinite;
+        }
+        .ws-float-reverse {
+            animation: wsFloatReverse 6.5s ease-in-out infinite;
+        }
+        .ws-floating-badge {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+            color: #ffffff;
+            border-radius: 999px;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.76rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            white-space: nowrap;
+            z-index: 4;
+        }
+        .ws-blob-drift {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(217, 119, 6, 0) 70%);
+            filter: blur(28px);
+            pointer-events: none;
+            animation: wsBlobDrift 11s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        /* 4. Scroll Progress Bar & Animated Mouse Wheel Cue */
+        .ws-scroll-progress-wrap {
+            width: 100%;
+            height: 3px;
+            background: transparent;
+            overflow: hidden;
+        }
+        .ws-scroll-progress {
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #d4af37 0%, #f59e0b 55%, #fbbf24 100%);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.55);
+            transition: width 0.08s linear;
+        }
+        .ws-mouse-cue {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 5;
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+        .ws-mouse-cue:hover {
+            color: #fbbf24;
+            transform: translateY(2px);
+        }
+        .ws-mouse-shell {
+            width: 22px;
+            height: 34px;
+            border: 2px solid rgba(251, 191, 36, 0.75);
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.35);
+            backdrop-filter: blur(4px);
+        }
+        @keyframes wsWheelDrop {
+            0% { opacity: 1; transform: translateY(5px); }
+            70% { opacity: 0.2; transform: translateY(15px); }
+            100% { opacity: 0; transform: translateY(18px); }
+        }
+        .ws-wheel-dot {
+            width: 4px;
+            height: 7px;
+            border-radius: 999px;
+            background-color: #fbbf24;
+            animation: wsWheelDrop 1.7s var(--ws-ease-quint) infinite;
+        }
+        @keyframes wsChevronPulse {
+            0%, 100% { opacity: 0.25; transform: translateY(-2px); }
+            50% { opacity: 1; transform: translateY(2px); }
+        }
+        .ws-mouse-chevron {
+            font-size: 0.7rem;
+            line-height: 0.55;
+            color: #fbbf24;
+            animation: wsChevronPulse 1.5s ease-in-out infinite;
+        }
+        .ws-mouse-chevron.delay-1 {
+            animation-delay: 0.25s;
+        }
+
+        /* 5. Right-side Pill Navigator (Desktop >= 1024px) */
+        .ws-pill-nav {
+            position: fixed;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1030;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 7px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+        }
+        .ws-pill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.38);
+            border: 0;
+            padding: 0;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .ws-pill-dot:hover {
+            background: #fde68a;
+            transform: scale(1.15);
+        }
+        .ws-pill-dot.active {
+            height: 22px;
+            width: 8px;
+            background: var(--ws-accent-gold);
+            box-shadow: 0 0 10px rgba(217, 119, 6, 0.7);
+        }
+
+        /* 6. Micro-interactions: CTA Arrow & Hamburger X Morph */
+        .btn .bi-arrow-right,
+        a .bi-arrow-right,
+        .ws-cta-arrow {
+            display: inline-block;
+            transition: transform 0.28s var(--ws-ease-quint);
+        }
+        .btn:hover .bi-arrow-right,
+        a:hover .bi-arrow-right,
+        .btn:hover .ws-cta-arrow {
+            transform: translateX(4px);
+        }
+        .ws-hamburger-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid var(--ws-border-color);
+            background: #ffffff;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 0;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .ws-hamburger-btn:hover {
+            border-color: var(--ws-accent-gold);
+            background: #fffbeb;
+        }
+        .ws-hamburger-bar {
+            width: 18px;
+            height: 2px;
+            background-color: var(--ws-primary-dark);
+            border-radius: 2px;
+            transition: transform 0.3s var(--ws-ease-quint), opacity 0.2s ease;
+            transform-origin: center;
+        }
+        .ws-hamburger-btn[aria-expanded="true"] .ws-hamburger-bar:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        .ws-hamburger-btn[aria-expanded="true"] .ws-hamburger-bar:nth-child(2) {
+            opacity: 0;
+        }
+        .ws-hamburger-btn[aria-expanded="true"] .ws-hamburger-bar:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* 7. Luxury Scroll-to-Top Button (Bottom-Left) */
+        .ws-scroll-top-btn {
+            position: fixed;
+            bottom: 84px;
+            left: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1.5px solid var(--ws-accent-gold);
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.28);
+            cursor: pointer;
+            z-index: 1045;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(14px);
+            transition: opacity 0.3s var(--ws-ease-quint), transform 0.3s var(--ws-ease-quint), visibility 0.3s ease, background-color 0.2s ease;
+        }
+        .ws-scroll-top-btn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .ws-scroll-top-btn:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: #ffffff;
+            transform: translateY(-3px);
+        }
+
+        /* Flatten 3D perspective on screens < 1024px */
+        @media (max-width: 1023.98px) {
+            .ws-stage {
+                perspective: none;
+            }
+            .ws-enter-left,
+            .ws-enter-right {
+                transform: translate3d(0, 16px, 0);
+            }
+            .ws-pill-nav {
+                display: none !important;
+            }
+        }
+
+        /* Accessibility: prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            .ws-reveal,
+            .ws-stage-bg,
+            .ws-enter-left,
+            .ws-enter-right,
+            .ws-enter-zoom,
+            .ws-float-slow,
+            .ws-float-reverse,
+            .ws-blob-drift,
+            .ws-wheel-dot,
+            .ws-mouse-chevron {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -645,8 +1051,10 @@
             <div class="row align-items-center g-2 g-md-3">
                 <!-- Cột Trái (col-md-3): Logo Watch Store & Mobile Toggle -->
                 <div class="col-6 col-md-3 d-flex align-items-center gap-2">
-                    <button class="btn btn-sm btn-outline-secondary d-lg-none border-0 p-1.5" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Menu">
-                        <i class="bi bi-list fs-4" style="color: #0f172a;"></i>
+                    <button class="ws-hamburger-btn d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Menu">
+                        <span class="ws-hamburger-bar"></span>
+                        <span class="ws-hamburger-bar"></span>
+                        <span class="ws-hamburger-bar"></span>
                     </button>
                     <a class="navbar-brand fw-extrabold fs-4 m-0 d-flex align-items-center gap-2 text-decoration-none" th:href="@{/}" style="color: #0f172a; letter-spacing: -0.5px;">
                         <span class="d-inline-flex align-items-center justify-content-center rounded-3 text-white shadow-sm" style="width: 38px; height: 38px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid #d97706;">
@@ -769,12 +1177,19 @@
                         <a class="nav-link" th:href="@{/size-guide}"><i class="bi bi-rulers me-1" style="color: #d97706;"></i> Hướng dẫn chọn size</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" th:href="@{/tracking}"><i class="bi bi-box-seam me-1" style="color: #d97706;"></i> Tra cứu đơn hàng</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" th:href="@{/contact}"><i class="bi bi-envelope me-1" style="color: #d97706;"></i> Liên hệ</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+    <!-- Thanh tiến trình cuộn trang Vàng Kim 3px -->
+    <div class="ws-scroll-progress-wrap">
+        <div id="wsScrollProgress" class="ws-scroll-progress"></div>
+    </div>
 </header>
 
 <div th:fragment="alerts" class="container mt-3">
@@ -884,6 +1299,13 @@
             </div>
         </div>
     </div>
+
+    <!-- Floating Scroll-to-Top Button (Bottom-Left, avoids AI Chatbot on Bottom-Right) -->
+    <button type="button" id="wsScrollTopBtn" class="ws-scroll-top-btn"
+            onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+            title="Lên đầu trang" aria-label="Lên đầu trang">
+        <i class="bi bi-arrow-up fs-5"></i>
+    </button>
 
     <!-- Floating Compare Bar (CellphoneS Standard) -->
     <div id="floatingCompareContainer" class="d-none">
@@ -1170,12 +1592,17 @@
                 return;
             }
             messageEl.textContent = message;
+            toastEl.style.borderRadius = '14px';
             if (isSuccess) {
-                toastEl.className = "toast align-items-center text-white bg-success border-0 shadow-lg";
+                toastEl.className = "toast align-items-center text-white shadow-lg";
+                toastEl.style.background = "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)";
+                toastEl.style.border = "1px solid rgba(217, 119, 6, 0.65)";
             } else {
-                toastEl.className = "toast align-items-center text-white bg-danger border-0 shadow-lg";
+                toastEl.className = "toast align-items-center text-white bg-danger shadow-lg";
+                toastEl.style.background = "";
+                toastEl.style.border = "1px solid rgba(255, 255, 255, 0.25)";
             }
-            const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
             toast.show();
         }
 
@@ -1861,7 +2288,87 @@
                 .replace(/\n/g, '<br>');
             return formatted;
         }
+
+        /* ===== LUXURY STORYTELLING: REVEAL OBSERVER, 3D STAGE & SCROLL PROGRESS ===== */
+        let wsRevealObserver = null;
+
+        function initWsReveal(rootEl = document) {
+            const revealEls = rootEl.querySelectorAll('.ws-reveal:not(.ws-reveal-visible), .ws-stage:not(.ws-stage-active)');
+            if (!('IntersectionObserver' in window)) {
+                revealEls.forEach(el => {
+                    el.classList.add('ws-reveal-visible', 'ws-stage-active');
+                });
+                return;
+            }
+
+            if (!wsRevealObserver) {
+                wsRevealObserver = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('ws-reveal-visible');
+                            if (entry.target.classList.contains('ws-stage')) {
+                                entry.target.classList.add('ws-stage-active');
+                            }
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.12,
+                    rootMargin: '0px 0px -36px 0px'
+                });
+            }
+
+            revealEls.forEach(el => wsRevealObserver.observe(el));
+        }
+
+        function wsScrollToSection(selector) {
+            const target = document.querySelector(selector);
+            if (!target) return;
+            const headerOffset = 115;
+            const y = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        }
+
+        function updateWsScrollProgressAndNav() {
+            const bar = document.getElementById('wsScrollProgress');
+            const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+            if (bar) {
+                const docEl = document.documentElement;
+                const scrollHeight = Math.max(1, docEl.scrollHeight - window.innerHeight);
+                const pct = Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100));
+                bar.style.width = pct.toFixed(2) + '%';
+            }
+
+            const scrollTopBtn = document.getElementById('wsScrollTopBtn');
+            if (scrollTopBtn) {
+                scrollTopBtn.classList.toggle('visible', scrollTop > 400);
+            }
+
+            const pillDots = document.querySelectorAll('.ws-pill-nav .ws-pill-dot[data-target]');
+            if (pillDots.length > 0) {
+                let activeDot = pillDots[0];
+                const triggerY = window.innerHeight * 0.36;
+                pillDots.forEach(dot => {
+                    const sec = document.querySelector(dot.getAttribute('data-target'));
+                    if (sec && !sec.classList.contains('d-none')) {
+                        const rect = sec.getBoundingClientRect();
+                        if (rect.top <= triggerY) {
+                            activeDot = dot;
+                        }
+                    }
+                });
+                pillDots.forEach(d => d.classList.toggle('active', d === activeDot));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initWsReveal();
+            updateWsScrollProgressAndNav();
+            window.addEventListener('scroll', updateWsScrollProgressAndNav, { passive: true });
+        });
     </script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ duration: 800, once: true, offset: 50 });</script>
 </footer>
 
 </body>

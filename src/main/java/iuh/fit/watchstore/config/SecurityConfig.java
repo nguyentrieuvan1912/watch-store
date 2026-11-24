@@ -49,7 +49,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/compare/api/**", "/cart/api/**", "/api/chat/**", "/api/recommendations/**", "/api/tracking/**", "/checkout/api/**"))
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/compare/api/**", "/cart/api/**", "/api/chat/**", "/api/recommendations/**", "/api/tracking/**", "/checkout/api/**", "/admin/ai/**"))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/checkout/api/**", "/tracking/**", "/api/tracking/**").permitAll()
