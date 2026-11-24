@@ -60,6 +60,8 @@ public class ProductController {
                                @RequestParam(value = "brandId", required = false) List<Long> brandIds,
                                @RequestParam(required = false) String keyword,
                                @RequestParam(required = false) String priceRange,
+                               @RequestParam(required = false) Double minPrice,
+                               @RequestParam(required = false) Double maxPrice,
                                @RequestParam(required = false) String gender,
                                @RequestParam(required = false) String movement,
                                @RequestParam(required = false) String sort) {
@@ -120,6 +122,16 @@ public class ProductController {
                     })
                     .toList();
         }
+        if (minPrice != null && minPrice >= 0) {
+            products = products.stream()
+                    .filter(p -> p.getPrice() != null && p.getPrice() >= minPrice)
+                    .toList();
+        }
+        if (maxPrice != null && maxPrice > 0) {
+            products = products.stream()
+                    .filter(p -> p.getPrice() != null && p.getPrice() <= maxPrice)
+                    .toList();
+        }
         if (gender != null && !gender.isBlank()) {
             String g = gender.trim().toLowerCase();
             products = products.stream()
@@ -151,6 +163,8 @@ public class ProductController {
         model.addAttribute("selectedBrandId", cleanBrandIds.size() == 1 ? cleanBrandIds.get(0) : null);
         model.addAttribute("keyword", keyword);
         model.addAttribute("selectedPriceRange", priceRange);
+        model.addAttribute("minPrice", minPrice != null ? minPrice.longValue() : null);
+        model.addAttribute("maxPrice", maxPrice != null ? maxPrice.longValue() : null);
         model.addAttribute("selectedGender", gender);
         model.addAttribute("selectedMovement", movement);
         model.addAttribute("selectedSort", sort);

@@ -1,92 +1,183 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/admin-layout :: head('Tổng quan Dashboard')}"></head>
+<head th:replace="~{fragments/admin-layout :: head('Tổng quan Hệ thống')}"></head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <nav th:replace="~{fragments/admin-layout :: sidebar}"></nav>
-            
+
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <!-- Welcome Header & Quick Actions -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-3 border-bottom">
                     <div>
-                        <h2 class="fw-bold mb-1" style="color: var(--ws-primary-dark);">Bảng điều khiển Tổng quan</h2>
-                        <p class="text-muted mb-0 small">Theo dõi hoạt động kinh doanh, doanh thu và đơn hàng của Watch Store</p>
+                        <span class="text-uppercase fw-bold small" style="color: #d97706; letter-spacing: 0.8px;">DAILY OPERATIONS</span>
+                        <h2 class="fw-extrabold mb-1" style="color: var(--ws-primary-dark);">Bảng Điều Khiển Tổng Quan</h2>
+                        <p class="text-muted mb-0 small">Theo dõi nhanh vận hành trong ngày, cảnh báo tồn kho và đơn hàng mới nhất</p>
                     </div>
-                    <div>
-                        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill small">
-                            <i class="bi bi-clock-history me-1 text-warning"></i> Cập nhật thời gian thực
-                        </span>
+
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <button type="button" id="btnReindexAi" onclick="triggerAiVectorReindex()"
+                                class="btn btn-sm rounded-pill px-3 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5"
+                                style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fbbf24; border: 1px solid #d97706;">
+                            <i class="bi bi-cpu-fill"></i>
+                            <span>Đồng bộ AI Vector</span>
+                        </button>
+
+                        <a th:href="@{/admin/reports}"
+                           class="btn btn-sm btn-primary rounded-pill px-3.5 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5">
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                            <span>Xem báo cáo chi tiết</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
 
                 <div th:replace="~{fragments/admin-layout :: alerts}"></div>
-                
+
                 <!-- 4 KPI Cards -->
                 <div class="row g-3 mb-4">
-                    <!-- Doanh thu -->
+                    <!-- 1. Tổng doanh thu -->
                     <div class="col-sm-6 col-xl-3">
-                        <div class="card border-0 shadow-sm rounded-4 p-3 h-100" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff;">
+                        <div class="card border-0 shadow-sm p-3 h-100" style="border-radius: 14px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff;">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="small text-uppercase fw-semibold" style="color: #cbd5e1; font-size: 0.78rem;">Tổng doanh thu</span>
-                                <span class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(217, 119, 6, 0.2); color: #fbbf24;">
+                                <span class="small text-uppercase fw-semibold" style="color: #cbd5e1; font-size: 0.76rem;">Tổng doanh thu</span>
+                                <span class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(217, 119, 6, 0.22); color: #fbbf24;">
                                     <i class="bi bi-cash-stack fs-5"></i>
                                 </span>
                             </div>
                             <h3 class="fw-extrabold mb-1" style="color: #fbbf24;" th:text="${totalRevenue != null ? #numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</h3>
-                            <small class="text-white-50" style="font-size: 0.75rem;">Không tính đơn đã hủy</small>
+                            <small class="text-white-50" style="font-size: 0.75rem;">Tổng hợp từ <span th:text="${totalOrders}">0</span> đơn hàng</small>
                         </div>
                     </div>
 
-                    <!-- Tổng đơn hàng -->
+                    <!-- 2. Đơn chờ duyệt -->
                     <div class="col-sm-6 col-xl-3">
-                        <div class="card border-0 shadow-sm rounded-4 p-3 h-100 bg-white" style="border: 1px solid var(--ws-border-color) !important;">
+                        <div class="ws-admin-card p-3 h-100">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="small text-uppercase fw-semibold text-muted" style="font-size: 0.78rem;">Tổng đơn hàng</span>
+                                <span class="small text-uppercase fw-semibold text-muted" style="font-size: 0.76rem;">Đơn chờ xác nhận</span>
                                 <span class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #fffbeb; color: #d97706;">
-                                    <i class="bi bi-receipt fs-5"></i>
+                                    <i class="bi bi-hourglass-split fs-5"></i>
                                 </span>
                             </div>
-                            <h3 class="fw-extrabold mb-1" style="color: var(--ws-primary-dark);" th:text="${totalOrders}">0</h3>
-                            <small class="text-warning fw-semibold" style="font-size: 0.75rem;"><span th:text="${pendingOrders}">0</span> đơn đang chờ duyệt</small>
+                            <h3 class="fw-extrabold mb-1" style="color: var(--ws-primary-dark);" th:text="${pendingOrders}">0</h3>
+                            <small class="text-warning fw-semibold" style="font-size: 0.75rem;">
+                                Trên tổng số <span th:text="${totalOrders}">0</span> đơn toàn hệ thống
+                            </small>
                         </div>
                     </div>
 
-                    <!-- Sản phẩm -->
+                    <!-- 3. Cảnh báo tồn kho thấp -->
                     <div class="col-sm-6 col-xl-3">
-                        <div class="card border-0 shadow-sm rounded-4 p-3 h-100 bg-white" style="border: 1px solid var(--ws-border-color) !important;">
+                        <div class="ws-admin-card p-3 h-100">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="small text-uppercase fw-semibold text-muted" style="font-size: 0.78rem;">Mẫu đồng hồ</span>
-                                <span class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #f0fdf4; color: #16a34a;">
-                                    <i class="bi bi-watch fs-5"></i>
+                                <span class="small text-uppercase fw-semibold text-muted" style="font-size: 0.76rem;">Cảnh báo tồn kho</span>
+                                <span class="rounded-circle d-inline-flex align-items-center justify-content-center"
+                                      th:style="${lowStockCount > 0 ? 'width: 38px; height: 38px; background: #fef2f2; color: #dc2626;' : 'width: 38px; height: 38px; background: #f0fdf4; color: #16a34a;'}">
+                                    <i class="bi fs-5" th:classappend="${lowStockCount > 0 ? 'bi-exclamation-triangle-fill' : 'bi-watch'}"></i>
                                 </span>
                             </div>
-                            <h3 class="fw-extrabold mb-1" style="color: var(--ws-primary-dark);" th:text="${totalProducts}">0</h3>
-                            <small class="text-success" style="font-size: 0.75rem;">Sản phẩm chính hãng trong kho</small>
+                            <h3 class="fw-extrabold mb-1" th:style="${lowStockCount > 0 ? 'color: #dc2626;' : 'color: var(--ws-primary-dark);'}" th:text="${lowStockCount}">0</h3>
+                            <small class="text-muted" style="font-size: 0.75rem;">
+                                Mẫu có tồn kho &le; 5 / <span th:text="${totalProducts}">100</span> sản phẩm
+                            </small>
                         </div>
                     </div>
 
-                    <!-- Khách hàng -->
+                    <!-- 4. Tổng khách hàng -->
                     <div class="col-sm-6 col-xl-3">
-                        <div class="card border-0 shadow-sm rounded-4 p-3 h-100 bg-white" style="border: 1px solid var(--ws-border-color) !important;">
+                        <div class="ws-admin-card p-3 h-100">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="small text-uppercase fw-semibold text-muted" style="font-size: 0.78rem;">Tài khoản khách hàng</span>
-                                <span class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #f1f5f9; color: #475569;">
+                                <span class="small text-uppercase fw-semibold text-muted" style="font-size: 0.76rem;">Tài khoản khách hàng</span>
+                                <span class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #f1f5f9; color: #0f172a;">
                                     <i class="bi bi-people-fill fs-5"></i>
                                 </span>
                             </div>
                             <h3 class="fw-extrabold mb-1" style="color: var(--ws-primary-dark);" th:text="${totalUsers}">0</h3>
-                            <small class="text-muted" style="font-size: 0.75rem;">Thành viên đã đăng ký</small>
+                            <small class="text-muted" style="font-size: 0.75rem;">Thành viên đã đăng ký tài khoản</small>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Orders Table -->
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border: 1px solid var(--ws-border-color) !important;">
+                <!-- Middle Row: 7-Day Revenue Summary Chart + Low Stock Alert -->
+                <div class="row g-3 mb-4">
+                    <div class="col-lg-7">
+                        <div class="ws-admin-card p-3 p-md-4 h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold mb-0" style="color: var(--ws-primary-dark);">
+                                        <i class="bi bi-graph-up-arrow text-warning me-2"></i>Doanh thu 7 ngày gần nhất
+                                    </h6>
+                                    <small class="text-muted" style="font-size: 0.75rem;">Tóm tắt xu hướng doanh thu trong tuần</small>
+                                </div>
+                                <a th:href="@{/admin/reports}" class="small fw-semibold text-decoration-none" style="color: #d97706;">
+                                    Phân tích sâu <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                            <div style="position: relative; height: 245px;">
+                                <canvas id="revenue7DaysChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cảnh báo sản phẩm sắp hết hàng (stock <= 5) -->
+                    <div class="col-lg-5">
+                        <div class="ws-admin-card overflow-hidden h-100">
+                            <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
+                                <h6 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                                    <i class="bi bi-exclamation-octagon-fill text-danger"></i> Sắp hết hàng (Stock &le; 5)
+                                </h6>
+                                <a th:href="@{/admin/products}" class="btn btn-sm btn-outline-secondary rounded-pill px-2.5 py-1" style="font-size: 0.75rem;">
+                                    Quản lý kho
+                                </a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0 small">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="ps-3">Sản phẩm</th>
+                                                <th class="text-center">Tồn kho</th>
+                                                <th class="text-end pe-3">Sửa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="lp : ${lowStockProducts}">
+                                                <td class="ps-3">
+                                                    <div class="fw-semibold text-dark text-truncate" style="max-width: 195px;" th:text="${lp.name}">Tên SP</div>
+                                                    <small class="text-muted" th:text="${lp.model}">Model</small>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge rounded-pill"
+                                                          th:classappend="${lp.stock <= 0 ? 'bg-danger' : 'bg-warning text-dark'}"
+                                                          th:text="${lp.stock + ' chiếc'}">3 chiếc</span>
+                                                </td>
+                                                <td class="text-end pe-3">
+                                                    <a th:href="@{/admin/products/edit/{id}(id=${lp.id})}"
+                                                       class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-0.5" style="font-size: 0.74rem;">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr th:if="${#lists.isEmpty(lowStockProducts)}">
+                                                <td colspan="3" class="text-center py-4 text-success">
+                                                    <i class="bi bi-check-circle-fill me-1"></i>Tất cả sản phẩm đều có tồn kho &gt; 5 chiếc.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Row: 5 Recent Orders -->
+                <div class="ws-admin-card overflow-hidden">
                     <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
-                        <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
-                            <i class="bi bi-clock-history text-warning"></i> Đơn hàng mới nhất
-                        </h5>
-                        <a th:href="@{/admin/orders}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                        <h6 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-clock-history text-warning"></i> 5 Đơn hàng gần đây nhất
+                        </h6>
+                        <a th:href="@{/admin/orders}" class="btn btn-sm btn-outline-secondary rounded-pill px-3" style="font-size: 0.78rem;">
                             Xem tất cả đơn hàng <i class="bi bi-arrow-right ms-1"></i>
                         </a>
                     </div>
@@ -97,7 +188,7 @@
                                     <tr>
                                         <th class="ps-4">Mã Đơn</th>
                                         <th>Khách hàng</th>
-                                        <th>Thời gian</th>
+                                        <th>Thời gian đặt</th>
                                         <th>Tổng tiền</th>
                                         <th>Trạng thái</th>
                                         <th class="text-end pe-4">Thao tác</th>
@@ -108,7 +199,7 @@
                                         <td class="ps-4 fw-bold" th:text="${'#' + order.id}">#1</td>
                                         <td>
                                             <div class="fw-semibold" th:text="${order.receiverName}">Tên người nhận</div>
-                                            <small class="text-muted" th:text="${order.phone}">Số điện thoại</small>
+                                            <small class="text-muted" th:text="${order.phone}">SĐT</small>
                                         </td>
                                         <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm') : '--'}">Ngày đặt</td>
                                         <td class="fw-bold text-danger" th:text="${order.totalAmount != null ? #numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0 đ</td>
@@ -133,11 +224,109 @@
                         </div>
                     </div>
                 </div>
-
             </main>
         </div>
     </div>
-    
+
+    <!-- Luxury Admin Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+        <div id="adminLiveToast" class="toast align-items-center text-white border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true"
+             style="border-radius: 14px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid #d97706 !important;">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2">
+                    <i class="bi bi-stars text-warning fs-5"></i>
+                    <span id="adminToastMsg" class="fw-semibold">Thông báo hệ thống</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
     <div th:replace="~{fragments/admin-layout :: scripts}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script th:inline="javascript">
+        const revenueLabels = /*[[${revenueLabels}]]*/ [];
+        const revenueValues = /*[[${revenueValues}]]*/ [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const revCtx = document.getElementById('revenue7DaysChart');
+            if (revCtx && typeof Chart !== 'undefined') {
+                const ctx2d = revCtx.getContext('2d');
+                const grad = ctx2d.createLinearGradient(0, 0, 0, 240);
+                grad.addColorStop(0, 'rgba(217, 119, 6, 0.30)');
+                grad.addColorStop(1, 'rgba(217, 119, 6, 0.01)');
+
+                new Chart(revCtx, {
+                    type: 'line',
+                    data: {
+                        labels: revenueLabels,
+                        datasets: [{
+                            label: 'Doanh thu (VNĐ)',
+                            data: revenueValues,
+                            borderColor: '#d97706',
+                            backgroundColor: grad,
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#0f172a',
+                            pointBorderColor: '#fbbf24',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            fill: true,
+                            tension: 0.35
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return new Intl.NumberFormat('vi-VN').format(value) + ' đ';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        function showAdminToast(msg, isSuccess = true) {
+            const toastEl = document.getElementById('adminLiveToast');
+            const msgEl = document.getElementById('adminToastMsg');
+            if (!toastEl || !msgEl) return;
+            msgEl.textContent = msg;
+            toastEl.style.background = isSuccess
+                ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+                : '#be123c';
+            new bootstrap.Toast(toastEl, { delay: 3500 }).show();
+        }
+
+        function triggerAiVectorReindex() {
+            const btn = document.getElementById('btnReindexAi');
+            if (!btn) return;
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm text-warning me-1"></span><span>Đang đồng bộ Vector...</span>';
+
+            fetch('/admin/ai/reindex', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                showAdminToast(data.message || 'Đã đồng bộ AI Vector Store!', data.success !== false);
+            })
+            .catch(err => {
+                showAdminToast('Không thể kết nối máy chủ khi đồng bộ Vector: ' + err.message, false);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            });
+        }
+    </script>
 </body>
 </html>

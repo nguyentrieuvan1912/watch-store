@@ -32,7 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
-# Environment variables
+# Environment variables & Local configs
 .env
 .env.local
 .env.*.local
+application-local.properties
+*.log

@@ -1,16 +1,50 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/web-layout :: head('Not Found')}"></head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/web-layout :: head('404 - Không tìm thấy trang')}"></head>
 <body>
     <header th:replace="~{fragments/web-layout :: navbar}"></header>
 
-    <main class="container my-5 text-center">
+    <main class="container my-5 py-3">
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h1 class="display-1 text-danger fw-bold">404</h1>
-                <h2 class="mb-4">Page or Resource Not Found</h2>
-                <p class="lead mb-4" th:text="${error != null ? error : 'The page you are looking for might have been removed or is temporarily unavailable.'}">Error message here.</p>
-                <a th:href="@{/}" class="btn btn-primary btn-lg"><i class="bi bi-house-door"></i> Back to Home</a>
+            <div class="col-lg-8 col-xl-7">
+                <div class="rounded-4 p-4 p-md-5 text-center text-white shadow-lg position-relative overflow-hidden"
+                     style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 65%, #451a03 100%); border: 1px solid rgba(217, 119, 6, 0.35);">
+                    <div class="ws-blob-drift" style="top: -80px; left: -60px;"></div>
+                    <div class="ws-blob-drift" style="bottom: -80px; right: -60px; animation-delay: -5s;"></div>
+
+                    <div class="position-relative" style="z-index: 2;">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow"
+                             style="width: 72px; height: 72px; background: rgba(217, 119, 6, 0.18); border: 1px solid rgba(251, 191, 36, 0.45); color: #fbbf24;">
+                            <i class="bi bi-watch fs-1"></i>
+                        </div>
+
+                        <div class="fw-extrabold lh-1 mb-2"
+                             style="font-size: clamp(4.5rem, 12vw, 7.5rem); background: linear-gradient(135deg, #fde68a 0%, #f59e0b 50%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -3px;">
+                            404
+                        </div>
+
+                        <span class="badge rounded-pill px-3 py-1.5 mb-3 text-uppercase fw-bold"
+                              style="background: rgba(251, 191, 36, 0.14); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); letter-spacing: 1px; font-size: 0.72rem;">
+                            Page Not Found
+                        </span>
+
+                        <h3 class="fw-extrabold text-white mb-3">
+                            Rất tiếc, trang hoặc mẫu đồng hồ bạn tìm kiếm không tồn tại
+                        </h3>
+                        <p class="text-white-50 mb-4 mx-auto" style="max-width: 500px; line-height: 1.65;">
+                            Đường dẫn có thể đã bị thay đổi, xóa bỏ hoặc tạm ngừng kinh doanh. Quý khách vui lòng quay về Trang chủ hoặc khám phá bộ sưu tập đồng hồ chính hãng mới nhất.
+                        </p>
+
+                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <a th:href="@{/}" class="btn ws-btn-gold btn-lg rounded-pill px-4 py-2.5 fw-bold shadow">
+                                <i class="bi bi-house-door-fill me-2"></i>Về Trang chủ
+                            </a>
+                            <a th:href="@{/products}" class="btn btn-outline-light btn-lg rounded-pill px-4 py-2.5 fw-semibold">
+                                <i class="bi bi-compass me-2"></i>Khám phá Bộ sưu tập <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

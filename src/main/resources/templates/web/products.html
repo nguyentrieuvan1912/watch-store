@@ -7,37 +7,40 @@
     <main class="container my-4">
         <div th:replace="~{fragments/web-layout :: alerts}"></div>
 
-        <!-- Page Header & Search Banner -->
-        <div class="rounded-4 p-4 mb-4 text-white shadow-sm d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3"
-             style="background: linear-gradient(110deg, #0f172a 0%, #1e293b 70%, #78350f 100%);">
-            <div>
+        <!-- Luxury Hero Banner -->
+        <div class="rounded-4 px-4 py-5 mb-4 text-white shadow position-relative overflow-hidden"
+             style="background-color: #0f172a;
+                    background-image: linear-gradient(115deg, rgba(15, 23, 42, 0.90) 0%, rgba(15, 23, 42, 0.78) 55%, rgba(120, 53, 15, 0.72) 100%),
+                                      url('https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1600&q=80');
+                    background-size: cover;
+                    background-position: center;
+                    border: 1px solid rgba(217, 119, 6, 0.25);">
+            <div class="col-lg-8 mx-auto text-center position-relative" style="z-index: 1;">
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-1 small">
+                    <ol class="breadcrumb justify-content-center mb-2 small">
                         <li class="breadcrumb-item"><a th:href="@{/}" class="text-white-50 text-decoration-none">Trang chủ</a></li>
                         <li class="breadcrumb-item active text-warning fw-semibold" aria-current="page">Bộ sưu tập đồng hồ</li>
                     </ol>
                 </nav>
-                <h2 class="fw-extrabold mb-1 text-white" style="letter-spacing: -0.5px;">Bộ Sưu Tập Đồng Hồ Chính Hãng</h2>
-                <p class="mb-0 text-white-50 small">Cam kết 100% chính hãng từ Nhật Bản &amp; Thụy Sĩ — Bảo hành quốc tế 5 năm</p>
-            </div>
+                <h1 class="h2 fw-extrabold mb-2 text-white" style="letter-spacing: -0.5px;">Bộ Sưu Tập Đồng Hồ Chính Hãng</h1>
+                <p class="mb-4 text-white-50">Tuyển chọn tinh hoa chế tác từ Nhật Bản &amp; Thụy Sĩ — Đẳng cấp vượt thời gian</p>
 
-            <!-- Quick Search Form -->
-            <form th:action="@{/products}" method="get" class="w-100" style="max-width: 440px;">
-                <input type="hidden" name="categoryId" th:value="${selectedCategoryId}" th:if="${selectedCategoryId != null}">
-                <th:block th:if="${selectedBrandIds != null and !#lists.isEmpty(selectedBrandIds)}">
-                    <input type="hidden" name="brandId" th:each="bId : ${selectedBrandIds}" th:value="${bId}">
-                </th:block>
-                <input type="hidden" name="priceRange" th:value="${selectedPriceRange}" th:if="${selectedPriceRange != null}">
-                <input type="hidden" name="gender" th:value="${selectedGender}" th:if="${selectedGender != null}">
-                <input type="hidden" name="movement" th:value="${selectedMovement}" th:if="${selectedMovement != null}">
-                <input type="hidden" name="sort" th:value="${selectedSort}" th:if="${selectedSort != null}">
-                <div class="input-group bg-white rounded-pill p-1 shadow">
-                    <span class="input-group-text bg-transparent border-0 ps-3 text-muted"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control border-0 shadow-none ps-1" style="font-size: 0.9rem;"
-                           name="keyword" th:value="${keyword}" placeholder="Tìm tên đồng hồ, mã model (GA-2100, PRX...)...">
-                    <button type="submit" class="btn ws-btn-gold rounded-pill px-4 btn-sm">Tìm kiếm</button>
+                <!-- 3 Trust & Luxury Badges -->
+                <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 gap-md-3">
+                    <span class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill small fw-semibold text-white"
+                          style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.25); backdrop-filter: blur(6px);">
+                        <i class="bi bi-shield-check text-warning"></i> 100% Chính hãng
+                    </span>
+                    <span class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill small fw-semibold text-white"
+                          style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.25); backdrop-filter: blur(6px);">
+                        <i class="bi bi-box-seam text-warning"></i> Miễn phí vận chuyển
+                    </span>
+                    <span class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill small fw-semibold text-white"
+                          style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.25); backdrop-filter: blur(6px);">
+                        <i class="bi bi-gem text-warning"></i> Bảo hành quốc tế 5 năm
+                    </span>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="row g-4">
@@ -48,13 +51,14 @@
                         <h6 class="fw-extrabold mb-0 d-flex align-items-center gap-2" style="color: #0f172a;">
                             <i class="bi bi-sliders2-vertical" style="color: #d97706;"></i> BỘ LỌC TÌM KIẾM
                         </h6>
-                        <a th:href="@{/products}" class="text-danger text-decoration-none fw-semibold" style="font-size: 0.78rem;">
+                        <a th:href="@{/products}" class="ws-filter-reset-link text-danger text-decoration-none fw-semibold" style="font-size: 0.78rem;">
                             <i class="bi bi-arrow-counterclockwise"></i> Đặt lại
                         </a>
                     </div>
 
+                    <form id="filterForm" th:action="@{/products}" method="get">
                     <div class="accordion accordion-flush" id="filterAccordion">
-                        <!-- 1. Filter by Price Range -->
+                        <!-- 1. Filter by Price Range + Custom Min/Max Price -->
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button class="accordion-button py-3 px-3 fw-bold bg-white shadow-none" style="font-size: 0.9rem; color: #0f172a;" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrice">
@@ -62,42 +66,62 @@
                                 </button>
                             </h2>
                             <div id="collapsePrice" class="accordion-collapse collapse show">
-                                <div class="accordion-body pt-1 pb-3 px-3 d-flex flex-column gap-1.5">
-                                    <a th:href="@{/products(categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                       class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-3"
-                                       th:style="${selectedPriceRange == null or #strings.isEmpty(selectedPriceRange) ? 'background:#fffbeb; color:#b45309; font-weight:700;' : 'color:#475569; font-size:0.88rem;'}">
-                                        <i class="bi" th:classappend="${selectedPriceRange == null or #strings.isEmpty(selectedPriceRange) ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
-                                        <span>Tất cả mức giá</span>
-                                    </a>
-                                    <a th:href="@{/products(priceRange='under2m', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                       class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-3"
-                                       th:style="${selectedPriceRange == 'under2m' ? 'background:#fffbeb; color:#b45309; font-weight:700;' : 'color:#475569; font-size:0.88rem;'}">
-                                        <i class="bi" th:classappend="${selectedPriceRange == 'under2m' ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
-                                        <span>Dưới 2.000.000 ₫</span>
-                                    </a>
-                                    <a th:href="@{/products(priceRange='2m-5m', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                       class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-3"
-                                       th:style="${selectedPriceRange == '2m-5m' ? 'background:#fffbeb; color:#b45309; font-weight:700;' : 'color:#475569; font-size:0.88rem;'}">
-                                        <i class="bi" th:classappend="${selectedPriceRange == '2m-5m' ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
-                                        <span>Từ 2 - 5 triệu</span>
-                                    </a>
-                                    <a th:href="@{/products(priceRange='5m-10m', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                       class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-3"
-                                       th:style="${selectedPriceRange == '5m-10m' ? 'background:#fffbeb; color:#b45309; font-weight:700;' : 'color:#475569; font-size:0.88rem;'}">
-                                        <i class="bi" th:classappend="${selectedPriceRange == '5m-10m' ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
-                                        <span>Từ 5 - 10 triệu</span>
-                                    </a>
-                                    <a th:href="@{/products(priceRange='over10m', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                       class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-3"
-                                       th:style="${selectedPriceRange == 'over10m' ? 'background:#fffbeb; color:#b45309; font-weight:700;' : 'color:#475569; font-size:0.88rem;'}">
-                                        <i class="bi" th:classappend="${selectedPriceRange == 'over10m' ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
-                                        <span>Trên 10.000.000 ₫</span>
-                                    </a>
+                                <div class="accordion-body pt-1 pb-3 px-3">
+                                    <div class="d-flex flex-column gap-1">
+                                        <a th:href="@{/products(categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                           class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-2"
+                                           th:style="${(selectedPriceRange == null or #strings.isEmpty(selectedPriceRange)) and minPrice == null and maxPrice == null ? 'background:#fffbeb; color:#b45309; font-weight:700; font-size:0.86rem;' : 'color:#475569; font-size:0.86rem;'}">
+                                            <i class="bi" th:classappend="${(selectedPriceRange == null or #strings.isEmpty(selectedPriceRange)) and minPrice == null and maxPrice == null ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
+                                            <span>Tất cả mức giá</span>
+                                        </a>
+                                        <a th:href="@{/products(priceRange='under2m', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                           class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-2"
+                                           th:style="${selectedPriceRange == 'under2m' ? 'background:#fffbeb; color:#b45309; font-weight:700; font-size:0.86rem;' : 'color:#475569; font-size:0.86rem;'}">
+                                            <i class="bi" th:classappend="${selectedPriceRange == 'under2m' ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
+                                            <span>Dưới 2.000.000 ₫</span>
+                                        </a>
+                                        <a th:href="@{/products(priceRange='2m-5m', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                           class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-2"
+                                           th:style="${selectedPriceRange == '2m-5m' ? 'background:#fffbeb; color:#b45309; font-weight:700; font-size:0.86rem;' : 'color:#475569; font-size:0.86rem;'}">
+                                            <i class="bi" th:classappend="${selectedPriceRange == '2m-5m' ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
+                                            <span>Từ 2 - 5 triệu</span>
+                                        </a>
+                                        <a th:href="@{/products(priceRange='5m-10m', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                           class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-2"
+                                           th:style="${selectedPriceRange == '5m-10m' ? 'background:#fffbeb; color:#b45309; font-weight:700; font-size:0.86rem;' : 'color:#475569; font-size:0.86rem;'}">
+                                            <i class="bi" th:classappend="${selectedPriceRange == '5m-10m' ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
+                                            <span>Từ 5 - 10 triệu</span>
+                                        </a>
+                                        <a th:href="@{/products(priceRange='over10m', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                           class="text-decoration-none d-flex align-items-center gap-2 py-1.5 px-2 rounded-2"
+                                           th:style="${selectedPriceRange == 'over10m' ? 'background:#fffbeb; color:#b45309; font-weight:700; font-size:0.86rem;' : 'color:#475569; font-size:0.86rem;'}">
+                                            <i class="bi" th:classappend="${selectedPriceRange == 'over10m' ? 'bi-record-circle-fill text-warning' : 'bi-circle text-muted'}"></i>
+                                            <span>Trên 10.000.000 ₫</span>
+                                        </a>
+                                    </div>
+
+                                    <!-- Khoảng giá tùy chỉnh -->
+                                    <div class="pt-2.5 mt-2" style="border-top: 1px dashed #e2e8f0;">
+                                        <label class="small fw-semibold text-secondary d-block mb-1" style="font-size: 0.76rem;">Khoảng giá tùy chỉnh (VNĐ)</label>
+                                        <div class="d-flex align-items-center gap-2 mt-2">
+                                            <input type="number" id="minPriceInput" name="minPrice"
+                                                   class="form-control form-control-sm rounded-2"
+                                                   placeholder="Từ" min="0" step="100000"
+                                                   th:value="${minPrice}">
+                                            <span class="text-muted small">-</span>
+                                            <input type="number" id="maxPriceInput" name="maxPrice"
+                                                   class="form-control form-control-sm rounded-2"
+                                                   placeholder="Đến" min="0" step="100000"
+                                                   th:value="${maxPrice}">
+                                            <button type="button" onclick="applyCustomPriceFilter()"
+                                                    class="btn btn-sm btn-dark rounded-2 text-nowrap px-2.5">Áp dụng</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 2. Filter by Brand (Multi-select Checkboxes) -->
+                        <!-- 2. Filter by Brand (Multi-select Checkboxes with Custom Scrollbar) -->
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button class="accordion-button py-3 px-3 fw-bold bg-white shadow-none" style="font-size: 0.9rem; color: #0f172a;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBrand">
@@ -105,79 +129,97 @@
                                 </button>
                             </h2>
                             <div id="collapseBrand" class="accordion-collapse collapse show">
-                                <div class="accordion-body pt-1 pb-3 px-3 d-flex flex-column gap-1.5">
+                                <div class="accordion-body pt-1 pb-3 px-3">
                                     <!-- All Brands Reset Option -->
                                     <div onclick="clearBrandFilters()"
-                                         class="d-flex align-items-center justify-content-between py-1.5 px-2 rounded-3"
-                                         style="cursor: pointer;"
-                                         th:styleappend="${selectedBrandIds == null or #lists.isEmpty(selectedBrandIds) ? 'background:#0f172a; color:#ffffff; font-weight:700;' : 'color:#475569; font-size:0.88rem;'}">
-                                        <span><i class="bi bi-check2-all me-2"></i>Tất cả thương hiệu</span>
+                                         class="d-flex align-items-center justify-content-between py-1.5 px-2.5 rounded-2 mb-2"
+                                         style="cursor: pointer; font-size: 0.85rem;"
+                                         th:styleappend="${selectedBrandIds == null or #lists.isEmpty(selectedBrandIds) ? 'background:#0f172a; color:#ffffff; font-weight:700;' : 'background:#f8fafc; color:#475569; font-weight:600;'}">
+                                        <span><i class="bi bi-check2-all me-1.5"></i>Tất cả thương hiệu</span>
                                         <span th:if="${selectedBrandIds != null and !#lists.isEmpty(selectedBrandIds)}"
                                               class="badge bg-warning text-dark rounded-pill"
                                               style="font-size: 0.7rem;"
                                               th:text="${#lists.size(selectedBrandIds)}"></span>
                                     </div>
 
-                                    <!-- Multi-select Brand Checkbox List -->
-                                    <label th:each="brnd : ${brands}"
-                                           th:for="'brandCheck_' + ${brnd.id}"
-                                           class="d-flex align-items-center justify-content-between py-1.5 px-2 rounded-3 m-0"
-                                           style="cursor: pointer; user-select: none;"
-                                           th:styleappend="${selectedBrandIds != null and #lists.contains(selectedBrandIds, brnd.id) ? 'background:#fffbeb; color:#b45309; font-weight:700; border: 1px solid #fde68a;' : 'color:#475569; font-size:0.88rem; border: 1px solid transparent;'}">
-                                        <span class="d-flex align-items-center gap-2">
-                                            <input class="form-check-input m-0 brand-filter-checkbox"
-                                                   type="checkbox"
-                                                   name="brandId"
-                                                   th:id="'brandCheck_' + ${brnd.id}"
-                                                   th:value="${brnd.id}"
-                                                   th:checked="${selectedBrandIds != null and #lists.contains(selectedBrandIds, brnd.id)}"
-                                                   onchange="applyFilters()"
-                                                   style="cursor: pointer;">
-                                            <span th:text="${brnd.name}">Casio</span>
-                                        </span>
-                                        <i class="bi bi-watch small opacity-50"></i>
-                                    </label>
+                                    <!-- Scrollable Multi-select Brand Checkbox List -->
+                                    <div class="ws-brand-scroll-area">
+                                        <div th:each="brnd : ${brands}"
+                                             class="form-check d-flex align-items-center justify-content-between py-1 px-2 rounded-2 mb-2 m-0"
+                                             th:style="${selectedBrandIds != null and #lists.contains(selectedBrandIds, brnd.id) ? 'background:#fffbeb; border: 1px solid #fde68a;' : 'border: 1px solid transparent;'}">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input class="form-check-input m-0 brand-filter-checkbox"
+                                                       type="checkbox"
+                                                       name="brandId"
+                                                       th:id="'brandCheck_' + ${brnd.id}"
+                                                       th:value="${brnd.id}"
+                                                       th:checked="${selectedBrandIds != null and #lists.contains(selectedBrandIds, brnd.id)}"
+                                                       onchange="applyFilters()"
+                                                       style="cursor: pointer;">
+                                                <label class="form-check-label small"
+                                                       th:for="'brandCheck_' + ${brnd.id}"
+                                                       th:classappend="${selectedBrandIds != null and #lists.contains(selectedBrandIds, brnd.id) ? 'fw-bold text-dark' : 'text-secondary'}"
+                                                       style="cursor: pointer; user-select: none; font-size: 0.86rem;"
+                                                       th:text="${brnd.name}">Casio</label>
+                                            </div>
+                                            <i class="bi bi-watch small text-muted opacity-50"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3. Filter by Category / Gender -->
+                        <!-- 3. Filter by Category (Vertical List) & Gender (3-Column Equal Pills) -->
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button class="accordion-button py-3 px-3 fw-bold bg-white shadow-none" style="font-size: 0.9rem; color: #0f172a;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategory">
-                                    <i class="bi bi-people me-2" style="color: #d97706;"></i> Danh mục &amp; Giới tính
+                                    <i class="bi bi-grid-1x2 me-2" style="color: #d97706;"></i> Danh mục &amp; Giới tính
                                 </button>
                             </h2>
                             <div id="collapseCategory" class="accordion-collapse collapse show">
                                 <div class="accordion-body pt-1 pb-3 px-3">
-                                    <div class="d-flex flex-wrap gap-1.5 mb-2">
-                                        <a th:href="@{/products(brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                           class="btn btn-sm rounded-pill px-3"
-                                           th:classappend="${selectedCategoryId == null and (selectedGender == null or #strings.isEmpty(selectedGender)) ? 'ws-btn-gold shadow-sm' : 'btn-outline-secondary'}">
-                                            Tất cả
+                                    <!-- Vertical Block List for Categories -->
+                                    <div class="d-flex flex-column gap-1 mb-3">
+                                        <a th:href="@{/products(brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                           class="ws-filter-vlist-item w-100 text-start rounded-2"
+                                           th:classappend="${selectedCategoryId == null ? 'active' : ''}">
+                                            <span>Tất cả danh mục</span>
+                                            <i class="bi bi-chevron-right small opacity-50"></i>
                                         </a>
                                         <a th:each="cat : ${categories}"
-                                           th:href="@{/products(categoryId=${cat.id}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                           class="btn btn-sm rounded-pill px-3"
-                                           th:classappend="${selectedCategoryId == cat.id ? 'ws-btn-gold shadow-sm' : 'btn-outline-secondary'}"
-                                           th:text="${cat.name}">Nam</a>
+                                           th:href="@{/products(categoryId=${cat.id}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, gender=${selectedGender}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                           class="ws-filter-vlist-item w-100 text-start rounded-2"
+                                           th:classappend="${selectedCategoryId == cat.id ? 'active' : ''}">
+                                            <span th:text="${cat.name}">Danh mục</span>
+                                            <i class="bi bi-chevron-right small opacity-50"></i>
+                                        </a>
                                     </div>
-                                    <div class="d-flex flex-wrap gap-1.5 pt-2" style="border-top: 1px dashed #e2e8f0;">
-                                        <a th:href="@{/products(gender='Nam', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                           class="badge text-decoration-none rounded-pill px-2.5 py-1.5"
-                                           th:classappend="${selectedGender == 'Nam' ? 'bg-dark text-white' : 'bg-light text-secondary border'}">Nam giới</a>
-                                        <a th:href="@{/products(gender='Nữ', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                           class="badge text-decoration-none rounded-pill px-2.5 py-1.5"
-                                           th:classappend="${selectedGender == 'Nữ' ? 'bg-dark text-white' : 'bg-light text-secondary border'}">Nữ giới</a>
-                                        <a th:href="@{/products(gender='Đôi', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
-                                           class="badge text-decoration-none rounded-pill px-2.5 py-1.5"
-                                           th:classappend="${selectedGender == 'Đôi' ? 'bg-dark text-white' : 'bg-light text-secondary border'}">Cặp đôi</a>
+
+                                    <!-- 3 Equal Horizontal Pills for Gender -->
+                                    <div class="pt-2.5" style="border-top: 1px dashed #e2e8f0;">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <span class="small fw-semibold text-secondary" style="font-size: 0.76rem;">Giới tính</span>
+                                            <a th:if="${selectedGender != null and !#strings.isEmpty(selectedGender)}"
+                                               th:href="@{/products(categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                               class="small text-decoration-none text-muted" style="font-size: 0.74rem;">Bỏ chọn</a>
+                                        </div>
+                                        <div class="w-100 d-flex gap-2">
+                                            <a th:href="@{/products(gender='Nam', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                               class="ws-gender-pill flex-fill text-center"
+                                               th:classappend="${selectedGender == 'Nam' ? 'active' : ''}">Nam</a>
+                                            <a th:href="@{/products(gender='Nữ', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                               class="ws-gender-pill flex-fill text-center"
+                                               th:classappend="${selectedGender == 'Nữ' ? 'active' : ''}">Nữ</a>
+                                            <a th:href="@{/products(gender='Unisex', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, movement=${selectedMovement}, keyword=${keyword}, sort=${selectedSort})}"
+                                               class="ws-gender-pill flex-fill text-center"
+                                               th:classappend="${selectedGender == 'Unisex' or selectedGender == 'Đôi' ? 'active' : ''}">Cặp đôi</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 4. Filter by Movement Type -->
+                        <!-- 4. Filter by Movement Type (Vertical List) -->
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button class="accordion-button py-3 px-3 fw-bold bg-white shadow-none" style="font-size: 0.9rem; color: #0f172a;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMovement">
@@ -185,36 +227,48 @@
                                 </button>
                             </h2>
                             <div id="collapseMovement" class="accordion-collapse collapse show">
-                                <div class="accordion-body pt-1 pb-3 px-3 d-flex flex-wrap gap-1.5">
-                                    <a th:href="@{/products(categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, gender=${selectedGender}, keyword=${keyword}, sort=${selectedSort})}"
-                                       class="btn btn-sm rounded-pill"
-                                       th:classappend="${selectedMovement == null or #strings.isEmpty(selectedMovement) ? 'btn-dark fw-bold' : 'btn-outline-secondary'}">
-                                        Tất cả
+                                <div class="accordion-body pt-1 pb-3 px-3 d-flex flex-column gap-1">
+                                    <a th:href="@{/products(categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, gender=${selectedGender}, keyword=${keyword}, sort=${selectedSort})}"
+                                       class="ws-filter-vlist-item w-100 text-start rounded-2"
+                                       th:classappend="${selectedMovement == null or #strings.isEmpty(selectedMovement) ? 'active' : ''}">
+                                        <span>Tất cả bộ máy</span>
+                                        <i class="bi bi-check2 small" th:if="${selectedMovement == null or #strings.isEmpty(selectedMovement)}"></i>
                                     </a>
-                                    <a th:href="@{/products(movement='Automatic', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, gender=${selectedGender}, keyword=${keyword}, sort=${selectedSort})}"
-                                       class="btn btn-sm rounded-pill"
-                                       th:classappend="${selectedMovement == 'Automatic' ? 'btn-dark fw-bold' : 'btn-outline-secondary'}">
-                                        Automatic (Cơ)
+                                    <a th:href="@{/products(movement='Automatic', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, gender=${selectedGender}, keyword=${keyword}, sort=${selectedSort})}"
+                                       class="ws-filter-vlist-item w-100 text-start rounded-2"
+                                       th:classappend="${selectedMovement == 'Automatic' ? 'active' : ''}">
+                                        <span>Automatic / Cơ tự động</span>
+                                        <i class="bi bi-check2 small" th:if="${selectedMovement == 'Automatic'}"></i>
                                     </a>
-                                    <a th:href="@{/products(movement='Quartz', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, gender=${selectedGender}, keyword=${keyword}, sort=${selectedSort})}"
-                                       class="btn btn-sm rounded-pill"
-                                       th:classappend="${selectedMovement == 'Quartz' ? 'btn-dark fw-bold' : 'btn-outline-secondary'}">
-                                        Quartz (Pin)
+                                    <a th:href="@{/products(movement='Quartz', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, gender=${selectedGender}, keyword=${keyword}, sort=${selectedSort})}"
+                                       class="ws-filter-vlist-item w-100 text-start rounded-2"
+                                       th:classappend="${selectedMovement == 'Quartz' ? 'active' : ''}">
+                                        <span>Quartz (Chạy Pin)</span>
+                                        <i class="bi bi-check2 small" th:if="${selectedMovement == 'Quartz'}"></i>
                                     </a>
-                                    <a th:href="@{/products(movement='Eco-Drive', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, gender=${selectedGender}, keyword=${keyword}, sort=${selectedSort})}"
-                                       class="btn btn-sm rounded-pill"
-                                       th:classappend="${selectedMovement == 'Eco-Drive' ? 'btn-dark fw-bold' : 'btn-outline-secondary'}">
-                                        Eco-Drive / Solar
+                                    <a th:href="@{/products(movement='Solar', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, gender=${selectedGender}, keyword=${keyword}, sort=${selectedSort})}"
+                                       class="ws-filter-vlist-item w-100 text-start rounded-2"
+                                       th:classappend="${selectedMovement == 'Solar' or selectedMovement == 'Eco-Drive' ? 'active' : ''}">
+                                        <span>Eco-Drive / Năng lượng ánh sáng</span>
+                                        <i class="bi bi-check2 small" th:if="${selectedMovement == 'Solar' or selectedMovement == 'Eco-Drive'}"></i>
+                                    </a>
+                                    <a th:href="@{/products(movement='Smartwatch', categoryId=${selectedCategoryId}, brandId=${selectedBrandIds}, priceRange=${selectedPriceRange}, minPrice=${minPrice}, maxPrice=${maxPrice}, gender=${selectedGender}, keyword=${keyword}, sort=${selectedSort})}"
+                                       class="ws-filter-vlist-item w-100 text-start rounded-2"
+                                       th:classappend="${selectedMovement == 'Smartwatch' ? 'active' : ''}">
+                                        <span>Smartwatch GPS / Cảm biến</span>
+                                        <i class="bi bi-check2 small" th:if="${selectedMovement == 'Smartwatch'}"></i>
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    </form>
                 </div>
             </div>
 
             <!-- RIGHT CONTENT: TOOLBAR + PRODUCT GRID -->
             <div class="col-lg-9" id="productCatalogGrid">
+                <div id="ws-ajax-product-area" style="transition: opacity 0.2s ease;">
                 <!-- Top Toolbar -->
                 <div class="bg-white rounded-4 p-3 mb-4 shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3" style="border: 1px solid #e2e8f0;">
                     <div class="d-flex align-items-center gap-2">
@@ -231,8 +285,7 @@
                     <div class="d-flex align-items-center gap-2">
                         <label for="sortSelect" class="small text-muted fw-semibold text-nowrap mb-0"><i class="bi bi-sort-down me-1"></i>Sắp xếp:</label>
                         <select id="sortSelect" class="form-select form-select-sm rounded-pill px-3 fw-semibold shadow-none"
-                                style="width: auto; border-color: #cbd5e1; color: #0f172a;"
-                                onchange="applySortFilter(this.value)">
+                                style="width: auto; border-color: #cbd5e1; color: #0f172a;">
                             <option value="newest" th:selected="${selectedSort == null or selectedSort == 'newest'}">Mới nhất / Nổi bật</option>
                             <option value="priceAsc" th:selected="${selectedSort == 'priceAsc'}">Giá: Thấp đến Cao</option>
                             <option value="priceDesc" th:selected="${selectedSort == 'priceDesc'}">Giá: Cao đến Thấp</option>
@@ -293,8 +346,8 @@
 
                 <!-- Product Grid (3 columns on desktop inside 9-col main area) -->
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4 mb-5">
-                    <div class="col" th:each="product : ${products}">
-                        <div class="card h-100 product-card position-relative d-flex flex-column">
+                    <div class="col ws-reveal" th:each="product, iterStat : ${products}" th:style="'transition-delay:' + (${iterStat.index % 6} * 80) + 'ms'">
+                        <div class="card h-100 product-card ws-product-card position-relative d-flex flex-column">
                             <!-- Clickable Image & Content Area -->
                             <a th:href="@{/products/{id}(id=${product.id})}" class="card-link text-decoration-none flex-grow-1 d-flex flex-column">
                                 <!-- 1:1 Pearl Gray Image Box -->
@@ -379,11 +432,89 @@
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
         </div>
     </main>
 
     <script>
+        function fetchAndUpdateProducts(url, pushHistory = true) {
+            const productArea = document.getElementById('ws-ajax-product-area');
+            const filterAccordion = document.getElementById('filterAccordion');
+            if (!productArea) {
+                window.location.href = url;
+                return;
+            }
+
+            // 1. Giảm opacity báo hiệu đang tải dữ liệu ngầm
+            productArea.style.opacity = '0.4';
+            productArea.style.pointerEvents = 'none';
+
+            fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.text();
+            })
+            .then(html => {
+                // 2. Parse HTML trả về và trích xuất #ws-ajax-product-area (cùng #filterAccordion để đồng bộ trạng thái active)
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const newProductArea = doc.getElementById('ws-ajax-product-area');
+                if (!newProductArea) {
+                    window.location.href = url;
+                    return;
+                }
+
+                productArea.innerHTML = newProductArea.innerHTML;
+
+                const newFilterAccordion = doc.getElementById('filterAccordion');
+                if (filterAccordion && newFilterAccordion) {
+                    const brandScrollEl = filterAccordion.querySelector('.ws-brand-scroll-area');
+                    const prevBrandScroll = brandScrollEl ? brandScrollEl.scrollTop : 0;
+                    filterAccordion.innerHTML = newFilterAccordion.innerHTML;
+                    const updatedBrandScrollEl = filterAccordion.querySelector('.ws-brand-scroll-area');
+                    if (updatedBrandScrollEl) {
+                        updatedBrandScrollEl.scrollTop = prevBrandScroll;
+                    }
+                }
+
+                // 3. Khôi phục URL trên thanh địa chỉ mà không reload trang
+                if (pushHistory) {
+                    window.history.pushState(null, '', url);
+                }
+
+                // 4. Kích hoạt lại hiệu ứng Scroll Reveal (.ws-reveal) & AOS cho các thẻ sản phẩm mới nạp
+                if (typeof initWsReveal === 'function') {
+                    initWsReveal(productArea);
+                }
+                if (typeof AOS !== 'undefined' && typeof AOS.refreshHard === 'function') {
+                    AOS.refreshHard();
+                }
+
+                // Đồng bộ lại trạng thái nút So sánh (nếu có)
+                if (typeof fetch === 'function' && typeof updateCardButtons === 'function') {
+                    fetch('/compare/api/list')
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d && d.success && Array.isArray(d.products)) {
+                                updateCardButtons(d.products.map(p => p.id));
+                            }
+                        })
+                        .catch(() => {});
+                }
+            })
+            .catch(err => {
+                console.error('AJAX filter error, falling back to navigation:', err);
+                window.location.href = url;
+            })
+            .finally(() => {
+                // 5. Khôi phục opacity = 1
+                productArea.style.opacity = '1';
+                productArea.style.pointerEvents = '';
+            });
+        }
+
         function applyFilters() {
             const url = new URL(window.location.href);
             url.searchParams.delete('brandId');
@@ -393,7 +524,7 @@
                     url.searchParams.append('brandId', cb.value);
                 }
             });
-            window.location.href = url.toString();
+            fetchAndUpdateProducts(url.toString());
         }
 
         function clearBrandFilters() {
@@ -418,8 +549,91 @@
             } else {
                 url.searchParams.delete('sort');
             }
-            window.location.href = url.toString();
+            fetchAndUpdateProducts(url.toString());
         }
+
+        function applyCustomPriceFilter() {
+            const minEl = document.getElementById('minPriceInput');
+            const maxEl = document.getElementById('maxPriceInput');
+            const minVal = minEl && minEl.value ? minEl.value.trim() : '';
+            const maxVal = maxEl && maxEl.value ? maxEl.value.trim() : '';
+
+            const url = new URL(window.location.href);
+            url.searchParams.delete('priceRange');
+            if (minVal) {
+                url.searchParams.set('minPrice', minVal);
+            } else {
+                url.searchParams.delete('minPrice');
+            }
+            if (maxVal) {
+                url.searchParams.set('maxPrice', maxVal);
+            } else {
+                url.searchParams.delete('maxPrice');
+            }
+            fetchAndUpdateProducts(url.toString());
+        }
+
+        // Đánh chặn submit trên #filterForm
+        document.addEventListener('submit', function(e) {
+            const form = e.target.closest('#filterForm');
+            if (!form) return;
+            e.preventDefault();
+
+            const url = new URL(window.location.href);
+            const formData = new FormData(form);
+
+            url.searchParams.delete('brandId');
+            formData.getAll('brandId').forEach(val => {
+                if (val) url.searchParams.append('brandId', val);
+            });
+
+            const minVal = (formData.get('minPrice') || '').toString().trim();
+            const maxVal = (formData.get('maxPrice') || '').toString().trim();
+            if (minVal || maxVal) {
+                url.searchParams.delete('priceRange');
+            }
+            if (minVal) url.searchParams.set('minPrice', minVal);
+            else url.searchParams.delete('minPrice');
+
+            if (maxVal) url.searchParams.set('maxPrice', maxVal);
+            else url.searchParams.delete('maxPrice');
+
+            fetchAndUpdateProducts(url.toString());
+        });
+
+        // Đánh chặn sự kiện change của dropdown Sắp xếp (#sortSelect)
+        document.addEventListener('change', function(e) {
+            const sortSelect = e.target.closest('#sortSelect');
+            if (!sortSelect) return;
+            e.preventDefault();
+            applySortFilter(sortSelect.value);
+        });
+
+        // Event Delegation: đánh chặn click trên các thẻ <a> lọc, xóa lọc và phân trang (Pagination)
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href]');
+            if (!link) return;
+
+            const href = link.getAttribute('href') || '';
+            if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+
+            // Không đánh chặn link vào trang chi tiết sản phẩm (.card-link hoặc /products/{id})
+            if (link.classList.contains('card-link') || /\/products\/\d+/.test(href)) return;
+
+            const inFilterPanel = link.closest('#filterAccordion') || link.classList.contains('ws-filter-reset-link');
+            const inProductArea = link.closest('#ws-ajax-product-area');
+            const inPagination = link.closest('.pagination');
+
+            if (inFilterPanel || inProductArea || inPagination) {
+                e.preventDefault();
+                fetchAndUpdateProducts(link.href);
+            }
+        });
+
+        // Hỗ trợ nút Back / Forward của trình duyệt
+        window.addEventListener('popstate', function() {
+            fetchAndUpdateProducts(window.location.href, false);
+        });
     </script>
 
     <footer th:replace="~{fragments/web-layout :: footer}"></footer>
