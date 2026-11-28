@@ -33,7 +33,8 @@ public class AdminOrderController {
         Order order = orderRepository.findById(id).orElse(null);
         model.addAttribute("order", order);
         if (order != null) {
-            model.addAttribute("orderDetails", orderDetailRepository.findByOrder_Id(id));
+            //model.addAttribute("orderDetails", orderDetailRepository.findByOrder_Id(id));
+            model.addAttribute("orderDetails", orderDetailRepository.findDetailsWithProductByOrderId(id));
         }
         return "admin/order-detail";
     }

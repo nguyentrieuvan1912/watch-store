@@ -117,7 +117,7 @@
                                     <tbody>
                                         <tr th:each="detail : ${orderDetails}">
                                             <td>
-                                                <img th:src="${detail.product != null ? detail.product.imageUrl : '/images/placeholder.jpg'}" 
+                                                <img th:src="${detail.product != null ? detail.product.image : '/images/placeholder.jpg'}" 
                                                      alt="Product" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;">
                                             </td>
                                             <td>
